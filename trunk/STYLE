@@ -14,7 +14,7 @@ Functions with external linkage are declared like this:
 
 The identical comment appears in the C file where the function is defined.
 
-Static functions may have the the above form of comment, or simply a
+Static functions may have the above form of comment, or simply a
 /* Brief description of what the function does. */
 line before the function.
 
