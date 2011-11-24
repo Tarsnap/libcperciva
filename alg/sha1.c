@@ -85,8 +85,10 @@ SHA1_Transform(uint32_t * state, const uint8_t block[64])
 
 	/* 1. Prepare message schedule W. */
 	be32dec_vect(W, block, 64);
-	for (i = 16; i < 80; i++)
-		W[i] = ROTL(W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16], 1);
+	for (i = 16; i < 80; i++) {
+		W[i] = W[i - 3] ^ W[i - 8] ^ W[i - 14] ^ W[i - 16];
+		W[i] = ROTL(W[i], 1);
+	}
 
 	/* 2. Initialize working variables. */
 	memcpy(S, state, 20);
