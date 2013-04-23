@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +10,29 @@
 #include "readpass.h"
 
 #define MAXPASSLEN 2048
+
+/* Signals we need to block. */
+int badsigs[] = {
+	SIGALRM, SIGHUP, SIGINT,
+	SIGPIPE, SIGQUIT, SIGTERM,
+	SIGTSTP, SIGTTIN, SIGTTOU
+};
+#define NSIGS sizeof(badsigs)/sizeof(badsigs[0])
+
+/* Has a signal of this type been received? */
+static volatile sig_atomic_t gotsig[NSIGS];
+
+/* Signal handler. */
+static void
+handle(int sig)
+{
+	size_t i;
+
+	for (i = 0; i < NSIGS; i++) {
+		if (sig == badsigs[i])
+			gotsig[i] = 1;
+	}
+}
 
 /**
  * tarsnap_readpass(passwd, prompt, confirmprompt, devtty)
@@ -28,7 +52,9 @@ tarsnap_readpass(char ** passwd, const char * prompt,
 	FILE * readfrom;
 	char passbuf[MAXPASSLEN];
 	char confpassbuf[MAXPASSLEN];
+	struct sigaction sa, savedsa[NSIGS];
 	struct termios term, term_old;
+	size_t i;
 	int usingtty;
 
 	/*
@@ -37,6 +63,22 @@ tarsnap_readpass(char ** passwd, const char * prompt,
 	 */
 	if ((devtty == 0) || ((readfrom = fopen("/dev/tty", "r")) == NULL))
 		readfrom = stdin;
+
+	/* We have not received any signals yet. */
+	for (i = 0; i < NSIGS; i++)
+		gotsig[i] = 0;
+
+	/*
+	 * If we receive a signal while we're reading the password, we might
+	 * end up with echo disabled; to prevent this, we catch the signals
+	 * here, and we'll re-send them to ourselves later after we re-enable
+	 * terminal echo.
+	 */
+	sa.sa_handler = handle;
+	sa.sa_flags = 0;
+	sigemptyset(&sa.sa_mask);
+	for (i = 0; i < NSIGS; i++)
+		sigaction(badsigs[i], &sa, &savedsa[i]);
 
 	/* If we're reading from a terminal, try to disable echo. */
 	if ((usingtty = isatty(fileno(readfrom))) != 0) {
@@ -84,6 +126,16 @@ retry:
 	/* If we changed terminal settings, reset them. */
 	if (usingtty)
 		tcsetattr(fileno(readfrom), TCSANOW, &term_old);
+
+	/* Restore old signals. */
+	for (i = 0; i < NSIGS; i++)
+		sigaction(badsigs[i], &savedsa[i], NULL);
+
+	/* If we intercepted a signal, re-issue it. */
+	for (i = 0; i < NSIGS; i++) {
+		if (gotsig[i])
+			raise(badsigs[i]);
+	}
 
 	/* Close /dev/tty if we opened it. */
 	if (readfrom != stdin)
