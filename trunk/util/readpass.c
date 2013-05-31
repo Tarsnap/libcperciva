@@ -5,7 +5,7 @@
 #include <termios.h>
 #include <unistd.h>
 
-#include "warn.h"
+#include "warnp.h"
 
 #include "readpass.h"
 
@@ -83,13 +83,13 @@ tarsnap_readpass(char ** passwd, const char * prompt,
 	/* If we're reading from a terminal, try to disable echo. */
 	if ((usingtty = isatty(fileno(readfrom))) != 0) {
 		if (tcgetattr(fileno(readfrom), &term_old)) {
-			warn("Cannot read terminal settings");
+			warnp("Cannot read terminal settings");
 			goto err1;
 		}
 		memcpy(&term, &term_old, sizeof(struct termios));
 		term.c_lflag = (term.c_lflag & ~ECHO) | ECHONL;
 		if (tcsetattr(fileno(readfrom), TCSANOW, &term)) {
-			warn("Cannot set terminal settings");
+			warnp("Cannot set terminal settings");
 			goto err1;
 		}
 	}
@@ -101,7 +101,7 @@ retry:
 
 	/* Read the password. */
 	if (fgets(passbuf, MAXPASSLEN, readfrom) == NULL) {
-		warn("Cannot read password");
+		warnp("Cannot read password");
 		goto err2;
 	}
 
@@ -110,7 +110,7 @@ retry:
 		if (usingtty)
 			fprintf(stderr, "%s: ", confirmprompt);
 		if (fgets(confpassbuf, MAXPASSLEN, readfrom) == NULL) {
-			warn("Cannot read password");
+			warnp("Cannot read password");
 			goto err2;
 		}
 		if (strcmp(passbuf, confpassbuf)) {
@@ -143,7 +143,7 @@ retry:
 
 	/* Copy the password out. */
 	if ((*passwd = strdup(passbuf)) == NULL) {
-		warn("Cannot allocate memory");
+		warnp("Cannot allocate memory");
 		goto err1;
 	}
 
