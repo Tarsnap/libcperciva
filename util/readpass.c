@@ -35,7 +35,7 @@ handle(int sig)
 }
 
 /**
- * tarsnap_readpass(passwd, prompt, confirmprompt, devtty)
+ * libcperciva_readpass(passwd, prompt, confirmprompt, devtty)
  * If ${devtty} is non-zero, read a password from /dev/tty if possible; if
  * not, read from stdin.  If reading from a tty (either /dev/tty or stdin),
  * disable echo and prompt the user by printing ${prompt} to stderr.  If
@@ -46,7 +46,7 @@ handle(int sig)
  * getpass / readpass / readpassphrase / etc. functions in various libraries.
  */
 int
-tarsnap_readpass(char ** passwd, const char * prompt,
+libcperciva_readpass(char ** passwd, const char * prompt,
     const char * confirmprompt, int devtty)
 {
 	FILE * readfrom;

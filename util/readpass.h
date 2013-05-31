@@ -2,7 +2,7 @@
 #define _READPASS_H_
 
 /**
- * tarsnap_readpass(passwd, prompt, confirmprompt, devtty)
+ * libcperciva_readpass(passwd, prompt, confirmprompt, devtty)
  * If ${devtty} is non-zero, read a password from /dev/tty if possible; if
  * not, read from stdin.  If reading from a tty (either /dev/tty or stdin),
  * disable echo and prompt the user by printing ${prompt} to stderr.  If
@@ -12,6 +12,6 @@
  * ${passwd}.  The obscure name is to avoid namespace collisions due to the
  * getpass / readpass / readpassphrase / etc. functions in various libraries.
  */
-int tarsnap_readpass(char **, const char *, const char *, int);
+int libcperciva_readpass(char **, const char *, const char *, int);
 
 #endif /* !_READPASS_H_ */
