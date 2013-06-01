@@ -143,7 +143,7 @@ retry:
 	/* Copy the password out. */
 	if ((*passwd = strdup(passbuf)) == NULL) {
 		warnp("Cannot allocate memory");
-		goto err2;
+		goto err1;
 	}
 
 	/*
