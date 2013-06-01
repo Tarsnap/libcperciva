@@ -83,13 +83,13 @@ readpass(char ** passwd, const char * prompt,
 	if ((usingtty = isatty(fileno(readfrom))) != 0) {
 		if (tcgetattr(fileno(readfrom), &term_old)) {
 			warnp("Cannot read terminal settings");
-			goto err1;
+			goto err2;
 		}
 		memcpy(&term, &term_old, sizeof(struct termios));
 		term.c_lflag = (term.c_lflag & ~ECHO) | ECHONL;
 		if (tcsetattr(fileno(readfrom), TCSANOW, &term)) {
 			warnp("Cannot set terminal settings");
-			goto err1;
+			goto err2;
 		}
 	}
 
@@ -101,7 +101,7 @@ retry:
 	/* Read the password. */
 	if (fgets(passbuf, MAXPASSLEN, readfrom) == NULL) {
 		warnp("Cannot read password");
-		goto err2;
+		goto err3;
 	}
 
 	/* Confirm the password if necessary. */
@@ -110,7 +110,7 @@ retry:
 			fprintf(stderr, "%s: ", confirmprompt);
 		if (fgets(confpassbuf, MAXPASSLEN, readfrom) == NULL) {
 			warnp("Cannot read password");
-			goto err2;
+			goto err3;
 		}
 		if (strcmp(passbuf, confpassbuf)) {
 			fprintf(stderr,
@@ -143,24 +143,38 @@ retry:
 	/* Copy the password out. */
 	if ((*passwd = strdup(passbuf)) == NULL) {
 		warnp("Cannot allocate memory");
-		goto err1;
+		goto err2;
 	}
 
-	/* Zero any stored passwords. */
+	/*
+	 * Zero any stored passwords.  This is not guaranteed to work, since a
+	 * "sufficiently intelligent" compiler can optimize these out due to
+	 * the values not being accessed again; some people try to avoid this
+	 * problem by zeroing buffers via a volatile-casted pointed, but this
+	 * is not sufficient -- it guarantees that *a* buffer is zeroed but
+	 * not that it is the only buffer containing the data in question.
+	 * Unfortunately the C standard does not provide any way to mark data
+	 * as "sensitive" in order to prevent extra copies being sprinkled
+	 * around the implementation address space.
+	 */
 	memset(passbuf, 0, MAXPASSLEN);
 	memset(confpassbuf, 0, MAXPASSLEN);
 
 	/* Success! */
 	return (0);
 
-err2:
+err3:
 	/* Reset terminal settings if necessary. */
 	if (usingtty)
 		tcsetattr(fileno(readfrom), TCSAFLUSH, &term_old);
-err1:
+err2:
 	/* Close /dev/tty if we opened it. */
 	if (readfrom != stdin)
 		fclose(readfrom);
+err1:
+	/* Zero any stored passwords. */
+	memset(passbuf, 0, MAXPASSLEN);
+	memset(confpassbuf, 0, MAXPASSLEN);
 
 	/* Failure! */
 	return (-1);
