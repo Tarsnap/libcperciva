@@ -1,4 +1,3 @@
-#include <sys/types.h>
 #include <sys/socket.h>
 
 #include <assert.h>
@@ -32,7 +31,7 @@
 #endif /* !MSG_NOSIGNAL, !SO_NOSIGPIPE */
 #endif /* !MSG_NOSIGNAL */
 
-struct network_buf_cookie {
+struct network_write_cookie {
 	int (*callback)(void *, ssize_t);
 	void * cookie;
 	int fd;
@@ -40,21 +39,11 @@ struct network_buf_cookie {
 	size_t buflen;
 	size_t minlen;
 	size_t bufpos;
-	ssize_t (* sendrecv)(int, void *, size_t, int);
-	int op;
-	int flags;
 };
-
-static int docallback(struct network_buf_cookie *, size_t);
-static int callback_buf(void *);
-static struct network_buf_cookie * network_buf(int, uint8_t *, size_t,
-    size_t, int (*)(void *, ssize_t), void *,
-    ssize_t (*)(int, void *, size_t, int), int, int);
-static void cancel(void *);
 
 /* Invoke the callback, clean up, and return the callback's status. */
 static int
-docallback(struct network_buf_cookie * C, size_t nbytes)
+docallback(struct network_write_cookie * C, ssize_t nbytes)
 {
 	int rc;
 
@@ -72,7 +61,7 @@ docallback(struct network_buf_cookie * C, size_t nbytes)
 static int
 callback_buf(void * cookie)
 {
-	struct network_buf_cookie * C = cookie;
+	struct network_write_cookie * C = cookie;
 	size_t oplen;
 	ssize_t len;
 #ifdef USE_SO_NOSIGPIPE
@@ -99,7 +88,10 @@ callback_buf(void * cookie)
 
 	/* Attempt to read/write data to/from the buffer. */
 	oplen = C->buflen - C->bufpos;
-	len = (C->sendrecv)(C->fd, C->buf + C->bufpos, oplen, C->flags);
+	len = send(C->fd, C->buf + C->bufpos, oplen, MSG_NOSIGNAL);
+
+	/* We should never see a send length of zero. */
+	assert(len != 0);
 
 	/* Undo whatever we did to prevent SIGPIPEs. */
 #ifdef USE_SO_NOSIGPIPE
@@ -126,9 +118,6 @@ callback_buf(void * cookie)
 
 		/* Something went wrong. */
 		goto failed;
-	} else if (len == 0) {
-		/* The socket was shut down by the remote host. */
-		goto eof;
 	}
 
 	/* We processed some data.  Do we need to keep going? */
@@ -140,82 +129,16 @@ callback_buf(void * cookie)
 
 tryagain:
 	/* Reset the event. */
-	if (events_network_register(callback_buf, C, C->fd, C->op))
+	if (events_network_register(callback_buf, C, C->fd,
+	    EVENTS_NETWORK_OP_WRITE))
 		goto failed;
 
 	/* Callback was reset. */
 	return (0);
 
-eof:
-	/* Sanity-check: This should only occur for reads. */
-	assert(C->op == EVENTS_NETWORK_OP_READ);
-
-	/* Invoke the callback with an EOF status and return. */
-	return (docallback(C, 0));
-
 failed:
 	/* Invoke the callback with a failure status and return. */
 	return (docallback(C, -1));
-}
-
-/**
- * network_buf(fd, buf, buflen, minlen, callback, cookie, sendrecv, op, flags):
- * Asynchronously read/write up to ${buflen} bytes of data from/to ${fd}
- * to/from ${buf}.  When at least ${minlen} bytes have been read/written,
- * invoke ${callback}(${cookie}, nbytes), where nbytes is 0 on EOF or -1 on
- * error and the number of bytes read/written (between ${minlen} and ${buflen}
- * inclusive) otherwise.  Return a cookie which can be passed to buf_cancel
- * in order to cancel the read/write.
- */
-static struct network_buf_cookie *
-network_buf(int fd, uint8_t * buf, size_t buflen, size_t minlen,
-    int (* callback)(void *, ssize_t), void * cookie,
-    ssize_t (* sendrecv)(int, void *, size_t, int), int op, int flags)
-{
-	struct network_buf_cookie * C;
-
-	/* Sanity-check: # bytes must fit into a ssize_t. */
-	assert(buflen <= SSIZE_MAX);
-
-	/* Bake a cookie. */
-	if ((C = malloc(sizeof(struct network_buf_cookie))) == NULL)
-		goto err0;
-	C->callback = callback;
-	C->cookie = cookie;
-	C->fd = fd;
-	C->buf = buf;
-	C->buflen = buflen;
-	C->minlen = minlen;
-	C->bufpos = 0;
-	C->sendrecv = sendrecv;
-	C->op = op;
-	C->flags = flags;
-
-	/* Register a callback for network readiness. */
-	if (events_network_register(callback_buf, C, C->fd, C->op))
-		goto err1;
-
-	/* Success! */
-	return (C);
-
-err1:
-	free(C);
-err0:
-	/* Failure! */
-	return (NULL);
-}
-
-/* Cancel the read/write. */
-static void
-cancel(void * cookie)
-{
-	struct network_buf_cookie * C = cookie;
-
-	/* Kill the network event. */
-	events_network_cancel(C->fd, C->op);
-
-	/* Free the cookie. */
-	free(C);
 }
 
 /**
@@ -231,18 +154,38 @@ void *
 network_write(int fd, const uint8_t * buf, size_t buflen, size_t minwrite,
     int (* callback)(void *, ssize_t), void * cookie)
 {
+	struct network_write_cookie * C;
 
 	/* Make sure buflen is non-zero. */
-	if (buflen == 0) {
-		warn0("Programmer error: Cannot write zero-byte buffer");
-		return (NULL);
-	}
+	assert(buflen != 0);
 
-	/* Get network_buf to set things up for us. */
-	return (network_buf(fd, (uint8_t *)(uintptr_t)buf, buflen, minwrite,
-	    callback, cookie,
-	    (ssize_t (*)(int, void *, size_t, int))send,
-	    EVENTS_NETWORK_OP_WRITE, MSG_NOSIGNAL));
+	/* Sanity-check: # bytes must fit into a ssize_t. */
+	assert(buflen <= SSIZE_MAX);
+
+	/* Bake a cookie. */
+	if ((C = malloc(sizeof(struct network_write_cookie))) == NULL)
+		goto err0;
+	C->callback = callback;
+	C->cookie = cookie;
+	C->fd = fd;
+	C->buf = buf;
+	C->buflen = buflen;
+	C->minlen = minlen;
+	C->bufpos = 0;
+
+	/* Register a callback for network readiness. */
+	if (events_network_register(callback_buf, C, C->fd,
+	    EVENTS_NETWORK_OP_WRITE))
+		goto err1;
+
+	/* Success! */
+	return (C);
+
+err1:
+	free(C);
+err0:
+	/* Failure! */
+	return (NULL);
 }
 
 /**
@@ -253,7 +196,11 @@ network_write(int fd, const uint8_t * buf, size_t buflen, size_t minwrite,
 void
 network_write_cancel(void * cookie)
 {
+	struct network_write_cookie * C = cookie;
 
-	/* Get cancel to do the work for us. */
-	cancel(cookie);
+	/* Kill the network event. */
+	events_network_cancel(C->fd, EVENTS_NETWORK_OP_WRITE);
+
+	/* Free the cookie. */
+	free(C);
 }
