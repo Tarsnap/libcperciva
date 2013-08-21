@@ -14,24 +14,6 @@
 
 #include "network.h"
 
-/**
- * We use three methods to prevent SIGPIPE from being sent, in order of
- * preference:
- * 1. The MSG_NOSIGNAL send(2) flag.
- * 2. The SO_NOSIGPIPE socket option.
- * 3. Blocking the SIGPIPE signal.
- */
-#ifdef MSG_NOSIGNAL
-#define USE_MSG_NOSIGNAL
-#else /* !MSG_NOSIGNAL */
-#define MSG_NOSIGNAL 0
-#ifdef SO_NOSIGPIPE
-#define USE_SO_NOSIGPIPE
-#else /* !MSG_NOSIGNAL, !SO_NOSIGPIPE */
-#define USE_SIGNAL
-#endif /* !MSG_NOSIGNAL, !SO_NOSIGPIPE */
-#endif /* !MSG_NOSIGNAL */
-
 struct network_buf_cookie {
 	int (*callback)(void *, ssize_t);
 	void * cookie;
@@ -75,46 +57,10 @@ callback_buf(void * cookie)
 	struct network_buf_cookie * C = cookie;
 	size_t oplen;
 	ssize_t len;
-#ifdef USE_SO_NOSIGPIPE
-	int val;
-#endif
-#ifdef USE_SIGNAL
-	void (*oldsig)(int);
-#endif
-
-	/* Make sure we don't get a SIGPIPE. */
-#ifdef USE_SO_NOSIGPIPE
-	val = 1;
-	if (setsockopt(C->fd, SOL_SOCKET, SO_NOSIGPIPE, &val, sizeof(int))) {
-		warnp("setsockopt(SO_NOSIGPIPE)");
-		goto failed;
-	}
-#endif
-#ifdef USE_SIGNAL
-	if ((oldsig = signal(SIGPIPE, SIG_IGN)) == SIG_ERR) {
-		warnp("signal(SIGPIPE)");
-		goto failed;
-	}
-#endif
 
 	/* Attempt to read/write data to/from the buffer. */
 	oplen = C->buflen - C->bufpos;
 	len = (C->sendrecv)(C->fd, C->buf + C->bufpos, oplen, C->flags);
-
-	/* Undo whatever we did to prevent SIGPIPEs. */
-#ifdef USE_SO_NOSIGPIPE
-	val = 0;
-	if (setsockopt(C->fd, SOL_SOCKET, SO_NOSIGPIPE, &val, sizeof(int))) {
-		warnp("setsockopt(SO_NOSIGPIPE)");
-		goto failed;
-	}
-#endif
-#ifdef USE_SIGNAL
-	if (signal(SIGPIPE, oldsig) == SIG_ERR) {
-		warnp("signal(SIGPIPE)");
-		goto failed;
-	}
-#endif
 
 	/* Failure? */
 	if (len == -1) {
@@ -250,46 +196,6 @@ network_read(int fd, uint8_t * buf, size_t buflen, size_t minread,
  */
 void
 network_read_cancel(void * cookie)
-{
-
-	/* Get cancel to do the work for us. */
-	cancel(cookie);
-}
-
-/**
- * network_write(fd, buf, buflen, minwrite, callback, cookie):
- * Asynchronously write up to ${buflen} bytes of data from ${buf} to ${fd}.
- * When at least ${minwrite} bytes have been written or on error, invoke
- * ${callback}(${cookie}, lenwrit), where lenwrit is -1 on error and the
- * number of bytes written (between ${minwrite} and ${buflen} inclusive)
- * otherwise.  Return a cookie which can be passed to network_write_cancel in
- * order to cancel the write.
- */
-void *
-network_write(int fd, const uint8_t * buf, size_t buflen, size_t minwrite,
-    int (* callback)(void *, ssize_t), void * cookie)
-{
-
-	/* Make sure buflen is non-zero. */
-	if (buflen == 0) {
-		warn0("Programmer error: Cannot write zero-byte buffer");
-		return (NULL);
-	}
-
-	/* Get network_buf to set things up for us. */
-	return (network_buf(fd, (uint8_t *)(uintptr_t)buf, buflen, minwrite,
-	    callback, cookie,
-	    (ssize_t (*)(int, void *, size_t, int))send,
-	    EVENTS_NETWORK_OP_WRITE, MSG_NOSIGNAL));
-}
-
-/**
- * network_write_cancel(cookie):
- * Cancel the buffer write for which the cookie ${cookie} was returned by
- * network_write.  Do not invoke the callback associated with the write.
- */
-void
-network_write_cancel(void * cookie)
 {
 
 	/* Get cancel to do the work for us. */

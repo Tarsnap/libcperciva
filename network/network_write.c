@@ -219,44 +219,6 @@ cancel(void * cookie)
 }
 
 /**
- * network_read(fd, buf, buflen, minread, callback, cookie):
- * Asynchronously read up to ${buflen} bytes of data from ${fd} into ${buf}.
- * When at least ${minread} bytes have been read or on error, invoke
- * ${callback}(${cookie}, lenread), where lenread is 0 on EOF or -1 on error,
- * and the number of bytes read (between ${minread} and ${buflen} inclusive)
- * otherwise.  Return a cookie which can be passed to network_read_cancel in
- * order to cancel the read.
- */
-void *
-network_read(int fd, uint8_t * buf, size_t buflen, size_t minread,
-    int (* callback)(void *, ssize_t), void * cookie)
-{
-
-	/* Make sure buflen is non-zero. */
-	if (buflen == 0) {
-		warn0("Programmer error: Cannot read zero-byte buffer");
-		return (NULL);
-	}
-
-	/* Get network_buf to set things up for us. */
-	return (network_buf(fd, buf, buflen, minread, callback, cookie, recv,
-	    EVENTS_NETWORK_OP_READ, 0));
-}
-
-/**
- * network_read_cancel(cookie):
- * Cancel the buffer read for which the cookie ${cookie} was returned by
- * network_read.  Do not invoke the callback associated with the read.
- */
-void
-network_read_cancel(void * cookie)
-{
-
-	/* Get cancel to do the work for us. */
-	cancel(cookie);
-}
-
-/**
  * network_write(fd, buf, buflen, minwrite, callback, cookie):
  * Asynchronously write up to ${buflen} bytes of data from ${buf} to ${fd}.
  * When at least ${minwrite} bytes have been written or on error, invoke
