@@ -1,7 +1,3 @@
-#ifdef DEBUG
-#include <stdio.h>
-#endif
-
 #include "cpusupport.h"
 
 #ifdef CPUSUPPORT_X86_CPUID
@@ -19,12 +15,6 @@ CPUSUPPORT_FEATURE_DECL(x86, aesni)
 		/* Failure. */
 		return 0;
 	}
-
-#ifdef DEBUG
-	if ((c & CPUID_ECX_BIT)) {
-		printf("AES-NI enabled\n");
-	}
-#endif
 
 	return (c & CPUID_ECX_BIT) ? 1 : 0;
 #else
