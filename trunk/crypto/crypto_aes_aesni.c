@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <wmmintrin.h>
 
+#include "crypto_aes_aesni.h"
+
 void
 aes_encrypt_block_aesni(const uint8_t *in, uint8_t *out, const AES_KEY *key)
 {
