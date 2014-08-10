@@ -6,10 +6,10 @@
 #include <openssl/aes.h>
 
 /**
- * aes_encrypt_block_aesni(in, out, key):
+ * crypto_aes_encrypt_block_aesni(in, out, key):
  * Using the expanded AES key ${key}, encrypt the block ${in} and write the
  * resulting ciphertext to ${out}.
  */
-void aes_encrypt_block(const uint8_t *, uint8_t *, const AES_KEY *);
+void crypto_aes_encrypt_block(const uint8_t *, uint8_t *, const AES_KEY *);
 
 #endif /* !_CRYPTO_AES_H_ */
