@@ -8,8 +8,7 @@
 #define CPUID_EAX 1
 #define CPUID_ECX_BIT (0x2000000)
 
-int
-cpusupport_x86_aesni_detect(void)
+CPUSUPPORT_FEATURE_DECL(x86, aesni)
 {
 #ifdef CPUSUPPORT_X86_CPUID
 	unsigned int a, b, c, d;
