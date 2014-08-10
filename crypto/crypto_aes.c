@@ -7,6 +7,11 @@
 
 #include "crypto_aes.h"
 
+/**
+ * aes_encrypt_block_aesni(in, out, key):
+ * Using the expanded AES key ${key}, encrypt the block ${in} and write the
+ * resulting ciphertext to ${out}.
+ */
 void
 aes_encrypt_block(const uint8_t * in, uint8_t * out, const AES_KEY * key)
 {
