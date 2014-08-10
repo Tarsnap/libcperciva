@@ -6,6 +6,13 @@
 
 #include "crypto_aes_aesni.h"
 
+/**
+ * aes_encrypt_block_aesni(in, out, key):
+ * Using the expanded AES key ${key}, encrypt the block ${in} and write the
+ * resulting ciphertext to ${out}.  This implementation uses x86 AESNI
+ * instructions, and should only be used if CPUSUPPORT_X86_AESNI is defined
+ * and cpusupport_x86_aesni() returns nonzero.
+ */
 void
 aes_encrypt_block_aesni(const uint8_t *in, uint8_t *out, const AES_KEY *key)
 {
