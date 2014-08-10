@@ -1,3 +1,6 @@
+#ifndef _CPUSUPPORT_H_
+#define _CPUSUPPORT_H_
+
 #ifdef CPUSUPPORT_CONFIG_FILE
 #include CPUSUPPORT_CONFIG_FILE
 #endif
@@ -21,3 +24,5 @@
 	}
 
 CPUSUPPORT_FEATURE(x86, aesni)
+
+#endif /* !_CPUSUPPORT_H_ */
