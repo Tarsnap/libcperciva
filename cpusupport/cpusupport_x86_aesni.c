@@ -14,7 +14,7 @@ CPUSUPPORT_FEATURE_DECL(x86, aesni)
 	unsigned int a, b, c, d;
 	if (__get_cpuid(CPUID_EAX, &a, &b, &c, &d) == 0) {
 		/* Failure. */
-		return -1;
+		return 0;
 	}
 
 #ifdef DEBUG
@@ -23,8 +23,8 @@ CPUSUPPORT_FEATURE_DECL(x86, aesni)
 	}
 #endif
 
-	return (c & CPUID_ECX_BIT) ? 1 : -1;
+	return (c & CPUID_ECX_BIT) ? 1 : 0;
 #else
-	return -1;
+	return 0;
 #endif
 }
