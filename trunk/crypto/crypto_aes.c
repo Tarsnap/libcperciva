@@ -1,9 +1,10 @@
 #include <stdint.h>
-#include <stdio.h>
-#include <string.h>
 
-#include "aes.h"
+#include <openssl/aes.h>
+
 #include "cpusupport.h"
+
+#include "crypto_aes.h"
 
 static void aes_encrypt_block_openssl(const uint8_t *, uint8_t *, const AES_KEY *);
 void aes_encrypt_block_aesni(const uint8_t *, uint8_t *, const AES_KEY *);
