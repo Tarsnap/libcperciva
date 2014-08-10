@@ -1,9 +1,12 @@
-#include <cpuid.h>
 #ifdef DEBUG
 #include <stdio.h>
 #endif
 
 #include "cpusupport.h"
+
+#ifdef CPUSUPPORT_X86_CPUID
+#include <cpuid.h>
+#endif
 
 #define CPUID_EAX 1
 #define CPUID_ECX_BIT (0x2000000)
