@@ -43,4 +43,4 @@ aes_encrypt_block_aesni(const uint8_t *in, uint8_t *out, const AES_KEY *key)
 	_mm_storeu_si128((__m128i *)out, aes_state);
 }
 
-#endif
+#endif /* CPUSUPPORT_X86_AESNI */
