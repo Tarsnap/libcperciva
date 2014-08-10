@@ -39,6 +39,20 @@
 	struct cpusupport_ ## arch ## _ ## feature ## _dummy
 
 /*
+ * CPUSUPPORT_FEATURE_DECL(arch, feature):
+ * Macro which defines variables and provides a function declaration for
+ * detecting the presence of "feature" on the "arch" architecture.  The
+ * function body following this macro expansion must return nonzero if the
+ * feature is present, or zero if the feature is not present or the detection
+ * fails for any reason.
+ */
+#define CPUSUPPORT_FEATURE_DECL(arch, feature)				\
+	int cpusupport_ ## arch ## _ ## feature ## _present = 0;	\
+	int cpusupport_ ## arch ## _ ## feature ## _init = 0;		\
+	int								\
+	cpusupport_ ## arch ## _ ## feature ## _detect(void)
+
+/*
  * Any features listed here must have associated C files compiled and linked
  * in, since the macro references symbols which must be defined.  Projects
  * which do not need to detect certain CPU features may wish to remove lines
