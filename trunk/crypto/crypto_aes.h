@@ -6,7 +6,7 @@
 #include <openssl/aes.h>
 
 /**
- * crypto_aes_encrypt_block_aesni(in, out, key):
+ * crypto_aes_encrypt_block(in, out, key):
  * Using the expanded AES key ${key}, encrypt the block ${in} and write the
  * resulting ciphertext to ${out}.
  */
