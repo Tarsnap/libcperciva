@@ -3,6 +3,7 @@
 
 #include <openssl/aes.h>
 
+#include "crypto_aes.h"
 #include "sysendian.h"
 
 #include "crypto_aesctr.h"
@@ -64,7 +65,8 @@ crypto_aesctr_stream(struct crypto_aesctr * stream, const uint8_t * inbuf,
 		if (bytemod == 0) {
 			be64enc(pblk, stream->nonce);
 			be64enc(pblk + 8, stream->bytectr / 16);
-			AES_encrypt(pblk, stream->buf, stream->key);
+			crypto_aes_encrypt_block(pblk, stream->buf,
+			    stream->key);
 		}
 
 		/* Encrypt a byte. */
