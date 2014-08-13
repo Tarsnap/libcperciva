@@ -14,11 +14,11 @@
  * and cpusupport_x86_aesni() returns nonzero.
  */
 void
-crypto_aes_encrypt_block_aesni(const uint8_t *in, uint8_t *out,
-    const AES_KEY *key)
+crypto_aes_encrypt_block_aesni(const uint8_t * in, uint8_t * out,
+    const AES_KEY * key)
 {
 	int final_index;
-	const __m128i *aes_key;
+	const __m128i * aes_key;
 	__m128i aes_state;
 
 	aes_key = (const __m128i *)key->rd_key;
