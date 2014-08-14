@@ -1,6 +1,8 @@
 #ifdef CPUSUPPORT_X86_AESNI
 #include <openssl/aes.h>
 
+#include <sys/endian.h>	/* XXX */
+
 #include <stdint.h>
 #include <wmmintrin.h>
 
@@ -23,7 +25,11 @@ crypto_aes_encrypt_block_aesni(const uint8_t * in, uint8_t * out,
 
 	aes_key = (const __m128i *)key->rd_key;
 
-	aes_state = _mm_loadu_si128((__m128i *)in);
+	/* Byteswap words. */
+	for (size_t i = 0; i < 4 * (key->rounds + 1); i++)
+		*(uint32_t *)(uintptr_t)&key->rd_key[i] = bswap32(key->rd_key[i]);
+
+	aes_state = _mm_loadu_si128((const __m128i *)in);
 	aes_state = _mm_xor_si128(aes_state, aes_key[0]);
 	aes_state = _mm_aesenc_si128(aes_state, aes_key[1]);
 	aes_state = _mm_aesenc_si128(aes_state, aes_key[2]);
@@ -49,6 +55,10 @@ crypto_aes_encrypt_block_aesni(const uint8_t * in, uint8_t * out,
 
 	aes_state = _mm_aesenclast_si128(aes_state, aes_key[final_index]);
 	_mm_storeu_si128((__m128i *)out, aes_state);
+
+	/* Byteswap words back. */
+	for (size_t i = 0; i < 4 * (key->rounds + 1); i++)
+		*(uint32_t *)(uintptr_t)&key->rd_key[i] = bswap32(key->rd_key[i]);
 }
 
 #endif /* CPUSUPPORT_X86_AESNI */
