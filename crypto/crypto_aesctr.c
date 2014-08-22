@@ -1,15 +1,13 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#include <openssl/aes.h>
-
 #include "crypto_aes.h"
 #include "sysendian.h"
 
 #include "crypto_aesctr.h"
 
 struct crypto_aesctr {
-	const AES_KEY * key;
+	const struct crypto_aes_key * key;
 	uint64_t nonce;
 	uint64_t bytectr;
 	uint8_t buf[16];
@@ -22,7 +20,7 @@ struct crypto_aesctr {
  * lifetime of the stream.
  */
 struct crypto_aesctr *
-crypto_aesctr_init(const AES_KEY * key, uint64_t nonce)
+crypto_aesctr_init(const struct crypto_aes_key * key, uint64_t nonce)
 {
 	struct crypto_aesctr * stream;
 
@@ -104,7 +102,7 @@ crypto_aesctr_free(struct crypto_aesctr * stream)
  * Equivalent to init(key, nonce); stream(inbuf, outbuf, buflen); free.
  */
 void
-crypto_aesctr_buf(const AES_KEY * key, uint64_t nonce,
+crypto_aesctr_buf(const struct crypto_aes_key * key, uint64_t nonce,
     const uint8_t * inbuf, uint8_t * outbuf, size_t buflen)
 {
 	struct crypto_aesctr stream_rec;
