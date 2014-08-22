@@ -1,3 +1,4 @@
+#include "cpusupport.h"
 #ifdef CPUSUPPORT_X86_AESNI
 
 #include <stdint.h>
