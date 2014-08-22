@@ -1,11 +1,13 @@
 #include <assert.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <openssl/aes.h>
 
 #include "cpusupport.h"
 #include "crypto_aes_aesni.h"
+#include "warnp.h"
 
 #include "crypto_aes.h"
 
@@ -16,6 +18,74 @@
  * prevents type-mismatch bugs in upstream code.
  */
 struct crypto_aes_key;
+
+#ifdef CPUSUPPORT_X86_AESNI
+/* Test whether OpenSSL and AESNI code produce the same AES ciphertext. */
+static int
+aesnitest(uint8_t ptext[16], uint8_t * key, size_t keylen)
+{
+	AES_KEY kexp_openssl;
+	void * kexp_aesni;
+	uint8_t ctext_openssl[16];
+	uint8_t ctext_aesni[16];
+
+	/* Expand the key. */
+	AES_set_encrypt_key(key, keylen * 8, &kexp_openssl);
+	if ((kexp_aesni = crypto_aes_key_expand_aesni(key, keylen)) == NULL)
+		goto err0;
+
+	/* Encrypt the block. */
+	AES_encrypt(ptext, ctext_openssl, &kexp_openssl);
+	crypto_aes_encrypt_block_aesni(ptext, ctext_aesni, kexp_aesni);
+
+	/* Free the AESNI expanded key. */
+	crypto_aes_key_free_aesni(kexp_aesni);
+
+	/* Do the outputs match? */
+	return (memcmp(ctext_openssl, ctext_aesni, 16));
+
+err0:
+	/* Failure! */
+	return (-1);
+}
+
+/* Should we use AESNI? */
+static int
+useaesni(void)
+{
+	static int aesnigood = -1;
+	uint8_t key[32];
+	uint8_t ptext[16];
+	size_t i;
+
+	/* If we haven't decided which code to use yet, decide now. */
+	while (aesnigood == -1) {
+		/* Default to OpenSSL. */
+		aesnigood = 0;
+
+		/* If the CPU doesn't claim to support AESNI, stop here. */
+		if (!cpusupport_x86_aesni())
+			break;
+
+		/* Test cases: key is 0x00010203..., ptext is 0x00112233... */
+		for (i = 0; i < 16; i++)
+			ptext[i] = 0x11 * i;
+		for (i = 0; i < 32; i++)
+			key[i] = i;
+
+		/* Test that AESNI and OpenSSL produce the same results. */
+		if (aesnitest(ptext, key, 16) || aesnitest(ptext, key, 32)) {
+			warn0("Disabling AESNI due to failed self-test");
+			break;
+		}
+
+		/* AESNI works; use it. */
+		aesnigood = 1;
+	}
+
+	return (aesnigood);
+}
+#endif /* CPUSUPPORT_X86_AESNI */
 
 /**
  * crypto_aes_key_expand(key, len):
@@ -32,7 +102,7 @@ crypto_aes_key_expand(const uint8_t * key, size_t len)
 
 #ifdef CPUSUPPORT_X86_AESNI
 	/* Use AESNI if we can. */
-	if (cpusupport_x86_aesni())
+	if (useaesni())
 		return (crypto_aes_key_expand_aesni(key, len));
 #endif
 
@@ -62,7 +132,7 @@ crypto_aes_encrypt_block(const uint8_t * in, uint8_t * out,
 {
 
 #ifdef CPUSUPPORT_X86_AESNI
-	if (cpusupport_x86_aesni()) {
+	if (useaesni()) {
 		crypto_aes_encrypt_block_aesni(in, out, (const void *)key);
 		return;
 	}
@@ -81,7 +151,7 @@ crypto_aes_key_free(struct crypto_aes_key * key)
 {
 
 #ifdef CPUSUPPORT_X86_AESNI
-	if (cpusupport_x86_aesni()) {
+	if (useaesni()) {
 		crypto_aes_key_free_aesni((void *)key);
 		return;
 	}
