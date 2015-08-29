@@ -132,7 +132,8 @@ The file foo.c should only export symbols of the following forms:
 		-- where "foo" is a verb and this improves code clarity.
 
 Functions named foo_free should return void, and foo_free(NULL) should have
-no effect.
+no effect.  The right way to spell a comment about this is
+	/* Behave consistently with free(NULL). */
 
 If static variables need to be initialized to 0 (or NULL) then they should be
 explicitly declared that way; implicit initialization should not be used.
@@ -149,3 +150,28 @@ Oxford (aka. serial) comma should be used in lists.  Quotation marks
 should be placed logically, i.e., not including punctuation marks which
 do not form a logical part of the quoted text.  Two spaces should be used
 after a period which ends a sentence.
+
+When versions of functions are written to exploit special CPU features
+(using the cpusupport framework), that code should be placed into a
+separate file (e.g., crypto_aes_aesni.c) so that it can be compiled with
+different compiler flags.  Such a file should start with
+	#include "cpusupport.h"
+	#ifdef CPUSUPPORT_FOO_BAR
+and end with
+	#endif /* CPUSUPPORT_FOO_BAR */
+
+Functions for which special CPU-feature-exploiting variants exist should
+take the form
+	{
+		/* Variable declarations here. */
+
+		/* Asserts here, if any. */
+
+	#ifdef CPUSUPPORT_FOO_BAR
+		if (/* We've decided we can use the variant code */) {
+			/* Call variant code and return. */
+		}
+	#endif
+
+		/* Normal implementation of the function. */
+	}
