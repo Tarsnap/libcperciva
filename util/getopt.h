@@ -32,8 +32,6 @@ extern int optind, opterr, optreset;
 /* Dummy option string, equal to "(dummy)". */
 #define GETOPT_DUMMY getopt_dummy
 
-#define getopt_initialized (getopt_init == getopt_init_done)
-
 /**
  * GETOPT(argc, argv):
  * When called for the first time (or the first time after optreset is set to
@@ -58,7 +56,9 @@ extern int optind, opterr, optreset;
 		getopt_ln = getopt_ln_min - 1;				\
 		getopt_init = getopt_init_range;			\
 	}								\
-	switch (getopt_initialized ? getopt_lookup(ch) + getopt_ln_min : getopt_ln++)
+	switch (getopt_init == getopt_init_done				\
+	    ? getopt_lookup(ch) + getopt_ln_min				\
+	    : getopt_ln++)
 
 /**
  * GETOPT_OPT(os):
@@ -71,10 +71,10 @@ extern int optind, opterr, optreset;
 #define _GETOPT_OPT(os, ln)	__GETOPT_OPT(os, ln)
 #define __GETOPT_OPT(os, ln)						\
 	case ln:							\
-		if (getopt_initialized)					\
-			goto getopt_skip_ ## ln;			\
-		getopt_register_opt(os, ln - getopt_ln_min, 0);		\
-		continue;						\
+		if (getopt_init < getopt_init_done) {			\
+			getopt_register_opt(os, ln - getopt_ln_min, 0);	\
+			continue;					\
+		}							\
 	getopt_skip_ ## ln
 
 /**
@@ -90,10 +90,10 @@ extern int optind, opterr, optreset;
 #define _GETOPT_OPTARG(os, ln)	__GETOPT_OPTARG(os, ln)
 #define __GETOPT_OPTARG(os, ln)						\
 	case ln:							\
-		if (getopt_initialized)					\
-			goto getopt_skip_ ## ln;			\
-		getopt_register_opt(os, ln - getopt_ln_min, 1);		\
-		continue;						\
+		if (getopt_init < getopt_init_done) {			\
+			getopt_register_opt(os, ln - getopt_ln_min, 1);	\
+			continue;					\
+		}							\
 	getopt_skip_ ## ln
 
 /**
@@ -109,10 +109,10 @@ extern int optind, opterr, optreset;
 #define _GETOPT_MISSING_ARG(ln)	__GETOPT_MISSING_ARG(ln)
 #define __GETOPT_MISSING_ARG(ln)					\
 	case ln:							\
-		if (getopt_initialized)					\
-			goto getopt_skip_ ## ln;			\
-		getopt_register_missing(ln - getopt_ln_min);		\
-		continue;						\
+		if (getopt_init < getopt_init_done) {			\
+			getopt_register_missing(ln - getopt_ln_min);	\
+			continue;					\
+		}							\
 	getopt_skip_ ## ln
 
 /**
@@ -129,18 +129,19 @@ extern int optind, opterr, optreset;
 #define GETOPT_DEFAULT		_GETOPT_DEFAULT(__LINE__)
 #define _GETOPT_DEFAULT(ln)	__GETOPT_DEFAULT(ln)
 #define __GETOPT_DEFAULT(ln)						\
-		goto getopt_skip_ ## ln;				\
 	case ln:							\
-		getopt_init = getopt_init_done;				\
-		continue;						\
-	default:							\
-		if (getopt_initialized)					\
-			goto getopt_skip_ ## ln;			\
-		if (getopt_init == getopt_init_range) {			\
-			getopt_setrange(ln - getopt_ln_min);		\
-			getopt_init = getopt_init_scan;			\
+		if (getopt_init < getopt_init_done) {			\
+			getopt_init = getopt_init_done;			\
+			continue;					\
 		}							\
-		continue;						\
+	default:							\
+		if (getopt_init < getopt_init_done) {			\
+			if (getopt_init == getopt_init_range) {		\
+				getopt_setrange(ln - getopt_ln_min);	\
+				getopt_init = getopt_init_scan;		\
+			}						\
+			continue;					\
+		}							\
 	getopt_skip_ ## ln
 
 /*

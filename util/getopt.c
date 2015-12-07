@@ -150,7 +150,7 @@ getopt(int argc, char * const argv[])
 		reset(argc, argv);
 
 	/* If not initialized, return dummy option. */
-	if (!getopt_initialized)
+	if (getopt_init < getopt_init_done)
 		return (GETOPT_DUMMY);
 
 	/* If we've run out of arguments, we're done. */
@@ -266,7 +266,7 @@ getopt_lookup(const char * os)
 		DIE("Can't reset in the middle of getopt loop");
 
 	/* We should only be called after initialization is complete. */
-	assert(getopt_initialized);
+	assert(getopt_init == getopt_init_done);
 
 	/* GETOPT_DUMMY should never get passed back to us. */
 	assert(os != GETOPT_DUMMY);
