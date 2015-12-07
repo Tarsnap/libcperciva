@@ -2,7 +2,6 @@
 #define _GETOPT_H_
 
 #include <stddef.h>
-#include <setjmp.h>
 
 /**
  * This getopt implementation parses options of the following forms:
@@ -33,6 +32,8 @@ extern int optind, opterr, optreset;
 /* Dummy option string, equal to "(dummy)". */
 #define GETOPT_DUMMY getopt_dummy
 
+#define getopt_initialized (getopt_init == getopt_init_done)
+
 /**
  * GETOPT(argc, argv):
  * When called for the first time (or the first time after optreset is set to
@@ -51,12 +52,12 @@ extern int optind, opterr, optreset;
  * GETOPT_SWITCH(ch) is equivalent to "switch (ch)" in a standard getopt loop.
  */
 #define GETOPT_SWITCH(ch)						\
-	volatile size_t getopt_ln_min = __LINE__;			\
-	volatile size_t getopt_ln = getopt_ln_min - 1;		\
-	volatile int getopt_default_missing = 0;			\
-	jmp_buf getopt_initloop;					\
-	if (!getopt_initialized)					\
-		setjmp(getopt_initloop);				\
+	enum { getopt_ln_min = __LINE__ };				\
+	static size_t getopt_ln;					\
+	if (getopt_init == getopt_init_start) {				\
+		getopt_ln = getopt_ln_min - 1;				\
+		getopt_init = getopt_init_range;			\
+	}								\
 	switch (getopt_initialized ? getopt_lookup(ch) + getopt_ln_min : getopt_ln++)
 
 /**
@@ -73,7 +74,7 @@ extern int optind, opterr, optreset;
 		if (getopt_initialized)					\
 			goto getopt_skip_ ## ln;			\
 		getopt_register_opt(os, ln - getopt_ln_min, 0);		\
-		longjmp(getopt_initloop, 1);				\
+		continue;						\
 	getopt_skip_ ## ln
 
 /**
@@ -92,7 +93,7 @@ extern int optind, opterr, optreset;
 		if (getopt_initialized)					\
 			goto getopt_skip_ ## ln;			\
 		getopt_register_opt(os, ln - getopt_ln_min, 1);		\
-		longjmp(getopt_initloop, 1);				\
+		continue;						\
 	getopt_skip_ ## ln
 
 /**
@@ -111,7 +112,7 @@ extern int optind, opterr, optreset;
 		if (getopt_initialized)					\
 			goto getopt_skip_ ## ln;			\
 		getopt_register_missing(ln - getopt_ln_min);		\
-		longjmp(getopt_initloop, 1);				\
+		continue;						\
 	getopt_skip_ ## ln
 
 /**
@@ -130,16 +131,16 @@ extern int optind, opterr, optreset;
 #define __GETOPT_DEFAULT(ln)						\
 		goto getopt_skip_ ## ln;				\
 	case ln:							\
-		getopt_initialized = 1;					\
-		break;							\
+		getopt_init = getopt_init_done;				\
+		continue;						\
 	default:							\
 		if (getopt_initialized)					\
 			goto getopt_skip_ ## ln;			\
-		if (!getopt_default_missing) {				\
+		if (getopt_init == getopt_init_range) {			\
 			getopt_setrange(ln - getopt_ln_min);		\
-			getopt_default_missing = 1;			\
+			getopt_init = getopt_init_scan;			\
 		}							\
-		longjmp(getopt_initloop, 1);				\
+		continue;						\
 	getopt_skip_ ## ln
 
 /*
@@ -152,6 +153,11 @@ void getopt_register_opt(const char *, size_t, int);
 void getopt_register_missing(size_t);
 void getopt_setrange(size_t);
 extern const char * getopt_dummy;
-extern int getopt_initialized;
+extern enum getopt_init_state {
+	getopt_init_start,
+	getopt_init_range,
+	getopt_init_scan,
+	getopt_init_done,
+} getopt_init;
 
 #endif /* !_GETOPT_H_ */

@@ -19,7 +19,7 @@ int optreset = 1;
  * Quasi-internal global variables -- these are used via GETOPT macros.
  */
 const char * getopt_dummy = "(dummy)";
-int getopt_initialized = 0;
+enum getopt_init_state getopt_init = getopt_init_start;
 
 /*
  * Internal variables.
@@ -105,7 +105,7 @@ reset(int argc, char * const argv[])
 	opt_found = (size_t)(-1);
 
 	/* We're not initialized yet. */
-	getopt_initialized = 0;
+	getopt_init = getopt_init_start;
 
 	/* Finished resetting state. */
 	optreset = 0;
@@ -291,7 +291,7 @@ getopt_register_opt(const char * os, size_t ln, int hasarg)
 		DIE("Can't reset in the middle of getopt loop");
 
 	/* We should only be called during initialization. */
-	assert(!getopt_initialized);
+	assert(getopt_init == getopt_init_scan);
 
 	/* We should have space allocated for registering options. */
 	assert(opts != NULL);
@@ -324,7 +324,7 @@ getopt_register_missing(size_t ln)
 		DIE("Can't reset in the middle of getopt loop");
 
 	/* We should only be called during initialization. */
-	assert(!getopt_initialized);
+	assert(getopt_init == getopt_init_scan);
 
 	/* Record missing-argument value. */
 	opt_missing = ln;
@@ -340,7 +340,7 @@ getopt_setrange(size_t ln)
 		DIE("Can't reset in the middle of getopt loop");
 
 	/* We should only be called during initialization. */
-	assert(!getopt_initialized);
+	assert(getopt_init == getopt_init_range);
 
 	/* Allocate space for options. */
 	opts = malloc(ln * sizeof(struct opt));

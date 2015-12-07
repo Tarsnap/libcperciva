@@ -21,6 +21,7 @@ main(int argc, char * argv[])
 
 	/* Process arguments. */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
+		if (getopt_init != getopt_init_scan)
 		fprintf(stderr, "Option being processed: %s\n", ch);
 		GETOPT_SWITCH(ch) {
 		GETOPT_OPT("-b"):
@@ -55,6 +56,7 @@ main(int argc, char * argv[])
 
 	/* Process the arguments again, with GETOPT_MISSING_ARG this time. */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
+		if (getopt_init != getopt_init_scan)
 		fprintf(stderr, "Option being processed: %s\n", ch);
 		GETOPT_SWITCH(ch) {
 		GETOPT_OPT("-b"):
