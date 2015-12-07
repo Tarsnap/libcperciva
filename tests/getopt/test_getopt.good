@@ -1,51 +1,215 @@
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 bflag = 0
 Remaining arguments:
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: -b
 bflag = 1
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: -b
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: --bar
 bflag = 1
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: --bar
 Option being processed: (dummy)
-Option being processed: -f
-foo: bar
-bflag = 0
-Remaining arguments:
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: -f
 foo: bar
+bflag = 0
+Remaining arguments:
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: -f
+foo: bar
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: --foo
 foo: bar
 bflag = 0
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: --foo
 foo: bar
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: --foo
 foo: bar
 bflag = 0
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: --foo
 foo: bar
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: -b
 Option being processed: -b
 bflag = 2
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: -b
 Option being processed: -b
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: -b
 Option being processed: -b
@@ -54,10 +218,32 @@ foo: bar
 bflag = 2
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: -b
 Option being processed: -b
 Option being processed: -f
 foo: bar
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: -b
 Option being processed: -b
@@ -66,13 +252,57 @@ foo: bar
 bflag = 2
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: -b
 Option being processed: -b
 Option being processed: -f
 foo: bar
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 bflag = 0
 Remaining arguments: foo bar baz
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: -b
@@ -81,15 +311,59 @@ foo: bar
 bflag = 1
 Remaining arguments: baz
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: -b
 Option being processed: --foo
 foo: bar
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: -b
 bflag = 1
 Remaining arguments: --foo bar baz
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: -b
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 test_getopt: unknown option: -a
 Option being processed: -a
@@ -97,8 +371,30 @@ usage: blah blah blah
 bflag = 0
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: -a
 usage: test_getopt [-b] [-f bar] [--foo bar] ...
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 test_getopt: option requires an argument: -f
 Option being processed: -f
@@ -106,9 +402,31 @@ usage: blah blah blah
 bflag = 0
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: -f
 missing argument
 usage: test_getopt [-b] [-f bar] [--foo bar] ...
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 test_getopt: option requires an argument: --foo
 Option being processed: --foo
@@ -116,15 +434,49 @@ usage: blah blah blah
 bflag = 0
 Remaining arguments:
 Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: --foo
 missing argument
 usage: test_getopt [-b] [-f bar] [--foo bar] ...
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 test_getopt: option doesn't take an argument: --bar
 Option being processed: --bar
 usage: blah blah blah
 bflag = 0
 Remaining arguments:
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: (dummy)
 Option being processed: --bar
 usage: test_getopt [-b] [-f bar] [--foo bar] ...
