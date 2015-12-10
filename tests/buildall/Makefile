@@ -1,0 +1,166 @@
+.POSIX:
+
+all:	buildall
+
+test:	all
+	@true
+
+SRCS=	main.c \
+	crc32c.c md5.c sha1.c sha256.c \
+	cpusupport_x86_aesni.c cpusupport_x86_sse2.c \
+	crypto_aes.c crypto_aes_aesni.c crypto_aesctr.c crypto_dh.c \
+		crypto_dh_group14.c crypto_entropy.c crypto_verify_bytes.c \
+	elasticarray.c elasticqueue.c ptrheap.c seqptrmap.c timerqueue.c \
+	events.c events_immediate.c events_network.c \
+		events_network_selectstats.c events_timer.c \
+	network_accept.c network_connect.c network_read.c network_write.c \
+	asprintf.c b64encode.c daemonize.c entropy.c getopt.c hexify.c \
+		humansize.c insecure_memzero.c monoclock.c noeintr.c \
+		readpass.c sock.c sock_util.c warnp.c 
+
+IDIRS=	-I ../../alg -I ../../cpusupport -I ../../crypto -I ../../datastruct \
+	-I ../../events -I ../../network -I ../../util -I .
+
+buildall:	${SRCS:.c=.o}
+	${CC} -o buildall ${SRCS:.c=.o} -lcrypto
+
+cpusupport-config.h:
+	export CC="${CC}"; sh ../../cpusupport/Build/cpusupport.sh > cpusupport-config.h
+
+main.o:	main.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c main.c -o main.o
+
+crc32c.o:../../alg/crc32c.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../alg/crc32c.c -o crc32c.o
+
+md5.o:../../alg/md5.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../alg/md5.c -o md5.o
+
+sha1.o:../../alg/sha1.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../alg/sha1.c -o sha1.o
+
+sha256.o:../../alg/sha256.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../alg/sha256.c -o sha256.o
+
+cpusupport-X86-AESNI.o:../../cpusupport/Build/cpusupport-X86-AESNI.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../cpusupport/Build/cpusupport-X86-AESNI.c -o cpusupport-X86-AESNI.o
+
+cpusupport-X86-CPUID.o:../../cpusupport/Build/cpusupport-X86-CPUID.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../cpusupport/Build/cpusupport-X86-CPUID.c -o cpusupport-X86-CPUID.o
+
+cpusupport-X86-SSE2.o:../../cpusupport/Build/cpusupport-X86-SSE2.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../cpusupport/Build/cpusupport-X86-SSE2.c -o cpusupport-X86-SSE2.o
+
+cpusupport_x86_aesni.o:../../cpusupport/cpusupport_x86_aesni.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../cpusupport/cpusupport_x86_aesni.c -o cpusupport_x86_aesni.o
+
+cpusupport_x86_sse2.o:../../cpusupport/cpusupport_x86_sse2.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../cpusupport/cpusupport_x86_sse2.c -o cpusupport_x86_sse2.o
+
+crypto_aes.o:../../crypto/crypto_aes.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../crypto/crypto_aes.c -o crypto_aes.o
+
+crypto_aesctr.o:../../crypto/crypto_aesctr.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../crypto/crypto_aesctr.c -o crypto_aesctr.o
+
+crypto_dh.o:../../crypto/crypto_dh.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../crypto/crypto_dh.c -o crypto_dh.o
+
+crypto_dh_group14.o:../../crypto/crypto_dh_group14.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../crypto/crypto_dh_group14.c -o crypto_dh_group14.o
+
+crypto_entropy.o:../../crypto/crypto_entropy.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../crypto/crypto_entropy.c -o crypto_entropy.o
+
+crypto_verify_bytes.o:../../crypto/crypto_verify_bytes.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../crypto/crypto_verify_bytes.c -o crypto_verify_bytes.o
+
+elasticarray.o:../../datastruct/elasticarray.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../datastruct/elasticarray.c -o elasticarray.o
+
+elasticqueue.o:../../datastruct/elasticqueue.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../datastruct/elasticqueue.c -o elasticqueue.o
+
+ptrheap.o:../../datastruct/ptrheap.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../datastruct/ptrheap.c -o ptrheap.o
+
+seqptrmap.o:../../datastruct/seqptrmap.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../datastruct/seqptrmap.c -o seqptrmap.o
+
+timerqueue.o:../../datastruct/timerqueue.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../datastruct/timerqueue.c -o timerqueue.o
+
+events.o:../../events/events.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../events/events.c -o events.o
+
+events_immediate.o:../../events/events_immediate.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../events/events_immediate.c -o events_immediate.o
+
+events_network.o:../../events/events_network.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../events/events_network.c -o events_network.o
+
+events_network_selectstats.o:../../events/events_network_selectstats.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../events/events_network_selectstats.c -o events_network_selectstats.o
+
+events_timer.o:../../events/events_timer.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../events/events_timer.c -o events_timer.o
+
+network_accept.o:../../network/network_accept.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../network/network_accept.c -o network_accept.o
+
+network_connect.o:../../network/network_connect.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../network/network_connect.c -o network_connect.o
+
+network_read.o:../../network/network_read.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../network/network_read.c -o network_read.o
+
+network_write.o:../../network/network_write.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../network/network_write.c -o network_write.o
+
+asprintf.o:../../util/asprintf.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/asprintf.c -o asprintf.o
+
+b64encode.o:../../util/b64encode.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/b64encode.c -o b64encode.o
+
+daemonize.o:../../util/daemonize.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/daemonize.c -o daemonize.o
+
+entropy.o:../../util/entropy.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/entropy.c -o entropy.o
+
+getopt.o:../../util/getopt.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/getopt.c -o getopt.o
+
+hexify.o:../../util/hexify.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/hexify.c -o hexify.o
+
+humansize.o:../../util/humansize.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/humansize.c -o humansize.o
+
+insecure_memzero.o:../../util/insecure_memzero.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/insecure_memzero.c -o insecure_memzero.o
+
+monoclock.o:../../util/monoclock.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/monoclock.c -o monoclock.o
+
+noeintr.o:../../util/noeintr.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/noeintr.c -o noeintr.o
+
+readpass.o:../../util/readpass.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/readpass.c -o readpass.o
+
+sock.o:../../util/sock.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/sock.c -o sock.o
+
+sock_util.o:../../util/sock_util.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/sock_util.c -o sock_util.o
+
+warnp.o:../../util/warnp.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} -c ../../util/warnp.c -o warnp.o
+
+crypto_aes_aesni.o:../../crypto/crypto_aes_aesni.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" `. ./cpusupport-config.h; echo $${CFLAGS_X86_AESNI}` ${IDIRS} -c ../../crypto/crypto_aes_aesni.c -o crypto_aes_aesni.o
+
+clean:
+	rm -f buildall ${SRCS:.c=.o} cpusupport-config.h
