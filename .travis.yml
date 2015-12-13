@@ -6,6 +6,7 @@ env:
     - COVERITY_SCAN_PROJECT_NAME="Tarsnap/libcperciva"
     - COVERITY_SCAN_BRANCH_PATTERN="coverity-scan"
     - COVERITY_SCAN_NOTIFICATION_EMAIL="cperciva@tarsnap.com"
+    - COVERITY_SCAN_BUILD_COMMAND_PREPEND="cd tests/buildall"
     - COVERITY_SCAN_BUILD_COMMAND="make all clean"
 before_install:
   - curl -s "https://scan.coverity.com/scripts/travisci_build_coverity_scan.sh" | bash || true
