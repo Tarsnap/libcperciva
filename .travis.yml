@@ -1,2 +1,12 @@
 language: c
 script: cd tests && make all test
+env:
+  global:
+    - secure: "ysgLGq0GSKMfTaTCIFc21DM25jMXEMaxSB8WKQsDyHNnFhNHDICg3OJucjHl96uumWiGdzQyyWxq74l3mQpNh4FSv605UGfBlfcthLX/lFg8QynffoHxRwDHfRDxsFbqpPKr0ZrlkhRlcdA0UQQoauYHh82FEBQBIHM21jMi/0hGcDEregrOq9GuyzLQou02Sm0DNtHC+qOd4gqu2+dgoZcuSuYeS6qZSnv4F4iVuhrbDH5jjKiTDZ6RISXX0AQ/wb84k0kesE5pweK0C0jUA+tworKXE3XmtVIwMEedLfm1o5s9Hloecvbfk41iLKFAQ94kCaHXRuqq1JuvfaxIBfl4YubsgKCkUO27MIURBv9tsSyhNZyj7rzdbV730hefVPfM9pgWIUlji47QWbOQw5sorMfk5D2CQuxRW6+4P3Ng4kTC0YlmwWCDyKt93Pp0PgvpbKmXXUOUiUjXESaMxmTV5H+2oUuLSD+94poY7oxG75t54oL0c1q8GFuWoLqOw2ZiuhlxD/XBBXdRiBqGrx8HzfpkHEeKN82x0VPNtnbPpWWGf4iyw1p0sPyLyHXGCngP5x9S6knvrPFkcASnsbUPqdP6XPpgC9gNGITOIUy/X6k8o3wlfInESWEqaqy8MqSTl89iKortGWoH+NZ9GPn05VRJwmsBn5NeolUlL2s="
+    - COVERITY_SCAN_PROJECT_NAME="Tarsnap/libcperciva"
+    - COVERITY_SCAN_BRANCH_PATTERN="coverity-scan"
+    - COVERITY_SCAN_NOTIFICATION_EMAIL="cperciva@tarsnap.com"
+    - COVERITY_SCAN_BUILD_COMMAND="make all clean"
+before_install:
+  - curl -s "https://scan.coverity.com/scripts/travisci_build_coverity_scan.sh" | bash || true
+
