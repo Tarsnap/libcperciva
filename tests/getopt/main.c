@@ -74,5 +74,12 @@ main(int argc, char * argv[])
 	argc -= optind;
 	argv += optind;
 
+	/*
+	 * Silence "value stored is never read" warnings; the adjustments to
+	 * arg[cv] at the end of the argument-parsing loop are idioomatic.
+	 */
+	(void)argc;
+	(void)argv;
+
 	return (0);
 }
