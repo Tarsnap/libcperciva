@@ -1,0 +1,3 @@
+*.o
+test_getopt
+test_getopt.log
