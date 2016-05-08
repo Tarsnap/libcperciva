@@ -1,6 +1,6 @@
 .POSIX:
 
-SUBDIR=	crc32 heap getopt buildall
+SUBDIR=	crc32 heap getopt sha256 buildall
 
 all:
 	for D in ${SUBDIR}; do ( cd $${D} && make all ); done
