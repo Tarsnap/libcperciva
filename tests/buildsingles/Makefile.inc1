@@ -1,0 +1,27 @@
+.POSIX:
+
+HEADERS=\
+	crc32c.h md5.h sha1.h sha256.h \
+	cpusupport.h \
+	crypto_aes.h crypto_aes_aesni.h crypto_aesctr.h crypto_dh.h \
+		crypto_dh_group14.h crypto_entropy.h crypto_verify_bytes.h \
+	elasticarray.h elasticqueue.h mpool.h ptrheap.h seqptrmap.h \
+		timerqueue.h \
+	events.h events_internal.h \
+	network.h \
+	asprintf.h b64encode.h ctassert.h daemonize.h entropy.h getopt.h \
+		hexify.h humansize.h imalloc.h insecure_memzero.h \
+		monoclock.h noeintr.h readpass.h sock.h sock_internal.h \
+		sock_util.h sysendian.h ttyfd.h warnp.h 
+
+IDIRS=	-I ../../alg -I ../../cpusupport -I ../../crypto -I ../../datastruct \
+	-I ../../events -I ../../network -I ../../util -I .
+
+buildsingles:
+	for H in ${HEADERS}; do \
+		${CC} -DHEADER=\"$${H}\" ${CFLAGS} -D_POSIX_C_SOURCE=200809L ${IDIRS} ${CFLAGS_POSIX} -o main main.c ; \
+	done;
+	rm -f main
+
+clean:
+	rm -f main
