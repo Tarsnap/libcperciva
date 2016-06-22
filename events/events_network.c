@@ -1,4 +1,4 @@
-#include <sys/select.h>
+#include <poll.h>
 
 #include <errno.h>
 #include <stdlib.h>
@@ -19,12 +19,12 @@ struct socketrec {
 ELASTICARRAY_DECL(SOCKETLIST, socketlist, struct socketrec);
 static SOCKETLIST S = NULL;
 
-/* File descriptor sets containing unevented ready sockets. */
-static fd_set readfds;
-static fd_set writefds;
+/* File descriptors to be polled. */
+static struct pollfd * fds = NULL;
+static nfds_t nfds;
 
 /* Position to which events_network_get has scanned in *fds. */
-static size_t fdscanpos;
+static nfds_t fdscanpos;
 
 /* Number of registered events. */
 static size_t nev;
@@ -46,7 +46,7 @@ initsocketlist(void)
 	nev = 0;
 
 	/* There are no unevented ready sockets. */
-	fdscanpos = FD_SETSIZE;
+	fdscanpos = 0;
 
 done:
 	/* Success! */
@@ -102,7 +102,7 @@ events_network_register(int (*func)(void *), void * cookie, int s, int op)
 		goto err0;
 
 	/* Sanity-check socket number. */
-	if ((s < 0) || (s >= (int)FD_SETSIZE)) {
+	if (s < 0) {
 		warn0("Invalid file descriptor for network event: %d", s);
 		goto err0;
 	}
@@ -136,6 +136,15 @@ events_network_register(int (*func)(void *), void * cookie, int s, int op)
 		goto err0;
 
 	/*
+	 * There is a new socket/operation pair:
+	 * Rebuild the fd list on the next call to events_network_select().
+	 */
+	if (fds != NULL) {
+		free(fds);
+		fds = NULL;
+	}
+
+	/*
 	 * Increment events-registered counter; and if it was zero, start the
 	 * inter-select duration clock.
 	 */
@@ -166,7 +175,7 @@ events_network_cancel(int s, int op)
 		goto err0;
 
 	/* Sanity-check socket number. */
-	if ((s < 0) || (s >= (int)FD_SETSIZE)) {
+	if (s < 0) {
 		warn0("Invalid file descriptor for network event: %d", s);
 		goto err0;
 	}
@@ -202,12 +211,13 @@ events_network_cancel(int s, int op)
 
 	/*
 	 * Since there is no longer an event registered for this socket /
-	 * operation pair, it doesn't make any sense for it to be ready.
+	 * operation pair, it doesn't make any sense for it to be ready:
+	 * Rebuild the fd list on the next call to events_network_select().
 	 */
-	if (op == EVENTS_NETWORK_OP_READ)
-		FD_CLR(s, &readfds);
-	else
-		FD_CLR(s, &writefds);
+	if (fds != NULL) {
+		free(fds);
+		fds = NULL;
+	}
 
 	/*
 	 * Decrement events-registered counter; and if it is becoming zero,
@@ -239,30 +249,39 @@ events_network_select(struct timeval * tv)
 	if (initsocketlist())
 		goto err0;
 
-	/* Zero the fd sets... */
-	FD_ZERO(&readfds);
-	FD_ZERO(&writefds);
+	if (fds == NULL) {
+		if ((fds = calloc(socketlist_getsize(S), sizeof(struct pollfd))) == NULL) {
+			warnp("calloc()");
+			goto err0;
+		}
+		nfds = 0;
 
-	/* ... and add the ones we care about. */
-	for (i = 0; i < socketlist_getsize(S); i++) {
-		if (socketlist_get(S, i)->reader)
-			FD_SET(i, &readfds);
-		if (socketlist_get(S, i)->writer)
-			FD_SET(i, &writefds);
+		/* ... and add the ones we care about. */
+		for (i = 0; i < socketlist_getsize(S); i++) {
+			if (socketlist_get(S, i)->reader || socketlist_get(S, i)->writer) {
+				fds[nfds].fd = i;
+				if (socketlist_get(S, i)->reader) {
+					fds[nfds].events |= POLLIN;
+				}
+				if (socketlist_get(S, i)->writer) {
+					fds[nfds].events |= POLLOUT;
+				}
+				nfds++;
+			}
+		}
 	}
 
-	/* We're about to call select! */
+	/* We're about to call poll! */
 	events_network_selectstats_select();
 
-	/* Select. */
-	while (select(socketlist_getsize(S), &readfds, &writefds,
-	    NULL, tv) == -1) {
+	/* Poll. */
+	while (poll(fds, nfds, (tv == NULL) ? -1 : (tv->tv_sec * 1000 + (int) (tv->tv_usec * 0.001))) == -1) {
 		/* EINTR is harmless. */
 		if (errno == EINTR)
 			continue;
 
 		/* Anything else is an error. */
-		warnp("select()");
+		warnp("poll()");
 		goto err0;
 	}
 
@@ -292,30 +311,46 @@ struct eventrec *
 events_network_get(void)
 {
 	struct eventrec * r;
-	size_t nfds = socketlist_getsize(S);
 
 	/* We haven't found any events yet. */
 	r = NULL;
 
+	/* We have no fds, thus we have no events. */
+	if (fds == NULL)
+		return (r);
+
 	/* Scan through the fd sets looking for ready sockets. */
 	for (; fdscanpos < nfds; fdscanpos++) {
+		struct pollfd * current = &fds[fdscanpos];
+
+		/* File descriptor was closed, ignore it in future polls. */
+		if (current->revents & POLLNVAL) {
+			current->fd = -1;
+		}
+
 		/* Are we ready for reading? */
-		if (FD_ISSET(fdscanpos, &readfds)) {
-			r = socketlist_get(S, fdscanpos)->reader;
-			socketlist_get(S, fdscanpos)->reader = NULL;
+		if (current->revents & POLLIN) {
+			r = socketlist_get(S, current->fd)->reader;
+			socketlist_get(S, current->fd)->reader = NULL;
 			if (--nev == 0)
 				events_network_selectstats_stopclock();
-			FD_CLR(fdscanpos, &readfds);
+
+			/* Remove POLLIN from events and revents. */
+			current->events = current->events & ~POLLIN;
+			current->revents = current->revents & ~POLLIN;
 			break;
 		}
 
 		/* Are we ready for writing? */
-		if (FD_ISSET(fdscanpos, &writefds)) {
-			r = socketlist_get(S, fdscanpos)->writer;
-			socketlist_get(S, fdscanpos)->writer = NULL;
+		if (current->revents & POLLOUT) {
+			r = socketlist_get(S, current->fd)->writer;
+			socketlist_get(S, current->fd)->writer = NULL;
 			if (--nev == 0)
 				events_network_selectstats_stopclock();
-			FD_CLR(fdscanpos, &writefds);
+
+			/* Remove POLLOUT from events and revents. */
+			current->events = current->events & ~POLLOUT;
+			current->revents = current->revents & ~POLLOUT;
 			break;
 		}
 	}
@@ -340,6 +375,11 @@ events_network_shutdown(void)
 	/* If we have any registered events, do nothing. */
 	if (nev > 0)
 		return;
+
+	if (fds != NULL) {
+		free(fds);
+		fds = NULL;
+	}
 
 	/* Free the socket list. */
 	socketlist_free(S);
