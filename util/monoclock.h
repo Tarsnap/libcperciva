@@ -1,7 +1,8 @@
 #ifndef _MONOCLOCK_H_
 #define _MONOCLOCK_H_
 
-#include <sys/time.h>
+/* Forward declaration. */
+struct timeval;
 
 /**
  * monoclock_get(tv):

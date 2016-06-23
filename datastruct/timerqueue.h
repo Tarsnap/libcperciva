@@ -1,7 +1,8 @@
 #ifndef _TIMERQUEUE_H_
 #define _TIMERQUEUE_H_
 
-#include <sys/time.h>
+/* Forward declaration. */
+struct timeval;
 
 /* Timer priority queue.  Contains (timeval, ptr) pairs. */
 
