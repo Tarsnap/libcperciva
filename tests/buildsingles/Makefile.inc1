@@ -14,14 +14,17 @@ HEADERS=\
 		monoclock.h noeintr.h readpass.h sock.h sock_internal.h \
 		sock_util.h sysendian.h ttyfd.h warnp.h 
 
-IDIRS=	-I ../../alg -I ../../cpusupport -I ../../crypto -I ../../datastruct \
-	-I ../../events -I ../../network -I ../../util -I .
+buildsingles: Makefile.inc2
+	@make -f Makefile.inc2 all
 
-buildsingles:
-	for H in ${HEADERS}; do \
-		${CC} -DHEADER=\"$${H}\" ${CFLAGS} -D_POSIX_C_SOURCE=200809L ${IDIRS} ${CFLAGS_POSIX} -o main main.c ; \
-	done;
-	rm -f main
+Makefile.inc2: Makefile.inc1
+	echo "all: ${HEADERS:.h=-main}" > Makefile.inc2
+	for HN in ${HEADERS}; do				\
+		H=`ls ../../*/$${HN}`;				\
+		echo "$${HN%.h}-main: $${H}";			\
+		echo "	${CC} -DHEADER=\"\\\"$${H}\\\"\" ${CFLAGS} -D_POSIX_C_SOURCE=200809L ${CFLAGS_POSIX} -o $${HN%.h}-main main.c";	\
+		echo;						\
+	done >> Makefile.inc2
 
 clean:
-	rm -f main
+	rm -f Makefile.inc2 ${HEADERS:.h=-main}
