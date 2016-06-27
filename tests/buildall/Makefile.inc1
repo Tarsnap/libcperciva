@@ -35,7 +35,7 @@ sha1.o:../../alg/sha1.c cpusupport-config.h
 	${CC} ${CFLAGS} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} ${CFLAGS_POSIX} -c ../../alg/sha1.c -o sha1.o
 
 sha256.o:../../alg/sha256.c cpusupport-config.h
-	${CC} ${CFLAGS} -D_POSIX_C_SOURCE=200809L -std=c99 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} ${CFLAGS_POSIX} -c ../../alg/sha256.c -o sha256.o
+	${CC} ${CFLAGS} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} ${CFLAGS_POSIX} -c ../../alg/sha256.c -o sha256.o
 
 cpusupport-X86-AESNI.o:../../cpusupport/Build/cpusupport-X86-AESNI.c cpusupport-config.h
 	${CC} ${CFLAGS} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} ${CFLAGS_POSIX} -c ../../cpusupport/Build/cpusupport-X86-AESNI.c -o cpusupport-X86-AESNI.o
