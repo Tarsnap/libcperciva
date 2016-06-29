@@ -1,0 +1,30 @@
+.POSIX:
+
+HEADERS=\
+	crc32c.h md5.h sha1.h sha256.h \
+	cpusupport.h \
+	crypto_aes.h crypto_aes_aesni.h crypto_aesctr.h crypto_dh.h \
+		crypto_dh_group14.h crypto_entropy.h crypto_verify_bytes.h \
+	elasticarray.h elasticqueue.h mpool.h ptrheap.h seqptrmap.h \
+		timerqueue.h \
+	events.h events_internal.h \
+	network.h \
+	asprintf.h b64encode.h ctassert.h daemonize.h entropy.h getopt.h \
+		hexify.h humansize.h imalloc.h insecure_memzero.h \
+		monoclock.h noeintr.h readpass.h sock.h sock_internal.h \
+		sock_util.h sysendian.h ttyfd.h warnp.h 
+
+buildsingles: Makefile.inc2
+	@make -f Makefile.inc2 all
+
+Makefile.inc2: Makefile.inc1
+	echo "all: ${HEADERS:.h=-main}" > Makefile.inc2
+	for HN in ${HEADERS}; do				\
+		H=`ls ../../*/$${HN}`;				\
+		echo "$${HN%.h}-main: $${H}";			\
+		echo "	${CC} -DHEADER=\"\\\"$${H}\\\"\" ${CFLAGS} -D_POSIX_C_SOURCE=200809L ${CFLAGS_POSIX} -o $${HN%.h}-main main.c";	\
+		echo;						\
+	done >> Makefile.inc2
+
+clean:
+	rm -f Makefile.inc2 ${HEADERS:.h=-main}
