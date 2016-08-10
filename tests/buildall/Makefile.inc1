@@ -20,7 +20,7 @@ buildall:	${SRCS:.c=.o}
 	${CC} ${CFLAGS} -o buildall ${SRCS:.c=.o} -lcrypto ${LDADD_POSIX}
 
 cpusupport-config.h:
-	export CC="${CC}"; sh ../../cpusupport/Build/cpusupport.sh > cpusupport-config.h
+	export CC="${CC}"; sh ../../cpusupport/Build/cpusupport.sh "$$PATH" > cpusupport-config.h
 
 main.o:	main.c cpusupport-config.h
 	${CC} ${CFLAGS} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} ${CFLAGS_POSIX} -c main.c -o main.o
