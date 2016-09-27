@@ -243,7 +243,14 @@ err0:
 int
 events_network_select(struct timeval * tv)
 {
+	int timeout_ms;
 	size_t i;
+
+	/* Calculate timeout. */
+	if (tv != NULL)
+		timeout_ms = (int)(tv->tv_sec * 1000 + tv->tv_usec * 0.001);
+	else
+		timeout_ms = -1;
 
 	/* Initialize if necessary. */
 	if (initsocketlist())
@@ -276,8 +283,7 @@ events_network_select(struct timeval * tv)
 	events_network_selectstats_select();
 
 	/* Poll. */
-	while (poll(fds, nfds, (tv == NULL) ?
-	    -1 : (tv->tv_sec * 1000 + (int) (tv->tv_usec * 0.001))) == -1) {
+	while (poll(fds, nfds, timeout_ms) == -1) {
 		/* EINTR is harmless. */
 		if (errno == EINTR)
 			continue;
