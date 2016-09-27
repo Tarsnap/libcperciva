@@ -249,8 +249,10 @@ events_network_select(struct timeval * tv)
 	if (initsocketlist())
 		goto err0;
 
+	/* Allocate and fill fds list. */
 	if (fds == NULL) {
-		if ((fds = calloc(socketlist_getsize(S), sizeof(struct pollfd))) == NULL) {
+		if ((fds = calloc(socketlist_getsize(S),
+		    sizeof(struct pollfd))) == NULL) {
 			warnp("calloc()");
 			goto err0;
 		}
@@ -258,14 +260,13 @@ events_network_select(struct timeval * tv)
 
 		/* ... and add the ones we care about. */
 		for (i = 0; i < socketlist_getsize(S); i++) {
-			if (socketlist_get(S, i)->reader || socketlist_get(S, i)->writer) {
+			if (socketlist_get(S, i)->reader ||
+			    socketlist_get(S, i)->writer) {
 				fds[nfds].fd = i;
-				if (socketlist_get(S, i)->reader) {
+				if (socketlist_get(S, i)->reader)
 					fds[nfds].events |= POLLIN;
-				}
-				if (socketlist_get(S, i)->writer) {
+				if (socketlist_get(S, i)->writer)
 					fds[nfds].events |= POLLOUT;
-				}
 				nfds++;
 			}
 		}
@@ -275,7 +276,8 @@ events_network_select(struct timeval * tv)
 	events_network_selectstats_select();
 
 	/* Poll. */
-	while (poll(fds, nfds, (tv == NULL) ? -1 : (tv->tv_sec * 1000 + (int) (tv->tv_usec * 0.001))) == -1) {
+	while (poll(fds, nfds, (tv == NULL) ?
+	    -1 : (tv->tv_sec * 1000 + (int) (tv->tv_usec * 0.001))) == -1) {
 		/* EINTR is harmless. */
 		if (errno == EINTR)
 			continue;
@@ -324,9 +326,8 @@ events_network_get(void)
 		struct pollfd * current = &fds[fdscanpos];
 
 		/* File descriptor was closed, ignore it in future polls. */
-		if (current->revents & POLLNVAL) {
+		if (current->revents & POLLNVAL)
 			current->fd = -1;
-		}
 
 		/* Are we ready for reading? */
 		if (current->revents & POLLIN) {
@@ -376,6 +377,7 @@ events_network_shutdown(void)
 	if (nev > 0)
 		return;
 
+	/* Free the fds list. */
 	if (fds != NULL) {
 		free(fds);
 		fds = NULL;
