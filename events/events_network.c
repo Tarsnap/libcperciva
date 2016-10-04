@@ -336,13 +336,15 @@ events_network_get(void)
 		struct pollfd * current = &fds[fdscanpos];
 
 		/* File descriptor was closed, ignore it in future polls. */
-		if (current->revents & POLLNVAL)
+		if (current->revents & POLLNVAL) {
 			current->fd = -1;
+			continue;
+		}
 
 		/* Are we ready for reading? */
 		if (current->revents & POLLIN) {
-			r = socketlist_get(S, current->fd)->reader;
-			socketlist_get(S, current->fd)->reader = NULL;
+			r = socketlist_get(S, (size_t)current->fd)->reader;
+			socketlist_get(S, (size_t)current->fd)->reader = NULL;
 			if (--nev == 0)
 				events_network_selectstats_stopclock();
 
@@ -354,8 +356,8 @@ events_network_get(void)
 
 		/* Are we ready for writing? */
 		if (current->revents & POLLOUT) {
-			r = socketlist_get(S, current->fd)->writer;
-			socketlist_get(S, current->fd)->writer = NULL;
+			r = socketlist_get(S, (size_t)current->fd)->writer;
+			socketlist_get(S, (size_t)current->fd)->writer = NULL;
 			if (--nev == 0)
 				events_network_selectstats_stopclock();
 
