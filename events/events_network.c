@@ -273,7 +273,7 @@ events_network_select(struct timeval * tv)
 		for (i = 0; i < socketlist_getsize(S); i++) {
 			if (socketlist_get(S, i)->reader ||
 			    socketlist_get(S, i)->writer) {
-				fds[nfds].fd = i;
+				fds[nfds].fd = (int)i;
 				if (socketlist_get(S, i)->reader)
 					fds[nfds].events |= POLLIN;
 				if (socketlist_get(S, i)->writer)
