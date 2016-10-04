@@ -29,6 +29,9 @@ static nfds_t fdscanpos;
 /* Number of registered events. */
 static size_t nev;
 
+/* Do we need to rebuild the fds list? */
+static int fds_rebuild_needed = 0;
+
 /* Initialize the socket list if we haven't already done so. */
 static int
 initsocketlist(void)
@@ -139,10 +142,7 @@ events_network_register(int (*func)(void *), void * cookie, int s, int op)
 	 * There is a new socket/operation pair:
 	 * Rebuild the fd list on the next call to events_network_select().
 	 */
-	if (fds != NULL) {
-		free(fds);
-		fds = NULL;
-	}
+	fds_rebuild_needed = 1;
 
 	/*
 	 * Increment events-registered counter; and if it was zero, start the
@@ -214,10 +214,7 @@ events_network_cancel(int s, int op)
 	 * operation pair, it doesn't make any sense for it to be ready:
 	 * Rebuild the fd list on the next call to events_network_select().
 	 */
-	if (fds != NULL) {
-		free(fds);
-		fds = NULL;
-	}
+	fds_rebuild_needed = 1;
 
 	/*
 	 * Decrement events-registered counter; and if it is becoming zero,
@@ -256,6 +253,12 @@ events_network_select(struct timeval * tv)
 	if (initsocketlist())
 		goto err0;
 
+	/* Clear list if a rebuild is requested. */
+	if (fds_rebuild_needed) {
+		free(fds);
+		fds = NULL;
+	}
+
 	/* Allocate and fill fds list. */
 	if (fds == NULL) {
 		if ((fds = calloc(socketlist_getsize(S),
@@ -264,6 +267,7 @@ events_network_select(struct timeval * tv)
 			goto err0;
 		}
 		nfds = 0;
+		fds_rebuild_needed = 0;
 
 		/* ... and add the ones we care about. */
 		for (i = 0; i < socketlist_getsize(S); i++) {
