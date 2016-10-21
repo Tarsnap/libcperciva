@@ -255,16 +255,14 @@ events_network_select(struct timeval * tv)
 
 	/* Clear list if a rebuild is requested. */
 	if (fds_rebuild_needed) {
-		free(fds);
-		fds = NULL;
-	}
-
-	/* Allocate and fill fds list. */
-	if (fds == NULL) {
-		if ((fds = calloc(socketlist_getsize(S),
-		    sizeof(struct pollfd))) == NULL) {
-			warnp("calloc()");
-			goto err0;
+		/* Realloc fds if necessary.. */
+		if (nfds != socketlist_getsize(S)) {
+			if ((fds = realloc(fds,
+			    socketlist_getsize(S) * sizeof(struct pollfd))
+			    ) == NULL) {
+				warnp("realloc()");
+				goto err0;
+			}
 		}
 		nfds = 0;
 		fds_rebuild_needed = 0;
