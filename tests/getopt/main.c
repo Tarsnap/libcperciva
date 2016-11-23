@@ -76,7 +76,7 @@ main(int argc, char * argv[])
 
 	/*
 	 * Silence "value stored is never read" warnings; the adjustments to
-	 * arg[cv] at the end of the argument-parsing loop are idioomatic.
+	 * arg[cv] at the end of the argument-parsing loop are idiomatic.
 	 */
 	(void)argc;
 	(void)argv;
