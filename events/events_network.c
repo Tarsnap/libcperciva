@@ -363,7 +363,9 @@ events_network_select(struct timeval * tv)
 	 * Convert timeout to an integer number of ms.  We round up in order
 	 * to avoid creating busy loops when 0 < ${tv} < 1 ms.
 	 */
-	if (tv->tv_sec >= INT_MAX / 1000)
+	if (tv == NULL)
+		timeout = -1;
+	else if (tv->tv_sec >= INT_MAX / 1000)
 		timeout = INT_MAX;
 	else
 		timeout = (int)(tv->tv_sec * 1000 + (tv->tv_usec + 999) / 1000);
