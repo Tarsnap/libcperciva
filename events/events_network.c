@@ -149,9 +149,10 @@ growpollfd(size_t fd)
 
 	/* Sanity-check. */
 	assert(nfds < fds_alloc);
+	assert(fd < INT_MAX);
 
 	/* Initialize pollfd structure. */
-	fds[nfds].fd = fd;
+	fds[nfds].fd = (int)fd;
 	fds[nfds].events = 0;
 	fds[nfds].revents = 0;
 
