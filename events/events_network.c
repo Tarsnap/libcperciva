@@ -39,13 +39,13 @@ ELASTICARRAY_DECL(SOCKETLIST, socketlist, struct socketrec);
 static SOCKETLIST S = NULL;
 
 /* Poll structures. */
-struct pollfd * fds;
+static struct pollfd * fds;
 
 /* Number of poll structures allocated in array. */
-size_t fds_alloc;
+static size_t fds_alloc;
 
 /* Number of poll structures initialized. */
-size_t nfds;
+static size_t nfds;
 
 /* Position to which events_network_get has scanned in *fds. */
 static size_t fdscanpos;
