@@ -1,4 +1,5 @@
 language: c
+dist: trusty
 script: cd tests && make all test
 env:
   global:
