@@ -182,13 +182,15 @@ clearbit(size_t pollpos, short bit)
 	/* Is this pollfd in the way? */
 	if (fds[pollpos].events == 0) {
 		/* Clear the descriptor's pollpos pointer. */
-		socketlist_get(S, fds[pollpos].fd)->pollpos = (size_t)(-1);
+		socketlist_get(S,
+		    (size_t)fds[pollpos].fd)->pollpos = (size_t)(-1);
 
 		/* If this wasn't the last pollfd, move another one up. */
 		if (pollpos != nfds - 1) {
 			memcpy(&fds[pollpos], &fds[nfds-1],
 			    sizeof(struct pollfd));
-			socketlist_get(S, fds[pollpos].fd)->pollpos = pollpos;
+			socketlist_get(S,
+			    (size_t)fds[pollpos].fd)->pollpos = pollpos;
 		}
 
 		/* Shrink the pollfd array. */
@@ -427,16 +429,20 @@ events_network_get(void)
 
 		/* Are we ready for reading? */
 		if (fds[fdscanpos].revents & POLLIN) {
-			r = socketlist_get(S, fds[fdscanpos].fd)->reader;
-			socketlist_get(S, fds[fdscanpos].fd)->reader = NULL;
+			r = socketlist_get(S,
+			    (size_t)fds[fdscanpos].fd)->reader;
+			socketlist_get(S,
+			    (size_t)fds[fdscanpos].fd)->reader = NULL;
 			clearbit(fdscanpos, POLLIN);
 			break;
 		}
 
 		/* Are we ready for reading? */
 		if (fds[fdscanpos].revents & POLLOUT) {
-			r = socketlist_get(S, fds[fdscanpos].fd)->writer;
-			socketlist_get(S, fds[fdscanpos].fd)->writer = NULL;
+			r = socketlist_get(S,
+			    (size_t)fds[fdscanpos].fd)->writer;
+			socketlist_get(S,
+			    (size_t)fds[fdscanpos].fd)->writer = NULL;
 			clearbit(fdscanpos, POLLOUT);
 			break;
 		}
