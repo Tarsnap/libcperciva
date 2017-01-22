@@ -255,7 +255,7 @@ events_network_register(int (*func)(void *), void * cookie, int s, int op)
 
 	/* If this descriptor isn't in the pollfd array, add it. */
 	if (socketlist_get(S, (size_t)s)->pollpos == (size_t)(-1)) {
-		if (growpollfd(s))
+		if (growpollfd((size_t)s))
 			goto err1;
 	}
 
