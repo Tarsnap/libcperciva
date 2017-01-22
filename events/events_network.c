@@ -59,7 +59,7 @@ static size_t fdscanpos;
  *     S[i].reader != NULL ==> S[i].pollpos < nfds
  *     S[i].writer != NULL ==> S[i].pollpos < nfds
  * 3. Descriptors without events registered aren't in the way:
- *     (S[i].reader == NULL && S[i].writer != NULL) ==> S[i].pollpos == -1
+ *     (S[i].reader == NULL && S[i].writer == NULL) ==> S[i].pollpos == -1
  * 4. Descriptors with events registered have the right masks:
  *     S[i].reader != NULL <==> (fds[S[i].pollpos].events & POLLIN) != 0
  *     S[i].writer != NULL <==> (fds[S[i].pollpos].events & POLLOUT) != 0
