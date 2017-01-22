@@ -366,7 +366,7 @@ events_network_select(struct timeval * tv)
 	if (tv->tv_sec >= INT_MAX / 1000)
 		timeout = INT_MAX;
 	else
-		timeout = tv->tv_sec * 1000 + (tv->tv_usec + 999) / 1000;
+		timeout = (int)(tv->tv_sec * 1000 + (tv->tv_usec + 999) / 1000);
 
 	/* We're about to call poll! */
 	events_network_selectstats_select();
