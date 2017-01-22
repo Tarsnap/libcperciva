@@ -39,13 +39,13 @@ ELASTICARRAY_DECL(SOCKETLIST, socketlist, struct socketrec);
 static SOCKETLIST S = NULL;
 
 /* Poll structures. */
-struct pollfd * fds;
+static struct pollfd * fds;
 
 /* Number of poll structures allocated in array. */
-size_t fds_alloc;
+static size_t fds_alloc;
 
 /* Number of poll structures initialized. */
-size_t nfds;
+static size_t nfds;
 
 /* Position to which events_network_get has scanned in *fds. */
 static size_t fdscanpos;
@@ -59,7 +59,7 @@ static size_t fdscanpos;
  *     S[i].reader != NULL ==> S[i].pollpos < nfds
  *     S[i].writer != NULL ==> S[i].pollpos < nfds
  * 3. Descriptors without events registered aren't in the way:
- *     (S[i].reader == NULL && S[i].writer != NULL) ==> S[i].pollpos == -1
+ *     (S[i].reader == NULL && S[i].writer == NULL) ==> S[i].pollpos == -1
  * 4. Descriptors with events registered have the right masks:
  *     S[i].reader != NULL <==> (fds[S[i].pollpos].events & POLLIN) != 0
  *     S[i].writer != NULL <==> (fds[S[i].pollpos].events & POLLOUT) != 0
@@ -149,9 +149,10 @@ growpollfd(size_t fd)
 
 	/* Sanity-check. */
 	assert(nfds < fds_alloc);
+	assert(fd < INT_MAX);
 
 	/* Initialize pollfd structure. */
-	fds[nfds].fd = fd;
+	fds[nfds].fd = (int)fd;
 	fds[nfds].events = 0;
 	fds[nfds].revents = 0;
 
@@ -181,13 +182,15 @@ clearbit(size_t pollpos, short bit)
 	/* Is this pollfd in the way? */
 	if (fds[pollpos].events == 0) {
 		/* Clear the descriptor's pollpos pointer. */
-		socketlist_get(S, fds[pollpos].fd)->pollpos = (size_t)(-1);
+		socketlist_get(S,
+		    (size_t)fds[pollpos].fd)->pollpos = (size_t)(-1);
 
 		/* If this wasn't the last pollfd, move another one up. */
 		if (pollpos != nfds - 1) {
 			memcpy(&fds[pollpos], &fds[nfds-1],
 			    sizeof(struct pollfd));
-			socketlist_get(S, fds[pollpos].fd)->pollpos = pollpos;
+			socketlist_get(S,
+			    (size_t)fds[pollpos].fd)->pollpos = pollpos;
 		}
 
 		/* Shrink the pollfd array. */
@@ -252,7 +255,7 @@ events_network_register(int (*func)(void *), void * cookie, int s, int op)
 
 	/* If this descriptor isn't in the pollfd array, add it. */
 	if (socketlist_get(S, (size_t)s)->pollpos == (size_t)(-1)) {
-		if (growpollfd(s))
+		if (growpollfd((size_t)s))
 			goto err1;
 	}
 
@@ -360,10 +363,12 @@ events_network_select(struct timeval * tv)
 	 * Convert timeout to an integer number of ms.  We round up in order
 	 * to avoid creating busy loops when 0 < ${tv} < 1 ms.
 	 */
-	if (tv->tv_sec >= INT_MAX / 1000)
+	if (tv == NULL)
+		timeout = -1;
+	else if (tv->tv_sec >= INT_MAX / 1000)
 		timeout = INT_MAX;
 	else
-		timeout = tv->tv_sec * 1000 + (tv->tv_usec + 999) / 1000;
+		timeout = (int)(tv->tv_sec * 1000 + (tv->tv_usec + 999) / 1000);
 
 	/* We're about to call poll! */
 	events_network_selectstats_select();
@@ -426,16 +431,20 @@ events_network_get(void)
 
 		/* Are we ready for reading? */
 		if (fds[fdscanpos].revents & POLLIN) {
-			r = socketlist_get(S, fds[fdscanpos].fd)->reader;
-			socketlist_get(S, fds[fdscanpos].fd)->reader = NULL;
+			r = socketlist_get(S,
+			    (size_t)fds[fdscanpos].fd)->reader;
+			socketlist_get(S,
+			    (size_t)fds[fdscanpos].fd)->reader = NULL;
 			clearbit(fdscanpos, POLLIN);
 			break;
 		}
 
 		/* Are we ready for reading? */
 		if (fds[fdscanpos].revents & POLLOUT) {
-			r = socketlist_get(S, fds[fdscanpos].fd)->writer;
-			socketlist_get(S, fds[fdscanpos].fd)->writer = NULL;
+			r = socketlist_get(S,
+			    (size_t)fds[fdscanpos].fd)->writer;
+			socketlist_get(S,
+			    (size_t)fds[fdscanpos].fd)->writer = NULL;
 			clearbit(fdscanpos, POLLOUT);
 			break;
 		}
