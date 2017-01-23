@@ -1,4 +1,5 @@
 language: c
+sudo: false
 dist: trusty
 script: cd tests && make all test
 env:
