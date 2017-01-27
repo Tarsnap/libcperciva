@@ -105,7 +105,7 @@ selftest(void)
 	SHA256_CTX ctx;
 	uint8_t hbuf[32];
 	char hbuf_hex[65];
-	size_t i, j;
+	size_t i;
 	size_t failures = 0;
 
 	for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
