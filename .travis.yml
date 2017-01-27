@@ -17,5 +17,7 @@ env:
     - COVERITY_SCAN_BUILD_COMMAND_PREPEND="cd tests/buildall"
     - COVERITY_SCAN_BUILD_COMMAND="make all clean"
 before_install:
+  - test $TRAVIS_BRANCH != coverity-scan -o ${TRAVIS_JOB_NUMBER##*.} = 1 || exit 0
   - curl -s "https://scan.coverity.com/scripts/travisci_build_coverity_scan.sh" | bash || true
+  - test $TRAVIS_BRANCH != coverity-scan || exit 0
 
