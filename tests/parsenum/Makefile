@@ -14,13 +14,13 @@ test:	all
 	fi
 
 test_parsenum:	main.o warnp.o
-	${CC} -o test_parsenum main.o warnp.o
+	${CC} ${CFLAGS} -o test_parsenum main.o warnp.o
 
 main.o:	main.c
-	${CC} -D_POSIX_C_SOURCE=200809L -I ../../util -c main.c -o main.o
+	${CC} -D_POSIX_C_SOURCE=200809L ${CFLAGS} -I ../../util -c main.c -o main.o
 
 warnp.o:	../../util/warnp.c
-	${CC} -D_POSIX_C_SOURCE=200809L -I ../../util -c ../../util/warnp.c -o warnp.o
+	${CC} -D_POSIX_C_SOURCE=200809L ${CFLAGS} -I ../../util -c ../../util/warnp.c -o warnp.o
 
 clean:
 	rm -f test_parsenum
