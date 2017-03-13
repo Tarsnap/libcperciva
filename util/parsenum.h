@@ -72,4 +72,15 @@ parsenum_unsigned(const char * s, uintmax_t min, uintmax_t max)
 	return (val);
 }
 
+static void (* dummyptr)(void);
+static inline void
+dummy(void)
+{
+	(void)parsenum_float;
+	(void)parsenum_signed;
+	(void)parsenum_unsigned;
+	(void)dummyptr;
+}
+static void (* dummyptr)(void) = dummy;
+
 #endif /* !_PARSENUM_H_ */
