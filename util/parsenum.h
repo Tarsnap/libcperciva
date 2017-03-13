@@ -5,6 +5,26 @@
 #include <inttypes.h>
 #include <stdlib.h>
 
+/* Handle compiler warnings about implicit variable conversion in PARSENUM. */
+#ifdef __clang__
+
+/* Disable clang warnings. */
+#define PARSENUM_PROLOGUE						\
+_Pragma("clang diagnostic push")					\
+_Pragma("clang diagnostic ignored \"-Wfloat-conversion\"")		\
+_Pragma("clang diagnostic ignored \"-Wsign-conversion\"")		\
+_Pragma("clang diagnostic ignored \"-Wshorten-64-to-32\"")
+
+/* Enable clang warnings for code outside of PARSENUM. */
+#define PARSENUM_EPILOGUE						\
+_Pragma("clang diagnostic pop")
+
+/* Other compilers don't need any special handling */
+#else
+#define PARSENUM_PROLOGUE /* NOTHING */
+#define PARSENUM_EPILOGUE /* NOTHING */
+#endif /* !__clang__ */
+
 /**
  * PARSENUM(x, s, min, max):
  * Parse the string ${s} according to the type of the unsigned integer, signed
@@ -17,6 +37,7 @@
  */
 #define PARSENUM(x, s, min, max)					\
 	(								\
+		PARSENUM_PROLOGUE					\
 		errno = 0,						\
 		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
 			((*(x)) = parsenum_float((s), (min), (max))) :	\
@@ -27,6 +48,7 @@
 			((*(x)) = parsenum_unsigned((s),		\
 			    (min) <= 0 ? 0 : (min), (max))),		\
 		errno != 0						\
+		PARSENUM_EPILOGUE					\
 	)
 
 /* Functions for performing the parsing and parameter checking. */
