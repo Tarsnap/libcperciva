@@ -11,8 +11,8 @@ HEADERS=\
 	network.h \
 	asprintf.h b64encode.h ctassert.h daemonize.h entropy.h getopt.h \
 		hexify.h humansize.h imalloc.h insecure_memzero.h \
-		monoclock.h noeintr.h readpass.h sock.h sock_internal.h \
-		sock_util.h sysendian.h ttyfd.h warnp.h 
+		monoclock.h noeintr.h parsenum.h readpass.h sock.h \
+		sock_internal.h sock_util.h sysendian.h ttyfd.h warnp.h
 
 buildsingles: Makefile.inc2
 	@make -f Makefile.inc2 all
