@@ -23,7 +23,7 @@ main(int argc, char * argv[])
 	fprintf(stderr, "%f %zu %d\n", d, s, i);			\
 } while (0)
 
-	TEST(d, "123.456", 0, 1000);
-	TEST(s, "1234", -123, 4000);
-	TEST(i, "12345", -10, 100);
+	TEST(&d, "123.456", 0, 1000);
+	TEST(&s, "1234", -123, 4000);
+	TEST(&i, "12345", -10, 100);
 }
