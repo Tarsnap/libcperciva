@@ -26,4 +26,14 @@ main(int argc, char * argv[])
 	TEST(&d, "123.456", 0, 1000);
 	TEST(&s, "1234", -123, 4000);
 	TEST(&i, "12345", -10, 100);
+
+#define TEST2(x, y) do {				\
+	fprintf(stderr, "PARSENUM(\"%s\")\n", y);	\
+	if (PARSENUM(x, y))				\
+		warnp("PARSENUM");			\
+	fprintf(stderr, "%f %zu %d\n", d, s, i);	\
+} while (0)
+
+	TEST2(&d, "234.567");
+	TEST2(&s, "2345");
 }
