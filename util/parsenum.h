@@ -1,8 +1,10 @@
 #ifndef _PARSENUM_H_
 #define _PARSENUM_H_
 
+#include <assert.h>
 #include <errno.h>
 #include <inttypes.h>
+#include <math.h>
 #include <stdlib.h>
 
 /* Handle compiler warnings about implicit variable conversion in PARSENUM. */
@@ -36,8 +38,25 @@ _Pragma("clang diagnostic pop")
  * the value into ${x}, set errno to zero, and return zero.  Otherwise, return
  * nonzero with an unspecified value of ${x} and errno set to EINVAL or ERANGE
  * as appropriate.
+ * 
+ * For floating-point and unsigned integer variables ${x}, this can also be
+ * invoked as PARSENUM(x, s), in which case the minimum and maximum values are
+ * set to +/- infinity or the limits of the unsigned integer type.
  */
-#define PARSENUM(x, s, min, max)					\
+#define PARSENUM2(x, s)							\
+	(								\
+		PARSENUM_PROLOGUE					\
+		errno = 0,						\
+		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
+			((*(x)) = parsenum_float((s),			\
+			    (double)-INFINITY, (double)INFINITY)) :	\
+		(((*(x)) = -1) > 0) ?					\
+			((*(x)) = parsenum_unsigned((s), 0, (*(x)))) :	\
+			(assert(0 && "PARSENUM applied to signed integer without specified bounds"), 1),	\
+		errno != 0						\
+		PARSENUM_EPILOGUE					\
+	)
+#define PARSENUM4(x, s, min, max)					\
 	(								\
 		PARSENUM_PROLOGUE					\
 		errno = 0,						\
@@ -53,6 +72,13 @@ _Pragma("clang diagnostic pop")
 		errno != 0						\
 		PARSENUM_EPILOGUE					\
 	)
+
+/* Magic to select which version of PARSENUM to use. */
+#define PARSENUM(...)	PARSENUM_(PARSENUM_COUNT(__VA_ARGS__))(__VA_ARGS__)
+#define PARSENUM_(N)	PARSENUM__(N)
+#define PARSENUM__(N)	PARSENUM ## N
+#define PARSENUM_COUNT(...)	PARSENUM_COUNT_(__VA_ARGS__, 4, 3, 2, 1)
+#define PARSENUM_COUNT_(_1, _2, _3, _4, N, ...)	N
 
 /* Functions for performing the parsing and parameter checking. */
 static inline double
