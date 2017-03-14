@@ -51,7 +51,7 @@ _Pragma("clang diagnostic pop")
 			    -INFINITY, INFINITY)) :			\
 		(((*(x)) = -1) > 0) ?					\
 			((*(x)) = parsenum_unsigned((s), 0, (*(x)))) :	\
-			assert(!"PARSENUM applied to signed integer without specified bounds"),	\
+			(assert(!"PARSENUM applied to signed integer without specified bounds"), 1),	\
 		errno != 0						\
 		PARSENUM_EPILOGUE					\
 	)
