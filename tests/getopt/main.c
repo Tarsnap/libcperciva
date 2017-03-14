@@ -11,15 +11,13 @@ usage(void)
 	exit(1);
 }
 
-int
-main(int argc, char * argv[])
+static void
+pass1(int argc, char * argv[])
 {
-	int argc_orig = argc;
-	char ** argv_orig = argv;
 	const char * ch;
 	int bflag = 0;
 
-	/* Process arguments. */
+	/* Process the arguments without GETOPT_MISSING_ARG. */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
 		fprintf(stderr, "Option being processed: %s\n", ch);
 		GETOPT_SWITCH(ch) {
@@ -48,10 +46,19 @@ main(int argc, char * argv[])
 	}
 	fprintf(stderr, "\n");
 
-	/* We want to make sure that reset works. */
-	optreset = 1;
-	argc = argc_orig;
-	argv = argv_orig;
+	/*
+	 * Silence "value stored is never read" warnings; the adjustments to
+	 * arg[cv] at the end of the argument-parsing loop are idiomatic.
+	 */
+	(void)argc;
+	(void)argv;
+}
+
+static void
+pass2(int argc, char * argv[])
+{
+	const char * ch;
+	int bflag = 0;
 
 	/* Process the arguments again, with GETOPT_MISSING_ARG this time. */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
@@ -80,6 +87,19 @@ main(int argc, char * argv[])
 	 */
 	(void)argc;
 	(void)argv;
+
+}
+
+int
+main(int argc, char * argv[])
+{
+
+	/* Process arguments. */
+	pass1(argc, argv);
+
+	/* Reset getopt state and process arguments again. */
+	optreset = 1;
+	pass2(argc, argv);
 
 	return (0);
 }
