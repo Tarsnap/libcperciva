@@ -102,8 +102,10 @@ parsenum_signed(const char * s, intmax_t min, intmax_t max)
 	val = strtoimax(s, &eptr, 0);
 	if ((eptr == s) || (*eptr != '\0'))
 		errno = EINVAL;
-	else if ((val < min) || (val > max))
+	else if ((val < min) || (val > max)) {
 		errno = ERANGE;
+		val = 0;
+	}
 	return (val);
 }
 
