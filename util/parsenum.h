@@ -63,10 +63,11 @@ _Pragma("clang diagnostic pop")
 			((*(x)) = parsenum_float((s), (min), (max))) :	\
 		(((*(x)) = -1) <= 0) ?					\
 			((*(x)) = parsenum_signed((s), (min), (max))) :	\
-		(((min) > (max)) || (max) < 0) ?			\
+		(((min) > (max)) || ((max) < 0) || ((min) > *(x))) ?	\
 			errno = ERANGE :				\
 			((*(x)) = parsenum_unsigned((s),		\
-			    (min) <= 0 ? 0 : (min), (max))),		\
+			    (min) <= 0 ? 0 : (min),			\
+			    (max) >= *(x) ? *(x) : (max))),		\
 		errno != 0						\
 		PARSENUM_EPILOGUE					\
 	)
