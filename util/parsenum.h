@@ -16,7 +16,8 @@ _Pragma("clang diagnostic push")					\
 _Pragma("clang diagnostic ignored \"-Wunknown-pragmas\"")		\
 _Pragma("clang diagnostic ignored \"-Wfloat-conversion\"")		\
 _Pragma("clang diagnostic ignored \"-Wsign-conversion\"")		\
-_Pragma("clang diagnostic ignored \"-Wshorten-64-to-32\"")
+_Pragma("clang diagnostic ignored \"-Wshorten-64-to-32\"")		\
+_Pragma("clang diagnostic ignored \"-Wconversion\"")
 
 /* Enable clang warnings for code outside of PARSENUM. */
 #define PARSENUM_EPILOGUE						\
