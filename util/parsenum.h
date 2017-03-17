@@ -80,7 +80,7 @@ _Pragma("clang diagnostic pop")
 #define PARSENUM_COUNT_(_1, _2, _3, _4, N, ...)	N
 
 /* Functions for performing the parsing and parameter checking. */
-static double
+static inline double
 parsenum_float(const char * s, double min, double max)
 {
 	char * eptr;
@@ -94,7 +94,7 @@ parsenum_float(const char * s, double min, double max)
 	return (val);
 }
 
-static intmax_t
+static inline intmax_t
 parsenum_signed(const char * s, intmax_t min, intmax_t max)
 {
 	char * eptr;
@@ -110,7 +110,7 @@ parsenum_signed(const char * s, intmax_t min, intmax_t max)
 	return (val);
 }
 
-static uintmax_t
+static inline uintmax_t
 parsenum_unsigned(const char * s, uintmax_t min, uintmax_t max)
 {
 	char * eptr;
