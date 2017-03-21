@@ -18,8 +18,13 @@ main(int argc, char * argv[])
 
 #define TEST(x, y, z, w) do {						\
 	fprintf(stderr, "PARSENUM(\"%s\", %s, %s)\n", y, #z, #w);	\
-	if (PARSENUM(x, y, z, w))					\
-		warnp("PARSENUM");					\
+	if (PARSENUM(x, y, z, w)) {					\
+		if (errno == ERANGE) {					\
+			warn0("PARSENUM: ERANGE");			\
+		} else {						\
+			warnp("PARSENUM");				\
+		}							\
+	}								\
 	fprintf(stderr, "%f %zu %d\n", d, s, i);			\
 } while (0)
 
