@@ -16,7 +16,7 @@ test:	all
 test_parsenum:	main.o warnp.o
 	${CC} ${CFLAGS} -o test_parsenum main.o warnp.o
 
-main.o:	main.c
+main.o:	main.c ../../util/parsenum.h
 	${CC} -D_POSIX_C_SOURCE=200809L ${CFLAGS} -I ../../util -c main.c -o main.o
 
 warnp.o:	../../util/warnp.c
