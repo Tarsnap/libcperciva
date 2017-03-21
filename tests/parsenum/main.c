@@ -19,7 +19,9 @@ main(int argc, char * argv[])
 #define TEST(x, y, z, w) do {						\
 	fprintf(stderr, "PARSENUM(\"%s\", %s, %s)\n", y, #z, #w);	\
 	if (PARSENUM(x, y, z, w)) {					\
-		if (errno == ERANGE) {					\
+		if (errno == EINVAL) {					\
+			warn0("PARSENUM: EINVAL");			\
+		} else if (errno == ERANGE) {				\
 			warn0("PARSENUM: ERANGE");			\
 		} else {						\
 			warnp("PARSENUM");				\
