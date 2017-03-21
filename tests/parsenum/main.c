@@ -31,7 +31,7 @@ main(int argc, char * argv[])
 } while (0)
 
 	TEST(&d, "123.456", 0, 1000);
-	TEST(&s, "1234", -123, 4000);
+	TEST(&s, "1234", 0, 4000);
 	TEST(&i, "12345", -10, 100);
 
 #define TEST2(x, y) do {				\
