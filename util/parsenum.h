@@ -64,7 +64,9 @@ _Pragma("clang diagnostic pop")
 			((*(x)) = parsenum_float((s), (min), (max))) :	\
 		(((*(x)) = -1) <= 0) ?					\
 			((*(x)) = parsenum_signed((s), (min), (max))) :	\
-			(((*(x)) = parsenum_unsigned((s),		\
+			(assert(((min) >= 0) && "PARSENUM unsigned with negative minimum bound"),			\
+			assert(((max) <= *(x)) && "PARSENUM unsigned upper bound does not fit in datatype"),			\
+			((*(x)) = parsenum_unsigned((s),		\
 			    (min) <= 0 ? 0 : (min),			\
 			    (max) >= *(x) ? *(x) : (max))),		\
 			((((max) < 0) && (errno == 0)) ?		\
