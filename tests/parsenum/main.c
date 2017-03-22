@@ -45,8 +45,9 @@ main(int argc, char * argv[])
 		} else {				\
 			warnp("PARSENUM");		\
 		}					\
+	} else {					\
+		fprintf(stderr, "%f %zu %d\n", d, s, i);\
 	}						\
-	fprintf(stderr, "%f %zu %d\n", d, s, i);	\
 } while (0)
 
 	TEST2(&d, "234.567");
