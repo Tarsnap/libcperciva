@@ -64,10 +64,6 @@
 int
 main(int argc, char * argv[])
 {
-	double d = 0.0;
-	size_t s = 0;
-	int i = 0;
-
 	(void)argc; /* UNUSED */
 	(void)argv; /* UNUSED */
 
