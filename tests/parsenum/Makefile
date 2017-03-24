@@ -2,16 +2,8 @@
 
 all:	test_parsenum
 
-test:	all
-	@printf "Testing PARSENUM... "
-	@./test_parsenum 2>test_parsenum.log || true
-	@if cmp -s test_parsenum.log test_parsenum.good; then		\
-		echo "PASSED!";						\
-	else								\
-		echo "FAILED!";						\
-		echo "test_parsenum.log:";				\
-		cat test_parsenum.log;					\
-	fi
+test:	test_parsenum
+	@./test_parsenum
 
 test_parsenum:	main.o warnp.o
 	${CC} ${CFLAGS} -o test_parsenum main.o warnp.o
