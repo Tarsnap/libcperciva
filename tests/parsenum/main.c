@@ -31,6 +31,9 @@
 			fprintf(stderr, "FAILED!\n");		\
 			goto err0;				\
 		}						\
+	} else {						\
+		fprintf(stderr, "FAILED!\n");			\
+		goto err0;					\
 	}
 
 #define CHECK_FAILURE(target)					\
@@ -39,6 +42,9 @@
 			fprintf(stderr, "PASSED!\n");		\
 		else						\
 			fprintf(stderr, "FAILED!\n");		\
+	} else {						\
+		fprintf(stderr, "FAILED!\n");			\
+		goto err0;					\
 	}
 
 #define TEST4_SUCCESS(str, var, min, max, target) do {		\
