@@ -36,4 +36,11 @@ main(int argc, char * argv[])
 
 	TEST2(&d, "234.567");
 	TEST2(&s, "2345");
+
+	/* Success! */
+	exit(0);
+
+err0:
+	/* Failure! */
+	exit(1);
 }
