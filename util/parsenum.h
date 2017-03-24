@@ -63,7 +63,9 @@ _Pragma("clang diagnostic pop")
 		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
 			((*(x)) = parsenum_float((s), (min), (max))) :	\
 		(((*(x)) = -1) <= 0) ?					\
-			((*(x)) = parsenum_signed((s), (min), (max))) :	\
+			((*(x)) = parsenum_signed((s),			\
+			    (*(x) <= 0) ? (min) : 0,			\
+			    (*(x) <= 0) ? (max) : 0)) :			\
 			(((*(x)) = parsenum_unsigned((s),		\
 			    (min) <= 0 ? 0 : (min),			\
 			    (max) >= *(x) ? *(x) : (max))),		\
