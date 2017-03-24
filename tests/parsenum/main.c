@@ -1,12 +1,37 @@
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 
 #include "parsenum.h"
 #include "warnp.h"
 
-#define PARSENUM_CMP(x, y)						\
-	(fabs((double)x - (double)y) < 1 &&				\
-	    fabs((double)x - (double)y) <= fabs((double)x + (double)y) * 1e-6)
+static int
+parsenum_equal(double x, double y)
+{
+
+	/* Deal with NANs. */
+	if (isnan(x) && isnan(y))
+		return (1);
+
+	/* If signs do not match, the numbers are not equal. */
+	if (signbit(x) != signbit(y))
+		return (0);
+
+	/* Deal with infinities. */
+	if (isinf(x) && isinf(y))
+		return (1);
+
+	/* Deal with zeros. */
+	if ((fpclassify(x) == FP_ZERO) && (fpclassify(y) == FP_ZERO))
+		return (1);
+
+	/* Deal with real numbers. */
+	if ((fabs(x - y) < 1) && (fabs(x - y) <= fabs(x + y) * 1e-6))
+		return (1);
+
+	/* Not equal. */
+	return (0);
+}
 
 #define TEST4_DO(str, var, min, max, target)			\
 	var parsenum_x;						\
@@ -25,7 +50,7 @@
 
 #define CHECK_SUCCESS(target)					\
 	if (parsenum_ret == 0) {				\
-		if (PARSENUM_CMP(parsenum_x, target)) {		\
+		if (parsenum_equal((double)parsenum_x, (double)target)) { \
 			fprintf(stderr, "PASSED!\n");		\
 		} else {					\
 			fprintf(stderr, "FAILED!\n");		\
