@@ -6,7 +6,7 @@ test:	test_parsenum
 	@./test_parsenum
 
 test_parsenum:	main.o warnp.o
-	${CC} ${CFLAGS} -lm -o test_parsenum main.o warnp.o
+	${CC} ${CFLAGS} -o test_parsenum main.o warnp.o -lm
 
 main.o:	main.c ../../util/parsenum.h
 	${CC} -D_POSIX_C_SOURCE=200809L ${CFLAGS} -I ../../util -c main.c -o main.o
