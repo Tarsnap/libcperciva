@@ -139,6 +139,9 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("077", int, 0, 100, 63);
 	TEST4_SUCCESS("-077", int, -100, 0, -63);
 
+	TEST4_SUCCESS("0x7fffFFFF", int32_t, 0, INT32_MAX, INT32_MAX);
+	TEST4_SUCCESS("-0x80000000", int32_t, INT32_MIN, 0, INT32_MIN);
+
 	TEST2_SUCCESS("234.567", double, 234.567);
 	TEST2_SUCCESS("2345", size_t, 2345);
 	TEST2_FAILURE("abcd", size_t, EINVAL);
