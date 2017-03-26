@@ -115,6 +115,11 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("1e-2", double, 0, 1000, 0.01);
 
 	TEST4_SUCCESS("1234", size_t, -123, 4000, 1234);
+	TEST4_FAILURE("7f", size_t, 0, 1000, EINVAL);
+	TEST4_SUCCESS("0x7f", size_t, 0, 1000, 127);
+	TEST4_SUCCESS("0x77", size_t, 0, 1000, 119);
+	TEST4_SUCCESS("077", size_t, 0, 1000, 63);
+
 	TEST4_FAILURE("12345", int, -10, 100, ERANGE);
 
 	TEST2_SUCCESS("234.567", double, 234.567);
