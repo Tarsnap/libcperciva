@@ -121,6 +121,10 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("077", size_t, 0, 1000, 63);
 
 	TEST4_FAILURE("12345", int, -10, 100, ERANGE);
+	TEST4_SUCCESS("0x7fffFFFF", int, 0, INT32_MAX, INT32_MAX);
+	TEST4_SUCCESS("-0X7fffFFFF", int, INT32_MIN, 0, INT32_MIN + 1);
+	TEST4_SUCCESS("077", int, 0, 100, 63);
+	TEST4_SUCCESS("-077", int, -100, 0, -63);
 
 	TEST2_SUCCESS("234.567", double, 234.567);
 	TEST2_SUCCESS("2345", size_t, 2345);
