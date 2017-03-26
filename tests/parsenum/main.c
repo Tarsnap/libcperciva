@@ -102,6 +102,12 @@ main(int argc, char * argv[])
 
 	WARNP_INIT;
 
+#if __clang__
+	_Pragma("clang diagnostic ignored \"-Wtautological-constant-out-of-range-compare\"");
+#elif __GNUC__
+	_Pragma("GCC diagnostic ignored \"-Wtype-limits\"");
+#endif
+
 	TEST4_SUCCESS("123.456", double, 0, 1000, 123.456);
 	TEST4_SUCCESS("nAn", double, 0, 0, (double)NAN);
 	TEST4_SUCCESS("inf", double, 0, (double)INFINITY, (double)INFINITY);
@@ -119,6 +125,13 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("0x7f", size_t, 0, 1000, 127);
 	TEST4_SUCCESS("0x77", size_t, 0, 1000, 119);
 	TEST4_SUCCESS("077", size_t, 0, 1000, 63);
+
+	TEST4_SUCCESS("0xFFFFffff", uint32_t, 0, (uintmax_t)0xFFFFffff,
+	    UINT32_MAX);
+	TEST4_FAILURE("0x100000000", uint32_t, 0, (uintmax_t)0xFFFFffff,
+	    ERANGE);
+	TEST4_FAILURE("0x100000000", uint32_t, 0, (uintmax_t)0x100000000,
+	    ERANGE);
 
 	TEST4_FAILURE("12345", int, -10, 100, ERANGE);
 	TEST4_SUCCESS("0x7fffFFFF", int, 0, INT32_MAX, INT32_MAX);
