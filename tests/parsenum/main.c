@@ -103,6 +103,17 @@ main(int argc, char * argv[])
 	WARNP_INIT;
 
 	TEST4_SUCCESS("123.456", double, 0, 1000, 123.456);
+	TEST4_SUCCESS("nAn", double, 0, 0, (double)NAN);
+	TEST4_SUCCESS("inf", double, 0, (double)INFINITY, (double)INFINITY);
+	TEST4_SUCCESS("-InFiNitY", double, -(double)INFINITY, 0, -(double)INFINITY);
+	TEST4_SUCCESS("0", double, 0, 0, 0);
+	TEST4_SUCCESS("-0", double, 0, 0, -0.0);
+	TEST4_FAILURE("7f", double, 0, 1000, EINVAL);
+	TEST4_SUCCESS("0X7f", double, 0, 1000, 127);
+	TEST4_SUCCESS("-0x7f", double, -1000, 0, -127);
+	TEST4_SUCCESS("-1e2", double, -1000, 0, -100);
+	TEST4_SUCCESS("1e-2", double, 0, 1000, 0.01);
+
 	TEST4_SUCCESS("1234", size_t, -123, 4000, 1234);
 	TEST4_FAILURE("12345", int, -10, 100, ERANGE);
 
