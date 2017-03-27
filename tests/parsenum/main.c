@@ -143,8 +143,14 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("-0x80000000", int32_t, INT32_MIN, 0, INT32_MIN);
 
 	TEST2_SUCCESS("234.567", double, 234.567);
+
 	TEST2_SUCCESS("2345", size_t, 2345);
 	TEST2_FAILURE("abcd", size_t, EINVAL);
+
+	TEST2_SUCCESS("0XffffFFFF", uint32_t, UINT32_MAX);
+	TEST2_FAILURE("ffffFFFF", uint32_t, EINVAL);
+	TEST2_FAILURE("0XfffffFFFF", uint32_t, ERANGE);
+	TEST2_FAILURE("-1", uint32_t, ERANGE);
 
 	/* Success! */
 	exit(0);
