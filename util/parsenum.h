@@ -61,7 +61,8 @@ _Pragma("clang diagnostic pop")
 		PARSENUM_PROLOGUE					\
 		errno = 0,						\
 		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
-			((*(x)) = parsenum_float((s), (min), (max))) :	\
+			((*(x)) = parsenum_float((s), (double)(min),	\
+			    (double)(max))) :				\
 		(((*(x)) = -1) <= 0) ?					\
 			((*(x)) = parsenum_signed((s),			\
 			    (*(x) <= 0) ? (min) : 0,			\
