@@ -36,41 +36,39 @@ parsenum_equal(double x, double y)
 #define TEST4_DO(str, var, min, max, target)			\
 	var parsenum_x;						\
 	int parsenum_ret;					\
-	fprintf(stderr,						\
-	    "Parsing \"%s\" as %s between %s and %s (incl.) yields "	\
+	printf("Parsing \"%s\" as %s between %s and %s (incl.) yields "	\
 	    target "... ", str, #var, #min, #max);		\
 	parsenum_ret = PARSENUM(&parsenum_x, str, min, max);
 
 #define TEST2_DO(str, var, target)				\
 	var parsenum_x;						\
 	int parsenum_ret;					\
-	fprintf(stderr,						\
-	    "Parsing \"%s\" as %s yields " target "... ", str, #var);	\
+	printf("Parsing \"%s\" as %s yields " target "... ", str, #var);	\
 	parsenum_ret = PARSENUM(&parsenum_x, str);
 
 #define CHECK_SUCCESS(target)					\
 	if (parsenum_ret == 0) {				\
 		if (parsenum_equal((double)parsenum_x, (double)target)) { \
-			fprintf(stderr, "PASSED!\n");		\
+			printf("PASSED!\n");		\
 		} else {					\
-			fprintf(stderr, "FAILED!\n");		\
+			printf("FAILED!\n");		\
 			goto err0;				\
 		}						\
 	} else {						\
-		fprintf(stderr, "FAILED!\n");			\
+		printf("FAILED!\n");			\
 		goto err0;					\
 	}
 
 #define CHECK_FAILURE(target)					\
 	if (parsenum_ret != 0) {				\
 		if (errno == target) {				\
-			fprintf(stderr, "PASSED!\n");		\
+			printf("PASSED!\n");		\
 		} else {					\
-			fprintf(stderr, "FAILED!\n");		\
+			printf("FAILED!\n");		\
 			goto err0;				\
 		}						\
 	} else {						\
-		fprintf(stderr, "FAILED!\n");			\
+		printf("FAILED!\n");			\
 		goto err0;					\
 	}
 
