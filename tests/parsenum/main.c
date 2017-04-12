@@ -107,9 +107,9 @@ main(int argc, char * argv[])
 #endif
 
 	TEST4_SUCCESS("123.456", double, 0, 1000, 123.456);
-	TEST4_SUCCESS("nAn", double, 0, 0, (double)NAN);
-	TEST4_SUCCESS("inf", double, 0, (double)INFINITY, (double)INFINITY);
-	TEST4_SUCCESS("-InFiNitY", double, -(double)INFINITY, 0, -(double)INFINITY);
+	TEST4_SUCCESS("nAn", double, 0, 0, NAN);
+	TEST4_SUCCESS("inf", double, 0, INFINITY, INFINITY);
+	TEST4_SUCCESS("-InFiNitY", double, -INFINITY, 0, -INFINITY);
 	TEST4_SUCCESS("0", double, 0, 0, 0);
 	TEST4_SUCCESS("-0", double, 0, 0, -0.0);
 	TEST4_FAILURE("7f", double, 0, 1000, EINVAL);
@@ -118,18 +118,27 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("-1e2", double, -1000, 0, -100);
 	TEST4_SUCCESS("1e-2", double, 0, 1000, 0.01);
 
+	TEST4_SUCCESS("123.456", float, 0, 1000, 123.456);
+	TEST4_SUCCESS("nAn", float, 0, 0, NAN);
+	TEST4_SUCCESS("inf", float, 0, INFINITY, INFINITY);
+	TEST4_SUCCESS("-InFiNitY", float, -INFINITY, 0, -INFINITY);
+	TEST4_SUCCESS("0", float, 0, 0, 0);
+	TEST4_SUCCESS("-0", float, 0, 0, -0.0);
+	TEST4_FAILURE("7f", float, 0, 1000, EINVAL);
+	TEST4_SUCCESS("0X7f", float, 0, 1000, 127);
+	TEST4_SUCCESS("-0x7f", float, -1000, 0, -127);
+	TEST4_SUCCESS("-1e2", float, -1000, 0, -100);
+	TEST4_SUCCESS("1e-2", float, 0, 1000, 0.01);
+
 	TEST4_SUCCESS("1234", size_t, -123, 4000, 1234);
 	TEST4_FAILURE("7f", size_t, 0, 1000, EINVAL);
 	TEST4_SUCCESS("0x7f", size_t, 0, 1000, 127);
 	TEST4_SUCCESS("0x77", size_t, 0, 1000, 119);
 	TEST4_SUCCESS("077", size_t, 0, 1000, 63);
 
-	TEST4_SUCCESS("0xFFFFffff", uint32_t, 0, (uintmax_t)0xFFFFffff,
-	    UINT32_MAX);
-	TEST4_FAILURE("0x100000000", uint32_t, 0, (uintmax_t)0xFFFFffff,
-	    ERANGE);
-	TEST4_FAILURE("0x100000000", uint32_t, 0, (uintmax_t)0x100000000,
-	    ERANGE);
+	TEST4_SUCCESS("0xFFFFffff", uint32_t, 0, 0xFFFFffff, UINT32_MAX);
+	TEST4_FAILURE("0x100000000", uint32_t, 0, 0xFFFFffff, ERANGE);
+	TEST4_FAILURE("0x100000000", uint32_t, 0, 0x100000000, ERANGE);
 
 	TEST4_FAILURE("12345", int, -10, 100, ERANGE);
 	TEST4_SUCCESS("0x7fffFFFF", int, 0, INT32_MAX, INT32_MAX);
