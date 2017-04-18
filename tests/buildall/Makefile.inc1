@@ -11,7 +11,7 @@ SRCS=	main.c \
 	network_accept.c network_connect.c network_read.c network_write.c \
 	asprintf.c b64encode.c daemonize.c entropy.c getopt.c hexify.c \
 		humansize.c insecure_memzero.c monoclock.c noeintr.c \
-		readpass.c sock.c sock_util.c ttyfd.c warnp.c 
+		readpass.c rfc3986.c sock.c sock_util.c ttyfd.c warnp.c 
 
 IDIRS=	-I ../../alg -I ../../cpusupport -I ../../crypto -I ../../datastruct \
 	-I ../../events -I ../../network -I ../../util -I .
@@ -144,6 +144,9 @@ noeintr.o:../../util/noeintr.c cpusupport-config.h
 
 readpass.o:../../util/readpass.c cpusupport-config.h
 	${CC} ${CFLAGS} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} ${CFLAGS_POSIX} -c ../../util/readpass.c -o readpass.o
+
+rfc3986.o:../../util/rfc3986.c cpusupport-config.h
+	${CC} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} ${CFLAGS_POSIX} -c ../../util/rfc3986.c -o rfc3986.o
 
 sock.o:../../util/sock.c cpusupport-config.h
 	${CC} ${CFLAGS} -D_POSIX_C_SOURCE=200809L -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${IDIRS} ${CFLAGS_POSIX} -c ../../util/sock.c -o sock.o
