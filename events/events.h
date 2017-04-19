@@ -1,7 +1,8 @@
 #ifndef _EVENTS_H_
 #define _EVENTS_H_
 
-#include <sys/select.h>
+/* Forward declaration. */
+struct timeval;
 
 /**
  * events_immediate_register(func, cookie, prio):
