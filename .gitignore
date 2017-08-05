@@ -3,8 +3,11 @@
 cpusupport-config.h
 # Other directories.
 tests/buildall/buildall
+tests/buildsingles/*-main
 tests/crc32/test_crc32
 tests/getopt/test_getopt
 tests/getopt/test_getopt.log
 tests/heap/test_heap
+tests/humansize/test_humansize
 tests/sha256/test_sha256
+tests/parsenum/test_parsenum
