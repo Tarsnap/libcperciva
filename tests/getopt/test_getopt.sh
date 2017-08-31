@@ -11,4 +11,5 @@ else
 	echo "FAILED!"
 	echo "test_getopt.log:"
 	cat test_getopt.log
+	exit 1
 fi
