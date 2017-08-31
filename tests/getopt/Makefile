@@ -4,7 +4,7 @@ all:	test_getopt
 
 test:	all
 	@printf "Testing command-line options parsing... "
-	@/bin/sh -e test_getopt.sh 2>test_getopt.log || true
+	@/bin/sh -e test_getopt_args.sh 2>test_getopt.log || true
 	@if cmp -s test_getopt.log test_getopt.good; then	\
 		echo "PASSED!";					\
 	else							\
