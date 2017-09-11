@@ -3,14 +3,7 @@
 all:	test_heap
 
 test:	test_heap
-	@printf "Heapsorting main.c..."
-	@./test_heap < main.c > main.c.sorted
-	@if LC_ALL=C sort < main.c | cmp - main.c.sorted; then	\
-		echo " PASSED!";			\
-		rm main.c.sorted;			\
-	else						\
-		echo " FAILED!";			\
-	fi
+	@./test_heap.sh
 
 test_heap: main.o elasticarray.o ptrheap.o warnp.o
 	${CC} ${CFLAGS} -o test_heap main.o elasticarray.o ptrheap.o warnp.o
