@@ -7,4 +7,5 @@ if LC_ALL=C sort < main.c | cmp - main.c.sorted; then
 	rm main.c.sorted
 else
 	echo " FAILED!"
+	exit 1
 fi
