@@ -7,7 +7,7 @@ matrix:
     - compiler: gcc
       env: CFLAGS="-std=c99 -O2 -Wall -Wextra -Werror -Wpedantic -pedantic-errors -Wno-clobbered"
     - compiler: clang
-      env: CFLAGS="-std=c99 -O2 -Wall -Wextra -Werror -Weverything -Wno-#warnings -Wno-pedantic -Wno-padded -Wno-format-nonliteral -Wno-disabled-macro-expansion -Wno-missing-noreturn"
+      env: CFLAGS="-std=c99 -O2 -Wall -Wextra -Werror -Weverything -Wno-#warnings -Wno-pedantic -Wno-padded -Wno-format-nonliteral -Wno-disabled-macro-expansion -Wno-missing-noreturn -Wno-reserved-id-macro"
 env:
   global:
     - secure: "ieBpKBmxyqohWOH9knvrwCJ77F9dmQ7Xj0nvmXXgjboIX2r9ty7ejAuY0s0cq5ilcVH4KGI6/370LE923jtteKwfalPaxaGrxo2BbpgsLvLeweS/38c4xuMERuWeSdC63X/LRvBQvrkVqrReYT9rAoSu6hGEODeCQE5RiRTtPt0OX56MxaXYcgODRjet5RYrzajIgzXS8CSGE3Yz0K30Awcq9hV4pJLMRFHK/X+kQwdpwj6piwwwAX3XR0kG9U+JTCGLBerkcF5RCLNxnkrbqaMhiTt1aCOY/fCVWd7lqjgOw90eX0EinJJw3GsntoG2RgHGZ/Zb5c6qeF4ghmmhpR5LXRIRbIVBPiyeaL24sttvPG0ZrXkFuogRZTBB0zLBMtSRRfjyT/QivRgTY5NSdWI4QsK/HXp/6fX9S4bqCsFuk+LC9rxcif0sTxfclMroRv5jHz+3BxYDem5LvIfGO6TfASvsGCbGDLc7u0JgqJh8Oim9AJCrab/A1b0soJDAUBVaEl7wswzf7BhETq7G10lfSTATtUVZ9QUIB67vO2CL8IgnSTP0zwDnP3a9bCqsVPDkrC8enbdbH1I1oGU3OKlXi74B4ubczhSei2d71jpuh4qfoTUF/pQyHhNEWf+UbssUGQYK4askqa1YkrtmlzxwuoQkPy7+lO/TiE7Lrgs="
