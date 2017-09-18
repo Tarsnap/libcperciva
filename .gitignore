@@ -4,6 +4,7 @@ cpusupport-config.h
 # Other directories.
 tests/buildall/buildall
 tests/buildsingles/*-main
+tests/buildsingles/Makefile.inc2
 tests/crc32/test_crc32
 tests/getopt/test_getopt
 tests/getopt/test_getopt.log
