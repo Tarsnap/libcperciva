@@ -28,18 +28,17 @@
 #define MPOOL(name, type, size) 				\
 static struct mpool_##name##_struct {				\
 	size_t stacklen;					\
-	void * top;						\
 	int atexit_set;						\
-} mpool_##name##_rec = {0, NULL, 0};				\
+	type * allocs[size];					\
+} mpool_##name##_rec = {0, 0};					\
 								\
 static void							\
 mpool_##name##_atexit(void)					\
 {								\
-	void * top;						\
 								\
-	while ((top = mpool_##name##_rec.top) != NULL) {	\
-		mpool_##name##_rec.top = *(void **)top;		\
-		free(top);					\
+	while (mpool_##name##_rec.stacklen) {			\
+		--mpool_##name##_rec.stacklen;			\
+		free(mpool_##name##_rec.allocs[mpool_##name##_rec.stacklen]);	\
 	}							\
 }								\
 								\
@@ -49,16 +48,14 @@ mpool_##name##_malloc(void)					\
 	type * p;						\
 								\
 	if (mpool_##name##_rec.stacklen) {			\
-		p = mpool_##name##_rec.top;			\
-		mpool_##name##_rec.top = *(void **)p;		\
 		mpool_##name##_rec.stacklen -= 1;		\
+		p = mpool_##name##_rec.allocs[mpool_##name##_rec.stacklen];	\
 	} else {						\
 		if (mpool_##name##_rec.atexit_set == 0) {	\
 			atexit(mpool_##name##_atexit);		\
 			mpool_##name##_rec.atexit_set = 1;	\
 		}						\
-		p = malloc((sizeof(type) > sizeof(void *)) ?	\
-		    sizeof(type) : sizeof(void *));		\
+		p = malloc(sizeof(type));			\
 	}							\
 								\
 	return (p);						\
@@ -72,9 +69,8 @@ mpool_##name##_free(type * p)					\
 		return;						\
 								\
 	if (mpool_##name##_rec.stacklen < size) {		\
-		*(void **)p = mpool_##name##_rec.top;		\
-		mpool_##name##_rec.top = p;			\
-		mpool_##name##_rec.stacklen += 1;		\
+		mpool_##name##_rec.allocs[mpool_##name##_rec.stacklen] = p;	\
+		mpool_##name##_rec.stacklen++;			\
 	} else {						\
 		free(p);					\
 	}							\
