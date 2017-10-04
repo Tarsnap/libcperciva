@@ -1,6 +1,7 @@
 .POSIX:
 
-SUBDIR=	crc32 heap getopt sha256 humansize parsenum buildall buildsingles
+SUBDIR=	crc32 heap getopt sha256 humansize parsenum buildall buildsingles \
+	monoclock
 
 all:
 	for D in ${SUBDIR}; do ${MAKE} -C $${D} all || exit 1; done
