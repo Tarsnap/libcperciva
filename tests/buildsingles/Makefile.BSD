@@ -1,0 +1,22 @@
+# Program name.
+PROG	=
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# main test code
+SRCS	=	main.c
+
+all_extra:
+	${MAKE} -f Makefile.inc1 CFLAGS_POSIX="$${CFLAGS_POSIX}" CFLAGS="$${CFLAGS}" buildsingles
+
+clean_extra:
+	${MAKE} -f Makefile.inc1 clean
+
+test:
+	@true
+
+.include <bsd.prog.mk>
