@@ -11,6 +11,9 @@ CFLAGS_HARDCODED=	-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CON
 
 # This creates (and deletes) a fake cpusupport-config.h that is
 # blank (and thus does not require any special CFLAGS to compile).
+# To import the "test:" target, we need to 1) get the dependencies,
+# 2) run a non-Makefile.BSD "make test" to build those dependencies,
+# then 3) run "${MAKE} -n test" to get the shell commands.
 .for D in ${PROGS} ${TESTS}
 ${D}/Makefile::
 	echo '.POSIX:' > $@
@@ -41,6 +44,12 @@ ${D}/Makefile::
 			| sed -e 's| \\ | |g'; \
 		echo "	\$${CC} \$${CFLAGS} \$${CFLAGS_POSIX} ${CFLAGS_HARDCODED} $${CF} -I$${SUBDIR_DEPTH} \$${IDIRS} -c $${S} -o $${F}"; \
 	    done ) >> $@
+	if grep -q "test:" ${D}/Makefile.BSD ; then		\
+		printf "\n" >> $@;					\
+		( cd ${D} && grep "test:" Makefile.BSD ) >> $@;		\
+		( cd ${D} && make test );				\
+		( cd ${D} && ${MAKE} -n "test" ) | sed 's/^/\t/' >> $@;	\
+	fi
 	rm -f cpusupport-config.h
 .endfor
 
