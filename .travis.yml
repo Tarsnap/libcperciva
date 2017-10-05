@@ -1,7 +1,7 @@
 language: c
 sudo: false
 dist: trusty
-script: cd tests && make all test
+script: make all test
 matrix:
   include:
     - compiler: gcc
