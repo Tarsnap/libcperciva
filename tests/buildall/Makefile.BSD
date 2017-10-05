@@ -1,0 +1,92 @@
+# Program name.
+PROG	=	buildall
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Library code required
+LDADD_REQ	= -lcrypto
+
+# main test code
+SRCS	=	main.c
+
+# Algorithms
+.PATH.c	:	${LIBCPERCIVA_DIR}/alg
+SRCS	+=	crc32c.c
+SRCS	+=	md5.c
+SRCS	+=	sha1.c
+SRCS	+=	sha256.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
+
+# CPU features detection
+.PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
+SRCS	+=	cpusupport_x86_aesni.c
+SRCS	+=	cpusupport_x86_sse2.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
+
+# Crypto code
+.PATH.c	:	${LIBCPERCIVA_DIR}/crypto
+SRCS	+=	crypto_aes.c
+SRCS	+=	crypto_aes_aesni.c
+SRCS	+=	crypto_aesctr.c
+SRCS	+=	crypto_dh.c
+SRCS	+=	crypto_dh_group14.c
+SRCS	+=	crypto_entropy.c
+SRCS	+=	crypto_verify_bytes.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/crypto
+
+# Data structures
+.PATH.c	:	${LIBCPERCIVA_DIR}/datastruct
+SRCS	+=	elasticarray.c
+SRCS	+=	elasticqueue.c
+SRCS	+=	ptrheap.c
+SRCS	+=	seqptrmap.c
+SRCS	+=	timerqueue.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/datastruct
+
+# Event loop
+.PATH.c	:	${LIBCPERCIVA_DIR}/events
+SRCS	+=	events_immediate.c
+SRCS	+=	events_network.c
+SRCS	+=	events_network_selectstats.c
+SRCS	+=	events_timer.c
+SRCS	+=	events.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/events
+
+# Event-driven networking
+.PATH.c	:	${LIBCPERCIVA_DIR}/network
+SRCS	+=	network_accept.c
+SRCS	+=	network_connect.c
+SRCS	+=	network_read.c
+SRCS	+=	network_write.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/network
+
+# Utility functions
+.PATH.c :	${LIBCPERCIVA_DIR}/util
+SRCS	+=	asprintf.c
+SRCS	+=	b64encode.c
+SRCS	+=	daemonize.c
+SRCS	+=	entropy.c
+SRCS	+=	getopt.c
+SRCS	+=	hexify.c
+SRCS	+=	humansize.c
+SRCS	+=	insecure_memzero.c
+SRCS	+=	monoclock.c
+SRCS	+=	noeintr.c
+SRCS	+=	readpass.c
+SRCS	+=	sock.c
+SRCS	+=	sock_util.c
+SRCS	+=	ttyfd.c
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+cflags-crypto_aes_aesni.o:
+	@echo '$${CFLAGS_X86_AESNI}'
+
+test:	buildall
+	@true
+
+.include <bsd.prog.mk>

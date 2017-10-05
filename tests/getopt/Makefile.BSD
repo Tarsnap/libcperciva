@@ -1,0 +1,21 @@
+# Program name.
+PROG	=	test_getopt
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# main test code
+SRCS	=	main.c
+
+# Utility functions
+.PATH.c	:	${LIBCPERCIVA_DIR}/util
+SRCS	+=	getopt.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_getopt
+	./test_getopt.sh
+
+.include <bsd.prog.mk>

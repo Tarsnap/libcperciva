@@ -1,0 +1,21 @@
+# Program name.
+PROG	=	test_crc32
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# main test code
+SRCS	=	main.c
+
+# Algorithms
+.PATH.c	:	${LIBCPERCIVA_DIR}/alg
+SRCS	+=	crc32c.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
+
+test:	test_crc32
+	@./test_crc32
+
+.include <bsd.prog.mk>

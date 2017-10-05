@@ -1,0 +1,27 @@
+# Program name.
+PROG	=	test_heap
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# main test code
+SRCS	=	main.c
+
+# Data structures
+.PATH.c :	${LIBCPERCIVA_DIR}/datastruct
+SRCS	+=	elasticarray.c
+SRCS	+=	ptrheap.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/datastruct
+
+# Utility functions
+.PATH.c :	${LIBCPERCIVA_DIR}/util
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_heap
+	@./test_heap.sh
+
+.include <bsd.prog.mk>
