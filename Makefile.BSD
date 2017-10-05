@@ -62,6 +62,17 @@ ${D}/Makefile::
 		    Makefile.new );					\
 		( cd ${D} && mv Makefile.new Makefile );		\
 	fi
+	if grep -q "clean_extra:" ${D}/Makefile.BSD ; then		\
+		printf "\n" >> $@;					\
+		( cd ${D} && grep "clean_extra:" Makefile.BSD ) >> $@;		\
+		( cd ${D} && make test );				\
+		( cd ${D} && ${MAKEBSD} -n "clean_extra" ) | sed 's/^/\t/' >> $@;	\
+		( cd ${D} && cat Makefile |				\
+		    sed 's/clean:/clean:\tclean_extra/' |		\
+		    sed 's/${MAKE}/$${MAKE}/' >				\
+		    Makefile.new );					\
+		( cd ${D} && mv Makefile.new Makefile );		\
+	fi
 	rm -f cpusupport-config.h
 .endfor
 
