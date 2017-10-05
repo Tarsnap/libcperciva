@@ -1,0 +1,24 @@
+# Program name.
+PROG	=	test_parsenum
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Library code required
+LDADD_REQ	= -lm
+
+# main test code
+SRCS	=	main.c
+
+# Utility functions
+.PATH.c :	${LIBCPERCIVA_DIR}/util
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_parsenum
+	@./test_parsenum
+
+.include <bsd.prog.mk>

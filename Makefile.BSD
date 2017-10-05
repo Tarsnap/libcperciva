@@ -1,6 +1,6 @@
 PKG=	libcperciva
 PROGS=
-TESTS=
+TESTS=	tests/crc32 tests/getopt tests/heap tests/humansize tests/parsenum
 PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX alg cpusupport crypto datastruct \
 	events network tests util
 
