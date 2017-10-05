@@ -1,0 +1,29 @@
+# Program name.
+PROG	=	test_sha256
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# main test code
+SRCS	=	main.c
+
+# Algorithms
+.PATH.c	:	${LIBCPERCIVA_DIR}/alg
+SRCS	+=	sha256.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
+
+# Utility functions
+.PATH.c :	${LIBCPERCIVA_DIR}/util
+SRCS	+=	getopt.c
+SRCS	+=	hexify.c
+SRCS	+=	insecure_memzero.c
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_sha256
+	@./test_sha256 -x
+
+.include <bsd.prog.mk>
