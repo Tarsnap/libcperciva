@@ -51,6 +51,17 @@ ${D}/Makefile::
 		( cd ${D} && make test );				\
 		( cd ${D} && ${MAKEBSD} -n "test" ) | sed 's/^/\t/' >> $@;	\
 	fi
+	if grep -q "all_extra:" ${D}/Makefile.BSD ; then		\
+		printf "\n" >> $@;					\
+		( cd ${D} && grep "all_extra:" Makefile.BSD ) >> $@;		\
+		( cd ${D} && make test );				\
+		( cd ${D} && ${MAKEBSD} -n "all_extra" ) | sed 's/^/\t/' >> $@;	\
+		( cd ${D} && cat Makefile |				\
+		    sed 's/all:\t$${PROG}/all:\t$${PROG} all_extra/' |	\
+		    sed 's/${MAKE}/$${MAKE}/' >				\
+		    Makefile.new );					\
+		( cd ${D} && mv Makefile.new Makefile );		\
+	fi
 	rm -f cpusupport-config.h
 .endfor
 
