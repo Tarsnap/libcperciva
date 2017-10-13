@@ -67,7 +67,7 @@ mpool_free(struct mpool * M, void * p)
 		allocs_new = malloc(M->allocsize * 2 * sizeof(void *));
 		if (allocs_new) {
 			memcpy(allocs_new, M->allocs,
-			    M->allocsize * 2 * sizeof(void *));
+			    M->allocsize * sizeof(void *));
 			if (M->allocs != M->allocs_static)
 				free(M->allocs);
 			M->allocs = allocs_new;
