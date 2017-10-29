@@ -4,6 +4,7 @@
 # deliberate, since we want to rely on comparing the output with good output
 # to determine success or failure.
 printf "Testing command-line options parsing... "
+rm -f test_getopt.log
 /bin/sh -e test_getopt_args.sh 2>test_getopt.log || true
 if cmp -s test_getopt.log test_getopt.good; then
 	echo "PASSED!"
