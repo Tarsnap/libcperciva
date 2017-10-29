@@ -3,7 +3,8 @@
 PKG=	libcperciva
 PROGS=
 TESTS=	tests/buildall tests/buildsingles tests/crc32 tests/getopt tests/heap \
-	tests/humansize tests/monoclock tests/parsenum tests/sha256
+	tests/humansize tests/monoclock tests/parsenum tests/sha256 \
+	tests/valgrind
 PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX alg cpusupport crypto datastruct \
 	events network tests util
 BINDIR_DEFAULT=	/usr/local/bin
@@ -36,9 +37,7 @@ clean:
 
 .PHONY: test
 test:	all
-	for D in ${TESTS}; do				\
-		( cd $${D} && ${MAKE} test ) || exit 2;	\
-	done
+	tests/test_libcperciva.sh
 
 # Developer targets: These only work with BSD make
 Makefiles:
