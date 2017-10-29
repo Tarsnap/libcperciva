@@ -36,9 +36,7 @@ clean:
 
 .PHONY: test
 test:	all
-	for D in ${TESTS}; do				\
-		( cd $${D} && ${MAKE} test ) || exit 2;	\
-	done
+	tests/test_libcperciva.sh
 
 # Developer targets: These only work with BSD make
 Makefiles:
