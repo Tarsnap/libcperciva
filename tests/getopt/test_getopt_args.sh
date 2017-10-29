@@ -11,7 +11,7 @@
 ./test_getopt -bbfbar
 ./test_getopt foo bar baz
 ./test_getopt -b --foo=bar baz
-./test_getopt -b -- --foo bar baz
+${c_valgrind_cmd} ./test_getopt -b -- --foo bar baz
 
 if ./test_getopt -a; then
 	false;
