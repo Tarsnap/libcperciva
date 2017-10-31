@@ -1,7 +1,7 @@
 language: c
 sudo: false
 dist: trusty
-script: make all test
+script: make all && make test USE_VALGRIND=1
 matrix:
   include:
     - compiler: gcc
@@ -16,6 +16,10 @@ env:
     - COVERITY_SCAN_NOTIFICATION_EMAIL="cperciva@tarsnap.com"
     - COVERITY_SCAN_BUILD_COMMAND_PREPEND="cd tests/buildall"
     - COVERITY_SCAN_BUILD_COMMAND="make all clean"
+addons:
+  apt:
+    packages:
+      - valgrind
 before_install:
   - test $TRAVIS_BRANCH != coverity-scan -o ${TRAVIS_JOB_NUMBER##*.} = 1 || exit 0
   - curl -s "https://scan.coverity.com/scripts/travisci_build_coverity_scan.sh" | bash || true
