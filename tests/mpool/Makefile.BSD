@@ -1,0 +1,29 @@
+# Program name.
+PROG	=	test_mpool
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# main test code
+SRCS	=	main.c
+
+# Data structures
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/datastruct
+
+# Utility functions
+.PATH.c :	${LIBCPERCIVA_DIR}/util
+SRCS	+=	monoclock.c
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_mpool
+	@./test_mpool.sh
+
+# Temporarily disable warning until the new mpool code
+cflags-main.o:
+	@echo '-Wno-cast-align'
+
+.include <bsd.prog.mk>
