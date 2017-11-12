@@ -127,6 +127,7 @@ main(int argc, char * argv[])
 	unsigned long sets, reps;
 	unsigned int use_mpool;
 	long long delta;
+	long long delta_pico;
 
 	WARNP_INIT;
 
@@ -140,7 +141,8 @@ main(int argc, char * argv[])
 	/* Time memory allocation method, and output it. */
 	if ((delta = time_func(sets, reps, use_mpool)) < 0)
 		goto err0;
-	printf("%lli\n", delta);
+	delta_pico = (long long)(1000000 * (double)delta / (sets * reps));
+	printf("%lli\n", delta_pico);
 
 	/* Success! */
 	exit(0);
