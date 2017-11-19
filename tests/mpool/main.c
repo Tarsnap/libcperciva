@@ -137,6 +137,12 @@ main(int argc, char * argv[])
 		goto err0;
 	}
 
+	/* Sanity check. */
+	if (!((sets > 0) && (reps > 0))) {
+		fprintf(stderr, "SETS and REPS must be greater than zero\n");
+		goto err0;
+	}
+
 	/* Time memory allocation method, and output it. */
 	if ((delta = time_func(sets, reps, use_mpool)) < 0)
 		goto err0;
