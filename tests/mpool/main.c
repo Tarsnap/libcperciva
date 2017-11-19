@@ -56,7 +56,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 
 	/* Get start time. */
 	if (monoclock_get(&begin)) {
-		warnp("clock()");
+		warnp("monoclock_get()");
 		goto err1;
 	}
 
@@ -102,7 +102,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 
 	/* Get end time and difference. */
 	if (monoclock_get(&end)) {
-		warnp("clock()");
+		warnp("monoclock_get()");
 		goto err1;
 	}
 	delta = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
