@@ -46,7 +46,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 	struct timeval begin, end;
 	long long delta;
 	unsigned long i, j;
-	void ** arr;
+	struct stuff ** arr;
 
 	/* Allocate temporary array. */
 	if ((arr = malloc(reps * sizeof(struct stuff *))) == NULL) {
