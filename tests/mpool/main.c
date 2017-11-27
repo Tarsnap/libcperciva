@@ -46,7 +46,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 	struct timeval begin, end;
 	long long delta;
 	unsigned long i, j;
-	void ** arr;
+	struct stuff ** arr;
 
 	/* Allocate temporary array. */
 	if ((arr = malloc(reps * sizeof(struct stuff *))) == NULL) {
@@ -56,7 +56,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 
 	/* Get start time. */
 	if (monoclock_get(&begin)) {
-		warnp("clock()");
+		warnp("monoclock_get()");
 		goto err1;
 	}
 
@@ -102,7 +102,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 
 	/* Get end time and difference. */
 	if (monoclock_get(&end)) {
-		warnp("clock()");
+		warnp("monoclock_get()");
 		goto err1;
 	}
 	delta = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
@@ -134,6 +134,12 @@ main(int argc, char * argv[])
 	if ((argc != 4) || (PARSENUM(&sets, argv[1])) ||
 	    (PARSENUM(&reps, argv[2])) || (PARSENUM(&use_mpool, argv[3]))) {
 		printf("usage: test_mpool SETS REPS TYPE\n");
+		goto err0;
+	}
+
+	/* Sanity check. */
+	if (!((sets > 0) && (reps > 0))) {
+		fprintf(stderr, "SETS and REPS must be greater than zero\n");
 		goto err0;
 	}
 
