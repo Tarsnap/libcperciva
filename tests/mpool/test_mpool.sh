@@ -6,19 +6,30 @@ OUT=timing.txt
 # Header
 echo "sets\treps\tmalloc\tmpool" > ${OUT}
 
+make_count() {
+	END=$1
+	N=1
+	while [ $N -le ${END} ]; do
+		echo $N
+		N=$((N + 1))
+	done
+}
+
 run() {
 	SETS=$1
 	REPS=$2
 	MPOOL=$3
 
+	COUNT_REPS=$( make_count ${MIN_OUT_OF} )
+
 	# "Warm up"; don't record this data
-	for j in `seq ${MIN_OUT_OF}`; do
+	for j in ${COUNT_REPS}; do
 		./test_mpool ${SETS} ${REPS} ${MPOOL} > /dev/null
 	done
 
 	arr=""
 	# Get raw data
-	for i in `seq ${MIN_OUT_OF}`; do
+	for i in ${COUNT_REPS}; do
 		usec=$( ./test_mpool ${SETS} ${REPS} ${MPOOL} )
 		arr="${arr} ${usec}"
 	done
