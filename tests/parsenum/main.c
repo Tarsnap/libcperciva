@@ -102,7 +102,7 @@ main(int argc, char * argv[])
 
 #if __clang__
 	_Pragma("clang diagnostic ignored \"-Wtautological-constant-out-of-range-compare\"");
-#elif __GNUC__
+#elif __GNUC__ >= 5 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 	_Pragma("GCC diagnostic ignored \"-Wtype-limits\"");
 #endif
 
