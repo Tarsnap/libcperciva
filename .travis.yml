@@ -8,7 +8,7 @@ matrix:
       env: CFLAGS="-std=c99 -O2 -Wall -Wextra -Werror -Wpedantic -pedantic-errors -Wno-clobbered"
         USE_VALGRIND=1
     - compiler: clang
-      env: CFLAGS="-std=c99 -O2 -Wall -Wextra -Werror -Weverything -Wno-#warnings -Wno-pedantic -Wno-padded -Wno-format-nonliteral -Wno-disabled-macro-expansion -Wno-missing-noreturn -Wno-reserved-id-macro"
+      env: CFLAGS="-std=c99 -O2 -Wall -Wextra -Werror -Weverything -Wno-#warnings -Wno-pedantic -Wno-padded -Wno-format-nonliteral -Wno-disabled-macro-expansion -Wno-missing-noreturn -Wno-reserved-id-macro -Wno-cast-align"
         USE_VALGRIND=1
     - os: osx
       compiler: clang
