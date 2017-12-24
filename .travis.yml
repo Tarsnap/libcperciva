@@ -1,9 +1,10 @@
 language: c
 sudo: false
 dist: trusty
-# We can't use strict flags in CFLAGS as a general environment
-# variable, because that messes up ./configure and coverity-scan.
-script: make CFLAGS="$CFLAGS $CFLAGS_STRICT" all && make test
+addons:
+  apt:
+    packages:
+      - valgrind
 matrix:
   include:
     - compiler: gcc
@@ -25,10 +26,6 @@ env:
     - COVERITY_SCAN_BRANCH_PATTERN="coverity-scan"
     - COVERITY_SCAN_NOTIFICATION_EMAIL="cperciva@tarsnap.com"
     - COVERITY_SCAN_BUILD_COMMAND="make all clean"
-addons:
-  apt:
-    packages:
-      - valgrind
 before_install:
   # Handle Coverity scan
   - >
@@ -44,3 +41,6 @@ before_install:
     fi
   # Otherwise, act normally.
   - 'if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CFLAGS="-I/usr/local/opt/openssl/include $CFLAGS" LDFLAGS="-L/usr/local/opt/openssl/lib $LDFLAGS"; fi'
+# We can't use strict flags in CFLAGS as a general environment
+# variable, because that messes up ./configure and coverity-scan.
+script: make CFLAGS="$CFLAGS $CFLAGS_STRICT" all && make test
