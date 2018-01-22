@@ -69,13 +69,12 @@ printf "sets\treps\tratio\n"
 # initial pool of 100).
 cmp_methods 10000 100 200
 
-# mpool is not much slower than malloc in this range
-# (it's generally faster, but we can't reliably test for that).
-cmp_methods 1000 1000 90
+# mpool is still considerably faster than malloc in this range.
+cmp_methods 1000 1000 200
 
 # mpool is not much slower than malloc even when there's no benefit
 # from the pool.
-cmp_methods 1 1000000 90
+cmp_methods 1 1000000 80
 
 # Test again with valgrind (if enabled).
 if [ -n "${c_valgrind_cmd}" ]; then
