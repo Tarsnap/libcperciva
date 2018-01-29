@@ -1,33 +1,46 @@
 language: c
 sudo: false
 dist: trusty
-script: make all && make test
-matrix:
-  include:
-    - compiler: gcc
-      env: CFLAGS="-std=c99 -O2 -Wall -Wextra -Werror -Wpedantic -pedantic-errors -Wno-clobbered"
-        USE_VALGRIND=1
-    - compiler: clang
-      env: CFLAGS="-std=c99 -O2 -Wall -Wextra -Werror -Weverything -Wno-#warnings -Wno-pedantic -Wno-padded -Wno-format-nonliteral -Wno-disabled-macro-expansion -Wno-missing-noreturn -Wno-reserved-id-macro -Wno-cast-align"
-        USE_VALGRIND=1
-    - os: osx
-      compiler: clang
-      env: CFLAGS="-std=c99 -O2 -Wall -Wextra -Werror -Weverything -Wno-#warnings -Wno-pedantic -Wno-padded -Wno-format-nonliteral -Wno-disabled-macro-expansion -Wno-missing-noreturn -Wno-reserved-id-macro"
-        USE_VALGRIND=0
-env:
-  global:
-    - secure: "ieBpKBmxyqohWOH9knvrwCJ77F9dmQ7Xj0nvmXXgjboIX2r9ty7ejAuY0s0cq5ilcVH4KGI6/370LE923jtteKwfalPaxaGrxo2BbpgsLvLeweS/38c4xuMERuWeSdC63X/LRvBQvrkVqrReYT9rAoSu6hGEODeCQE5RiRTtPt0OX56MxaXYcgODRjet5RYrzajIgzXS8CSGE3Yz0K30Awcq9hV4pJLMRFHK/X+kQwdpwj6piwwwAX3XR0kG9U+JTCGLBerkcF5RCLNxnkrbqaMhiTt1aCOY/fCVWd7lqjgOw90eX0EinJJw3GsntoG2RgHGZ/Zb5c6qeF4ghmmhpR5LXRIRbIVBPiyeaL24sttvPG0ZrXkFuogRZTBB0zLBMtSRRfjyT/QivRgTY5NSdWI4QsK/HXp/6fX9S4bqCsFuk+LC9rxcif0sTxfclMroRv5jHz+3BxYDem5LvIfGO6TfASvsGCbGDLc7u0JgqJh8Oim9AJCrab/A1b0soJDAUBVaEl7wswzf7BhETq7G10lfSTATtUVZ9QUIB67vO2CL8IgnSTP0zwDnP3a9bCqsVPDkrC8enbdbH1I1oGU3OKlXi74B4ubczhSei2d71jpuh4qfoTUF/pQyHhNEWf+UbssUGQYK4askqa1YkrtmlzxwuoQkPy7+lO/TiE7Lrgs="
-    - COVERITY_SCAN_PROJECT_NAME="Tarsnap/libcperciva"
-    - COVERITY_SCAN_BRANCH_PATTERN="coverity-scan"
-    - COVERITY_SCAN_NOTIFICATION_EMAIL="cperciva@tarsnap.com"
-    - COVERITY_SCAN_BUILD_COMMAND_PREPEND="cd tests/buildall"
-    - COVERITY_SCAN_BUILD_COMMAND="make all clean"
 addons:
   apt:
     packages:
       - valgrind
+matrix:
+  include:
+    - compiler: gcc
+      env: CFLAGS_STRICT="-Wall -Wextra -Werror -Wpedantic -pedantic-errors -Wno-clobbered"
+        USE_VALGRIND=1
+    - compiler: clang
+      env: CFLAGS_STRICT="-Wall -Wextra -Werror -Weverything -Wno-#warnings -Wno-pedantic -Wno-padded -Wno-format-nonliteral -Wno-disabled-macro-expansion -Wno-missing-noreturn -Wno-reserved-id-macro -Wno-cast-align"
+        USE_VALGRIND=1
+    - os: osx
+      compiler: clang
+      env: CFLAGS_STRICT="-Wall -Wextra -Werror -Weverything -Wno-#warnings -Wno-pedantic -Wno-padded -Wno-format-nonliteral -Wno-disabled-macro-expansion -Wno-missing-noreturn -Wno-reserved-id-macro"
+        USE_VALGRIND=0
+env:
+  global:
+    # Some projects need -std=c99 to specify library support for ./configure
+    - CFLAGS="-std=c99 -O2"
+    - secure: "X6lt/dxOtQqLrnZAd35eBC7DE9J+mePHzuThMvh9i7gF1LKZdfaiG9UuH6gVobGYB+JqxZcblHAvnrGRRi8ASCunVDqZDtdXKnuCJJUaW4n9F+Fe94sYIwRYMNwTIEzlSnRbpNmrmOenHPAq4JR1MvLyz4AE0GpHeCCXl0Obx9xh4+ejP8mGoRn8P9Ueii1UMuQSBigdPAcOK7cbTrB7VrwdPbasfj+w23yJCrROg0/vzbKUIYVWaMBK8b3csOHhFYiqPpBpRQqV5jb5XLnkEBa0Hr60TrcQOEIpRy0rJZ2iKxqtfQBXRHTvbTWDlHf2PbYZqpzpDV40Ad2oC48akI4w0ynJBGR98hP5+mAtqzNfLhSNa6AL8ZUL9KTQZvKBMliIGNM1CBSLXBrVnP591idwT3rjeZCWYfr9vyFpyWdedtWYKA6svsjSf8Jd/brsPIZs3+SDHclWbi2jPGRDY8UL1Kd5x26w5l3fF0LTIs/pghNpLIhoRFYWOPCkqNJhqfbX/9fcy0JB3IvhnKEhCkRUTKhGKNuR/0BkRfiXkEIVquM+zz65F9ULiScwQ31P9cKPDezxAUs5nxfdQqb84k+4UAoRI7ErIC+gqQCD9c9iOM6smnJw/OG4Klco+mCKmyOXZPRDVFh1U41pvWotMo6tu2rvQqyh8AjPySUZm/8="
+    - COVERITY_SCAN_PROJECT_NAME="Tarsnap/libcperciva"
+    - COVERITY_SCAN_BRANCH_PATTERN="coverity-scan"
+    - COVERITY_SCAN_NOTIFICATION_EMAIL="cperciva@tarsnap.com"
+    - COVERITY_SCAN_BUILD_COMMAND="make all clean"
 before_install:
-  - test $TRAVIS_BRANCH != coverity-scan -o ${TRAVIS_JOB_NUMBER##*.} = 1 || exit 0
-  - curl -s "https://scan.coverity.com/scripts/travisci_build_coverity_scan.sh" | bash || true
-  - test $TRAVIS_BRANCH != coverity-scan || exit 0
+  # Handle Coverity scan
+  - >
+    if [[ "${TRAVIS_BRANCH}" == "coverity-scan" ]]; then
+      if [[ "${TRAVIS_JOB_NUMBER##*.}" == "1" ]]; then
+        curl -s "https://scan.coverity.com/scripts/travisci_build_coverity_scan.sh" | bash || true
+      else
+        echo "Not main job; do nothing."
+      fi
+      echo "Done Coverity scan."
+      sleep 1
+      exit 0
+    fi
+  # Otherwise, act normally.
   - 'if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export CFLAGS="-I/usr/local/opt/openssl/include $CFLAGS" LDFLAGS="-L/usr/local/opt/openssl/lib $LDFLAGS"; fi'
+# We can't use strict flags in CFLAGS as a general environment
+# variable, because that messes up ./configure and coverity-scan.
+script: make CFLAGS="$CFLAGS $CFLAGS_STRICT" all && make test

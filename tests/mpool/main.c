@@ -48,6 +48,9 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 	unsigned long i, j;
 	struct stuff ** arr;
 
+	/* Sanity test. */
+	assert((sets > 0) && (reps > 0));
+
 	/* Allocate temporary array. */
 	if ((arr = malloc(reps * sizeof(struct stuff *))) == NULL) {
 		warnp("Out of memory");

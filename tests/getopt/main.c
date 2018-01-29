@@ -22,10 +22,12 @@ pass1(int argc, char * argv[])
 		fprintf(stderr, "Option being processed: %s\n", ch);
 		GETOPT_SWITCH(ch) {
 		GETOPT_OPT("-b"):
+			/* FALLTHROUGH */
 		GETOPT_OPT("--bar"):
 			bflag++;
 			break;
 		GETOPT_OPTARG("-f"):
+			/* FALLTHROUGH */
 		GETOPT_OPTARG("--foo"):
 			fprintf(stderr, "foo: %s\n", optarg);
 			break;
@@ -65,10 +67,12 @@ pass2(int argc, char * argv[])
 		fprintf(stderr, "Option being processed: %s\n", ch);
 		GETOPT_SWITCH(ch) {
 		GETOPT_OPT("-b"):
+			/* FALLTHROUGH */
 		GETOPT_OPT("--bar"):
 			bflag++;
 			break;
 		GETOPT_OPTARG("-f"):
+			/* FALLTHROUGH */
 		GETOPT_OPTARG("--foo"):
 			fprintf(stderr, "foo: %s\n", optarg);
 			break;
