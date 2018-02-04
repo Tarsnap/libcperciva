@@ -8,6 +8,8 @@
 #include "events.h"
 #include "events_internal.h"
 
+#define MAX_EVENTS_AT_ONCE 100
+
 /* Event structure. */
 struct eventrec {
 	int (*func)(void *);
@@ -88,6 +90,7 @@ events_run(void)
 	struct timeval * tv;
 	struct timeval tv2;
 	int rc = 0;
+	size_t nrun;
 
 	/* If we have any immediate events, process them and return. */
 	if ((r = events_immediate_get()) != NULL) {
@@ -116,10 +119,10 @@ events_run(void)
 
 	/*
 	 * Check for available immediate events, network events, and timer
-	 * events, in that order of priority; exit only when no more events
-	 * are available.
+	 * events, in that order of priority; exit when no more events are
+	 * available or when MAX_EVENTS_AT_ONCE events have been processed.
 	 */
-	do {
+	for (nrun = 0; nrun < MAX_EVENTS_AT_ONCE; nrun++) {
 		/* Run an immediate event, if one is available. */
 		if ((r = events_immediate_get()) != NULL) {
 			if ((rc = doevent(r)) != 0)
@@ -155,7 +158,7 @@ events_run(void)
 
 		/* No events available. */
 		break;
-	} while (1);
+	}
 
 done:
 	/* Success! */
