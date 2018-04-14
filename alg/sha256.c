@@ -2,8 +2,11 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "cpusupport.h"
 #include "insecure_memzero.h"
+#include "sha256_shani.h"
 #include "sysendian.h"
+#include "warnp.h"
 
 #include "sha256.h"
 
@@ -156,6 +159,69 @@ SHA256_Transform(uint32_t state[static restrict 8],
 		state[i] += S[i];
 }
 
+#ifdef CPUSUPPORT_X86_SHANI
+/* Test whether SHA extensions and software code produce the same results. */
+static int
+shatest(uint8_t block[64])
+{
+	uint32_t state_software[8];
+	uint32_t state_hardware[8];
+	uint32_t tmp32[72];
+
+	/* Initialize */
+	memcpy(state_software, initial_state, sizeof(initial_state));
+	memcpy(state_hardware, initial_state, sizeof(initial_state));
+
+	/* Test transform functions. */
+	SHA256_Transform(state_software, block, &tmp32[0], &tmp32[64]);
+	SHA256_Transform_shani(state_hardware, block);
+
+	/* Clean the stack. */
+	insecure_memzero(tmp32, 288);
+
+	/* Do the outputs match? */
+	return (memcmp(state_software, state_hardware, 32));
+}
+
+/* Should we use SHA? */
+static int
+usesha(void)
+{
+	static int shagood = -1;
+	uint8_t block[64];
+
+	/* If we haven't decided which code to use yet, decide now. */
+	while (shagood == -1) {
+		/* Default to software. */
+		shagood = 0;
+
+		/* If the CPU doesn't claim to support SHA, stop here. */
+		if (!cpusupport_x86_shani())
+			break;
+
+		/* Test case: "". */
+		memset(block, 0, 64);
+		if (shatest(block)) {
+			warn0("Disabling SHA due to failed self-test");
+			break;
+		}
+
+		/* Test case: "a". */
+		memset(block, 0, 64);
+		block[0] = 'a';
+		if (shatest(block)) {
+			warn0("Disabling SHA due to failed self-test");
+			break;
+		}
+
+		/* SHA works; use it. */
+		shagood = 1;
+	}
+
+	return (shagood);
+}
+#endif /* CPUSUPPORT_X86_SHANI */
+
 static const uint8_t PAD[64] = {
 	0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -179,6 +245,11 @@ SHA256_Pad(SHA256_CTX * ctx, uint32_t tmp32[static restrict 72])
 	} else {
 		/* Finish the current block and mix. */
 		memcpy(&ctx->buf[r], PAD, 64 - r);
+#ifdef CPUSUPPORT_X86_SHANI
+		if (usesha())
+			SHA256_Transform_shani(ctx->state, ctx->buf);
+		else
+#endif
 		SHA256_Transform(ctx->state, ctx->buf, &tmp32[0], &tmp32[64]);
 
 		/* The start of the final block is all zeroes. */
@@ -189,6 +260,11 @@ SHA256_Pad(SHA256_CTX * ctx, uint32_t tmp32[static restrict 72])
 	be64enc(&ctx->buf[56], ctx->count);
 
 	/* Mix in the final block. */
+#ifdef CPUSUPPORT_X86_SHANI
+	if (usesha())
+		SHA256_Transform_shani(ctx->state, ctx->buf);
+	else
+#endif
 	SHA256_Transform(ctx->state, ctx->buf, &tmp32[0], &tmp32[64]);
 }
 
@@ -236,12 +312,22 @@ _SHA256_Update(SHA256_CTX * ctx, const void * in, size_t len,
 
 	/* Finish the current block. */
 	memcpy(&ctx->buf[r], src, 64 - r);
+#ifdef CPUSUPPORT_X86_SHANI
+	if (usesha())
+		SHA256_Transform_shani(ctx->state, ctx->buf);
+	else
+#endif
 	SHA256_Transform(ctx->state, ctx->buf, &tmp32[0], &tmp32[64]);
 	src += 64 - r;
 	len -= 64 - r;
 
 	/* Perform complete blocks. */
 	while (len >= 64) {
+#ifdef CPUSUPPORT_X86_SHANI
+		if (usesha())
+			SHA256_Transform_shani(ctx->state, src);
+		else
+#endif
 		SHA256_Transform(ctx->state, src, &tmp32[0], &tmp32[64]);
 		src += 64;
 		len -= 64;
