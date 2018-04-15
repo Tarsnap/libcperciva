@@ -249,6 +249,18 @@ SHA256_Transform_shani(uint32_t state[static restrict 8],
 	/* Save state */
 	_mm_storeu_si128((__m128i*) &state[0], STATE0);
 	_mm_storeu_si128((__m128i*) &state[4], STATE1);
+
+	/* Clear intermediate values to avoid leaking data. */
+	STATE0 = _mm_setzero_si128();
+	STATE1 = _mm_setzero_si128();
+	MSG = _mm_setzero_si128();
+	TMP = _mm_setzero_si128();
+	MSG0 = _mm_setzero_si128();
+	MSG1 = _mm_setzero_si128();
+	MSG2 = _mm_setzero_si128();
+	MSG3 = _mm_setzero_si128();
+	ABEF_SAVE = _mm_setzero_si128();
+	CDGH_SAVE = _mm_setzero_si128();
 }
 
 #endif
