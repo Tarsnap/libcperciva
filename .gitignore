@@ -12,6 +12,7 @@ tests/heap/test_heap
 tests/humansize/test_humansize
 tests/monoclock/test_monoclock
 tests/mpool/test_mpool
+tests/setuidgid/test_setuidgid
 tests/sha256/test_sha256
 tests/parsenum/test_parsenum
 tests/valgrind/potential-memleaks
