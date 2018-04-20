@@ -1,7 +1,7 @@
 .POSIX:
 
 HEADERS=\
-	crc32c.h md5.h sha1.h sha256.h \
+	crc32c.h md5.h sha1.h sha256.h sha256_shani.h \
 	cpusupport.h \
 	crypto_aes.h crypto_aes_aesni.h crypto_aesctr.h crypto_dh.h \
 		crypto_dh_group14.h crypto_entropy.h crypto_verify_bytes.h \
