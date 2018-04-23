@@ -4,7 +4,7 @@ PKG=	libcperciva
 PROGS=
 TESTS=	tests/buildall tests/buildsingles tests/crc32 tests/getopt tests/heap \
 	tests/humansize tests/monoclock tests/mpool tests/parsenum \
-	tests/sha256 tests/valgrind
+	tests/setuidgid tests/sha256 tests/valgrind
 PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX alg cpusupport crypto datastruct \
 	events network tests util
 BINDIR_DEFAULT=	/usr/local/bin
@@ -35,9 +35,12 @@ clean:
 		( cd $${D} && ${MAKE} clean ) || exit 2;	\
 	done
 
-.PHONY: test
+.PHONY: test test-clean
 test:	all
 	tests/test_libcperciva.sh
+
+test-clean:
+	rm -rf tests-output/ tests-valgrind/
 
 # Developer targets: These only work with BSD make
 Makefiles:

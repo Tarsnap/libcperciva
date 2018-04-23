@@ -1,0 +1,22 @@
+# Program name.
+PROG	=	test_setuidgid
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# main test code
+SRCS	=	main.c
+
+# Utility functions
+.PATH.c	:	${LIBCPERCIVA_DIR}/util
+SRCS	+=	setuidgid.c
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_setuidgid
+	@./test_setuidgid.sh
+
+.include <bsd.prog.mk>
