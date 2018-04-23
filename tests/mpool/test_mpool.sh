@@ -1,10 +1,6 @@
 #!/bin/sh
 
 MIN_OUT_OF=10
-OUT=timing.txt
-
-# Header
-echo "sets\treps\tmalloc\tmpool" > ${OUT}
 
 make_count() {
 	END=$1

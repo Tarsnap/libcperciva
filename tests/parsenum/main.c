@@ -100,10 +100,11 @@ main(int argc, char * argv[])
 
 	WARNP_INIT;
 
+	/* Disable warning that 0x100000000 cannot fit into uint32_t. */
 #if __clang__
-	_Pragma("clang diagnostic ignored \"-Wtautological-constant-out-of-range-compare\"");
+	_Pragma("clang diagnostic ignored \"-Wtautological-constant-out-of-range-compare\"")
 #elif __GNUC__ >= 5 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
-	_Pragma("GCC diagnostic ignored \"-Wtype-limits\"");
+	_Pragma("GCC diagnostic ignored \"-Wtype-limits\"")
 #endif
 
 	TEST4_SUCCESS("123.456", double, 0, 1000, 123.456);
