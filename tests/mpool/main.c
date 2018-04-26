@@ -124,6 +124,43 @@ err0:
 	return (-1);
 }
 
+static void
+silly_double_free() {
+	int ** arr;
+	size_t N = 1;
+	size_t i, j;
+
+	if ((arr = malloc(N * sizeof(int *))) == NULL)
+		return;
+	for (j = 0; j < 2; j++) {
+		for (i = 0; i < N; i++)
+			if ((arr[i] = malloc(sizeof(int))) == NULL)
+				goto cleanup;
+		free(arr[0]);
+	}
+
+cleanup:
+	free(arr);
+}
+
+static void
+silly_ok() {
+	int ** arr;
+	size_t N = 1;
+	size_t j;
+
+	if ((arr = malloc(N * sizeof(int *))) == NULL)
+		return;
+	for (j = 0; j < 2; j++) {
+		if ((arr[0] = malloc(sizeof(int))) == NULL)
+			goto cleanup;
+		free(arr[0]);
+	}
+
+cleanup:
+	free(arr);
+}
+
 int
 main(int argc, char * argv[])
 {
@@ -132,6 +169,9 @@ main(int argc, char * argv[])
 	long long delta;
 
 	WARNP_INIT;
+
+	silly_double_free();
+	silly_ok();
 
 	/* Parse args. */
 	if ((argc != 4) || (PARSENUM(&sets, argv[1])) ||
