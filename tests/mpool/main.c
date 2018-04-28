@@ -136,6 +136,12 @@ silly_double_free() {
 		for (i = 0; i < N; i++)
 			if ((arr[i] = malloc(sizeof(int))) == NULL)
 				goto cleanup;
+		/* freed_arg: free frees *arr */
+		/*
+		 * CID 185420 (#1 of 1): Double free (USE_AFTER_FREE)
+		 * double_free: Calling free frees pointer *arr which has
+		 * already been freed.
+		 */
 		free(arr[0]);
 	}
 
@@ -154,6 +160,7 @@ silly_ok() {
 	for (j = 0; j < 2; j++) {
 		if ((arr[0] = malloc(sizeof(int))) == NULL)
 			goto cleanup;
+		/* No problem here! */
 		free(arr[0]);
 	}
 
