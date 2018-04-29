@@ -62,9 +62,16 @@ scenario_cmd() {
 	# Try as self; should work.
 	test_setuidgid_username_groupname 0 0 "$(id -u -n):$(id -g -n)"
 
+	# Try as self with numeric UID and GID; should work.
+	test_setuidgid_username_groupname 0 0 "$(id -u):$(id -g)"
+
 	# Try as nobody; accept an EPERM if not root.
 	test_setuidgid_username_groupname 0 1 "nobody"
 	test_setuidgid_username_groupname 0 1 "nobody:$(id -gn nobody)"
+
+	# Try as nobody with numeric UID and GID; accept EPERM
+	test_setuidgid_username_groupname 0 1 "$(id -u nobody)"
+	test_setuidgid_username_groupname 0 1 "$(id -u nobody):$(id -g nobody)"
 
 	# These should all fail.  (Hopefully nobody actually has
 	# "fake_username" or "fake_groupname" on their systems!)
