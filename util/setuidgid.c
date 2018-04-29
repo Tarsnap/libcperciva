@@ -131,16 +131,20 @@ set_group(const char * groupname)
 	gid_t gid;
 	struct group * group_info;
 
-	/* Find numerical GID. */
+	/*
+	 * Attempt to convert the group name to a group ID.  If the database
+	 * lookup fails with an error, return.
+	 */
 	errno = 0;
-	if ((group_info = getgrnam(groupname)) == NULL) {
-		if (errno)
-			warnp("getgrnam(\"%s\")", groupname);
-		else
-			warn0("No such group: %s", groupname);
+	if ((group_info = getgrnam(groupname)) != NULL) {
+		gid = group_info->gr_gid;
+	} else if (errno) {
+		warnp("getgrnam(\"%s\")", groupname);
+		goto err0;
+	} else {
+		warn0("No such group: %s", groupname);
 		goto err0;
 	}
-	gid = group_info->gr_gid;
 
 	/* Set GID. */
 	if (setgid(gid)) {
@@ -165,16 +169,17 @@ set_user(const char * username)
 	uid_t uid;
 	struct passwd * user_info;
 
-	/* Calculate numerical UID. */
+	/* See similar code in set_gid(). */
 	errno = 0;
-	if ((user_info = getpwnam(username)) == NULL) {
-		if (errno)
-			warnp("getpwnam(\"%s\")", username);
-		else
-			warn0("No such user: %s", username);
+	if ((user_info = getpwnam(username)) != NULL) {
+		uid = user_info->pw_uid;
+	} else if (errno) {
+		warnp("getpwnam(\"%s\")", username);
+		goto err0;
+	} else {
+		warn0("No such user: %s", username);
 		goto err0;
 	}
-	uid = user_info->pw_uid;
 
 	/* Set UID. */
 	if (setuid(uid)) {
