@@ -46,6 +46,7 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "parsenum.h"
 #include "warnp.h"
 
 #include "setuidgid.h"
@@ -133,7 +134,9 @@ set_group(const char * groupname)
 
 	/*
 	 * Attempt to convert the group name to a group ID.  If the database
-	 * lookup fails with an error, return.
+	 * lookup fails with an error, return; but if it fails without an error
+	 * (indicating that it successfully found that the name does not exist)
+	 * fall back to trying to parse the name as a numeric group ID.
 	 */
 	errno = 0;
 	if ((group_info = getgrnam(groupname)) != NULL) {
@@ -141,7 +144,7 @@ set_group(const char * groupname)
 	} else if (errno) {
 		warnp("getgrnam(\"%s\")", groupname);
 		goto err0;
-	} else {
+	} else if (PARSENUM(&gid, groupname)) {
 		warn0("No such group: %s", groupname);
 		goto err0;
 	}
@@ -176,7 +179,7 @@ set_user(const char * username)
 	} else if (errno) {
 		warnp("getpwnam(\"%s\")", username);
 		goto err0;
-	} else {
+	} else if (PARSENUM(&uid, username)) {
 		warn0("No such user: %s", username);
 		goto err0;
 	}
@@ -261,8 +264,10 @@ err0:
 
 /**
  * setuidgid(user_group_string, leave_suppgrp):
- * Set the UID and/or GID to the names given in ${user_group_string}.
- * Depending on the existence and position of a colon ":", the behaviour is
+ * Set the UID and/or GID to the names given in ${user_group_string}.  If no
+ * UID or GID can be found matching those strings, treat the values as numeric
+ * IDs.  Depending on the existence and position of a colon ":", the behaviour
+ * is
  * - no ":" means that the string is a username.
  * - ":" in the first position means that the string is a groupname.
  * - otherwise, the string is parsed into "username:groupname".
