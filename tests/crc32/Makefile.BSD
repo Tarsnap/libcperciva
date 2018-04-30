@@ -24,6 +24,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
 # Utility functions
 .PATH.c	:	${LIBCPERCIVA_DIR}/util
 SRCS	+=	getopt.c
+SRCS	+=	monoclock.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
