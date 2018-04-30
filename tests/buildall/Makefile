@@ -92,7 +92,7 @@ noeintr.o: ../../util/noeintr.c ../../util/noeintr.h
 	${CC} ${CFLAGS} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} -c ../../util/noeintr.c -o noeintr.o
 readpass.o: ../../util/readpass.c ../../util/insecure_memzero.h ../../util/warnp.h ../../util/readpass.h
 	${CC} ${CFLAGS} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} -c ../../util/readpass.c -o readpass.o
-setuidgid.o: ../../util/setuidgid.c ../../util/warnp.h ../../util/setuidgid.h
+setuidgid.o: ../../util/setuidgid.c ../../util/parsenum.h ../../util/warnp.h ../../util/setuidgid.h
 	${CC} ${CFLAGS} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} -c ../../util/setuidgid.c -o setuidgid.o
 sock.o: ../../util/sock.c ../../util/imalloc.h ../../util/warnp.h ../../util/sock.h ../../util/sock_internal.h
 	${CC} ${CFLAGS} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} -c ../../util/sock.c -o sock.o
