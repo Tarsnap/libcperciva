@@ -24,6 +24,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
 # CPU features detection
 .PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
 SRCS	+=	cpusupport_x86_aesni.c
+SRCS	+=	cpusupport_x86_crc32.c
 SRCS	+=	cpusupport_x86_sse2.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
 
