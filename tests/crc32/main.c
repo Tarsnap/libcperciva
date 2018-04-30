@@ -20,16 +20,13 @@ static struct testcase {
 	    {0x1b, 0xc4, 0xb4, 0x28}}
 };
 
-int
-main(int argc, char * argv[])
+static int
+selftest(void)
 {
 	CRC32C_CTX ctx;
 	uint8_t cbuf[4];
 	size_t i, j;
 	size_t failures = 0;
-
-	(void)argc; /* UNUSED */
-	(void)argv; /* UNUSED */
 
 	for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
 		printf("Computing CRC32C of \"%s\"...", tests[i].s);
@@ -56,4 +53,15 @@ main(int argc, char * argv[])
 		return (1);
 	else
 		return (0);
+}
+
+int
+main(int argc, char * argv[])
+{
+
+	(void)argc; /* UNUSED */
+	(void)argv; /* UNUSED */
+
+	selftest();
+
 }
