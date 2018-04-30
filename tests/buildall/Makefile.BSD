@@ -16,6 +16,7 @@ SRCS	=	main.c
 # Algorithms
 .PATH.c	:	${LIBCPERCIVA_DIR}/alg
 SRCS	+=	crc32c.c
+SRCS	+=	crc32c_sse42.c
 SRCS	+=	md5.c
 SRCS	+=	sha1.c
 SRCS	+=	sha256.c
@@ -84,6 +85,9 @@ SRCS	+=	sock_util.c
 SRCS	+=	ttyfd.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+cflags-crc32c_sse42.o:
+	@echo '$${CFLAGS_X86_CRC32}'
 
 cflags-crypto_aes_aesni.o:
 	@echo '$${CFLAGS_X86_AESNI}'
