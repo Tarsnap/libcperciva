@@ -1,7 +1,10 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+
+#include "getopt.h"
 
 #include "crc32c.h"
 
@@ -55,13 +58,28 @@ selftest(void)
 		return (0);
 }
 
+static void
+usage(void)
+{
+
+	fprintf(stderr, "usage: test_crc32 -x\n");
+	exit(1);
+}
+
 int
 main(int argc, char * argv[])
 {
+	const char * ch;
 
-	(void)argc; /* UNUSED */
-	(void)argv; /* UNUSED */
+	/* Process arguments. */
+	while ((ch = GETOPT(argc, argv)) != NULL) {
+		GETOPT_SWITCH(ch) {
+		GETOPT_OPT("-x"):
+			exit(selftest());
+		GETOPT_DEFAULT:
+			usage();
+		}
+	}
 
-	selftest();
-
+	usage();
 }
