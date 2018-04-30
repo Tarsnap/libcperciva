@@ -16,7 +16,7 @@ ${PROG}:${SRCS:.c=.o}
 
 main.o: main.c ../../util/warnp.h ../../util/setuidgid.h
 	${CC} ${CFLAGS} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} -c main.c -o main.o
-setuidgid.o: ../../util/setuidgid.c ../../util/warnp.h ../../util/setuidgid.h
+setuidgid.o: ../../util/setuidgid.c ../../util/parsenum.h ../../util/warnp.h ../../util/setuidgid.h
 	${CC} ${CFLAGS} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} -c ../../util/setuidgid.c -o setuidgid.o
 warnp.o: ../../util/warnp.c ../../util/warnp.h
 	${CC} ${CFLAGS} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} -c ../../util/warnp.c -o warnp.o
