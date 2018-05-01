@@ -1,7 +1,15 @@
 #include <assert.h>
 #include <stdint.h>
+#include <string.h>
+
+#include "cpusupport.h"
+#include "crc32c_sse42.h"
+#include "warnp.h"
 
 #include "crc32c.h"
+
+/* Should we use hardware CRC instructions? */
+static int usecrc(void);
 
 /**
  * CRC32C tables:
@@ -74,6 +82,60 @@ init(void)
 	assert(T0[0x80] == T_0_0x80);
 }
 
+#ifdef CPUSUPPORT_X86_CRC32
+/* Test whether CRC extensions and software code produce the same results. */
+static int
+crctest(const uint8_t buf[4])
+{
+	uint32_t state_software = T_0_0x80;
+	uint32_t state_hardware = T_0_0x80;
+
+	/* Test software transform function. */
+	state_software =
+		    T0[((state_software >> 24) & 0xff) ^ buf[3]] ^
+		    T1[((state_software >> 16) & 0xff) ^ buf[2]] ^
+		    T2[((state_software >> 8)  & 0xff) ^ buf[1]] ^
+		    T3[((state_software)       & 0xff) ^ buf[0]];
+
+	/* Test hardware transform function. */
+	CRC32C_Update_SSE42(&state_hardware, buf, 4);
+
+	/* Do the outputs match? */
+	return ((state_software == state_hardware) ? 0 : 1);
+}
+
+/* Should we use CRC? */
+static int
+usecrc(void)
+{
+	static int crcgood = -1;
+	uint8_t block[4];
+
+	/* If we haven't decided which code to use yet, decide now. */
+	while (crcgood == -1) {
+		/* Default to software. */
+		crcgood = 0;
+
+		/* If the CPU doesn't claim to support SSE4.2, stop here. */
+		if (!cpusupport_x86_crc32())
+			break;
+
+		/* Test case: "a". */
+		memset(block, 0, 4);
+		block[0] = 'a';
+		if (crctest(block)) {
+			warn0("Disabling hardware CRC due to failed self-test");
+			break;
+		}
+
+		/* CRC works; use it. */
+		crcgood = 1;
+	}
+
+	return (crcgood);
+}
+#endif /* !CPUSUPPORT_X86_CRC32 */
+
 /**
  * CRC32C_Init(ctx):
  * Initialize a CRC32C-computing context.
@@ -102,6 +164,12 @@ void
 CRC32C_Update(CRC32C_CTX * ctx, const uint8_t * buf, size_t len)
 {
 
+#ifdef CPUSUPPORT_X86_CRC32
+	if (usecrc()) {
+		CRC32C_Update_SSE42(&ctx->state, buf, len);
+		return;
+	}
+#endif
 	/* Handle blocks of 4 bytes. */
 	for (; len >= 4; len -= 4, buf += 4) {
 		ctx->state =
