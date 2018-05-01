@@ -10,6 +10,7 @@ PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX alg cpusupport crypto datastruct \
 BINDIR_DEFAULT=	/usr/local/bin
 CFLAGS_DEFAULT=	-O2
 LIBCPERCIVA_DIR=	.
+TEST_CMD=	tests/test_libcperciva.sh
 
 all:	cpusupport-config.h
 	export CFLAGS="$${CFLAGS:-${CFLAGS_DEFAULT}}";	\
@@ -37,7 +38,7 @@ clean:
 
 .PHONY:	test test-clean
 test:	all
-	tests/test_libcperciva.sh
+	${TEST_CMD}
 
 test-clean:
 	rm -rf tests-output/ tests-valgrind/
