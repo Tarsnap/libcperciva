@@ -6,6 +6,8 @@ TESTS=	tests/buildall tests/buildsingles tests/crc32 tests/getopt tests/heap \
 PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX alg cpusupport crypto datastruct \
 	events network tests util
 
+### Shared code between Tarsnap projects.
+
 # These definitions improve the readability of the below material.
 MAKEBSD:=	${MAKE} -f Makefile.BSD
 RELEASEDATE!=	date "+%B %d, %Y"

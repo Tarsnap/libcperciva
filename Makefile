@@ -9,6 +9,8 @@ CFLAGS_DEFAULT=	-O2
 LIBCPERCIVA_DIR=	.
 TEST_CMD=	tests/test_libcperciva.sh
 
+### Shared code between Tarsnap projects.
+
 all:	cpusupport-config.h
 	export CFLAGS="$${CFLAGS:-${CFLAGS_DEFAULT}}";	\
 	export "LDADD_POSIX=`export CC=\"${CC}\"; cd ${LIBCPERCIVA_DIR}/POSIX && command -p sh posix-l.sh \"$$PATH\"`";	\
