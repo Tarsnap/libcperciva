@@ -72,7 +72,7 @@ cmp_methods 1000 1000 200
 
 # mpool is not much slower than malloc even when there's no benefit
 # from the pool.
-cmp_methods 1 1000000 80
+cmp_methods 1 1000000 75
 
 # Test again with valgrind (if enabled).
 if [ -n "${c_valgrind_cmd}" ]; then
