@@ -1,12 +1,9 @@
 .POSIX:
 
-PKG=	libcperciva
 PROGS=
 TESTS=	tests/buildall tests/buildsingles tests/crc32 tests/getopt tests/heap \
 	tests/humansize tests/monoclock tests/mpool tests/parsenum \
 	tests/setuidgid tests/sha256 tests/valgrind
-PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX alg cpusupport crypto datastruct \
-	events network tests util
 BINDIR_DEFAULT=	/usr/local/bin
 CFLAGS_DEFAULT=	-O2
 LIBCPERCIVA_DIR=	.
