@@ -53,7 +53,9 @@ cmp_methods () {
 
 	printf "${SETS}\t${REPS}\t${ratio}\n"
 	if [ $(( ${ratio_percent} )) -lt ${PERCENT_CUTOFF} ]; then
-		printf "mpool is less than ${PERCENT_CUTOFF}%% of malloc speed\n"
+		# Don't include \n in this message.
+		printf "mpool was only ${ratio_percent}%%; wanted " 1>&2
+		printf "${PERCENT_CUTOFF}%% of malloc speed... " 1>&2
 		exit 1
 	fi
 }
@@ -70,7 +72,7 @@ cmp_methods 1000 1000 200
 
 # mpool is not much slower than malloc even when there's no benefit
 # from the pool.
-cmp_methods 1 1000000 80
+cmp_methods 1 1000000 75
 
 # Test again with valgrind (if enabled).
 if [ -n "${c_valgrind_cmd}" ]; then
