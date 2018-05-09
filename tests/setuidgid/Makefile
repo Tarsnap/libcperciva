@@ -22,4 +22,4 @@ warnp.o: ../../util/warnp.c ../../util/warnp.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../util/warnp.c -o warnp.o
 
 test:	test_setuidgid
-	./test_setuidgid.sh
+	./test_setuidgid $$(id -u):$$(id -g)
