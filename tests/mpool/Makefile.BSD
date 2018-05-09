@@ -20,7 +20,7 @@ SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	test_mpool
-	@./test_mpool.sh
+	./test_mpool.sh
 
 # Temporarily disable warning until the new mpool code
 cflags-main.o:

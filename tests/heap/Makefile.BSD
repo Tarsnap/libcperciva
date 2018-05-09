@@ -22,6 +22,6 @@ SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	test_heap
-	@./test_heap.sh
+	./test_heap.sh
 
 .include <bsd.prog.mk>
