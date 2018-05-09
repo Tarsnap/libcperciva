@@ -6,9 +6,11 @@ TESTS=	tests/buildall tests/buildsingles tests/crc32 tests/getopt tests/heap \
 PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX alg cpusupport crypto datastruct \
 	events network tests util
 
+### Shared code between Tarsnap projects.
+
 # These definitions improve the readability of the below material.
 MAKEBSD:=	${MAKE} -f Makefile.BSD
-RELEASEDATE!=   date "+%B %d, %Y"
+RELEASEDATE!=	date "+%B %d, %Y"
 CFLAGS_HARDCODED=	-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\\\"cpusupport-config.h\\\"
 
 # This creates (and deletes) a fake cpusupport-config.h that is
@@ -44,7 +46,7 @@ ${D}/Makefile::
 		SUBDIR_DEPTH=`${MAKEBSD} -V SUBDIR_DEPTH`;	\
 		echo `${CPP} $${S} -std=c99 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -I$${SUBDIR_DEPTH} $${IDIRS} -MM -MT $${F}` \
 			| sed -e 's| \\ | |g'; \
-		echo "	\$${CC} \$${CFLAGS} \$${CFLAGS_POSIX} ${CFLAGS_HARDCODED} $${CF} -I$${SUBDIR_DEPTH} \$${IDIRS} -c $${S} -o $${F}"; \
+		echo "	\$${CC} \$${CFLAGS_POSIX} ${CFLAGS_HARDCODED} $${CF} -I$${SUBDIR_DEPTH} \$${IDIRS} \$${CPPFLAGS} \$${CFLAGS} -c $${S} -o $${F}"; \
 	    done ) >> $@
 	if grep -q "test:" ${D}/Makefile.BSD ; then		\
 		printf "\n" >> $@;					\
