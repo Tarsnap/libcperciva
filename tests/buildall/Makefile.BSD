@@ -88,6 +88,6 @@ cflags-crypto_aes_aesni.o:
 	@echo '$${CFLAGS_X86_AESNI}'
 
 test:	buildall
-	@true
+	true
 
 .include <bsd.prog.mk>

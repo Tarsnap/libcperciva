@@ -19,6 +19,6 @@ SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	test_parsenum
-	@./test_parsenum
+	./test_parsenum
 
 .include <bsd.prog.mk>

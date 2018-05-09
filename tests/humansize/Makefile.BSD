@@ -18,6 +18,6 @@ SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	test_humansize
-	@./test_humansize
+	./test_humansize
 
 .include <bsd.prog.mk>

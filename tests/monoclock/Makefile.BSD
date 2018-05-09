@@ -17,6 +17,6 @@ SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	test_monoclock
-	@./test_monoclock
+	./test_monoclock
 
 .include <bsd.prog.mk>

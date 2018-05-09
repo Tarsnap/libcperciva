@@ -21,6 +21,6 @@ SRCS	+=	getopt.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	test_crc32
-	@./test_crc32 -x
+	./test_crc32 -x
 
 .include <bsd.prog.mk>
