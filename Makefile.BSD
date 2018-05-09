@@ -52,24 +52,20 @@ ${D}/Makefile::
 	fi
 	if grep -q "all_extra:" ${D}/Makefile.BSD ; then		\
 		printf "\n" >> $@;					\
-		( cd ${D} && grep "all_extra:" Makefile.BSD ) >> $@;		\
-		( cd ${D} && make test );				\
-		( cd ${D} && ${MAKEBSD} -n "all_extra" ) | sed 's/^/\t/' >> $@;	\
-		( cd ${D} && cat Makefile |				\
-		    sed 's/all:\t$${PROG}/all:\t$${PROG} all_extra/' |	\
-		    sed 's/${MAKE}/$${MAKE}/' >				\
-		    Makefile.new );					\
+		( cd ${D} && awk '/all_extra:/, /^$$/' Makefile.BSD |	\
+		    awk '$$1' ) >> $@;					\
+		( cd ${D} && awk					\
+		    '/all:\t${PROG}/ {print $$0 " all_extra";next}{print}' \
+		    Makefile > Makefile.new );				\
 		( cd ${D} && mv Makefile.new Makefile );		\
 	fi
 	if grep -q "clean_extra:" ${D}/Makefile.BSD ; then		\
 		printf "\n" >> $@;					\
-		( cd ${D} && grep "clean_extra:" Makefile.BSD ) >> $@;		\
-		( cd ${D} && make test );				\
-		( cd ${D} && ${MAKEBSD} -n "clean_extra" ) | sed 's/^/\t/' >> $@;	\
-		( cd ${D} && cat Makefile |				\
-		    sed 's/clean:/clean:\tclean_extra/' |		\
-		    sed 's/${MAKE}/$${MAKE}/' >				\
-		    Makefile.new );					\
+		( cd ${D} && awk '/clean_extra:/, /^$$/' Makefile.BSD |	\
+		    awk '$$1' ) >> $@;					\
+		( cd ${D} && awk					\
+		    '/clean:/ {print $$0 "\tclean_extra";next}{print}'	\
+		    Makefile > Makefile.new );				\
 		( cd ${D} && mv Makefile.new Makefile );		\
 	fi
 	rm -f cpusupport-config.h
