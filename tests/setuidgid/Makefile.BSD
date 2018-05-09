@@ -17,6 +17,6 @@ SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	test_setuidgid
-	./test_setuidgid.sh
+	./test_setuidgid $$(id -u):$$(id -g)
 
 .include <bsd.prog.mk>
