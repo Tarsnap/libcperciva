@@ -1,9 +1,18 @@
 .POSIX:
 
 PROGS=
-TESTS=	tests/buildall tests/buildsingles tests/crc32 tests/getopt tests/heap \
-	tests/humansize tests/monoclock tests/mpool tests/parsenum \
-	tests/setuidgid tests/sha256 tests/valgrind
+TESTS=	tests/buildall							\
+	tests/buildsingles						\
+	tests/crc32							\
+	tests/getopt							\
+	tests/heap							\
+	tests/humansize							\
+	tests/monoclock							\
+	tests/mpool							\
+	tests/parsenum							\
+	tests/setuidgid							\
+	tests/sha256							\
+	tests/valgrind
 BINDIR_DEFAULT=	/usr/local/bin
 CFLAGS_DEFAULT=	-O2
 LIBCPERCIVA_DIR=	.
