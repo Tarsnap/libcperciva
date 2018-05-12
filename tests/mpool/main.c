@@ -44,7 +44,7 @@ long long
 time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 {
 	struct timeval begin, end;
-	long long delta;
+	long long delta_us;
 	unsigned long i, j;
 	struct stuff ** arr;
 
@@ -108,14 +108,14 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 		warnp("monoclock_get()");
 		goto err1;
 	}
-	delta = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
+	delta_us = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
 	    (end.tv_usec - begin.tv_usec);
 
 	/* Clean up. */
 	free(arr);
 
 	/* Success! */
-	return (delta);
+	return (delta_us);
 
 err1:
 	free(arr);
@@ -129,7 +129,7 @@ main(int argc, char * argv[])
 {
 	unsigned long sets, reps;
 	unsigned int use_mpool;
-	long long delta;
+	long long delta_us;
 
 	WARNP_INIT;
 
@@ -147,9 +147,9 @@ main(int argc, char * argv[])
 	}
 
 	/* Time memory allocation method, and output it. */
-	if ((delta = time_func(sets, reps, use_mpool)) < 0)
+	if ((delta_us = time_func(sets, reps, use_mpool)) < 0)
 		goto err0;
-	printf("%lli\n", delta);
+	printf("%lli\n", delta_us);
 
 	/* Success! */
 	exit(0);
