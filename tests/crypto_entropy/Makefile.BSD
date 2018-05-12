@@ -1,0 +1,42 @@
+# Program name.
+PROG	=	test_crypto_entropy
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# main test code
+SRCS	=	main.c
+
+# Algorithms
+.PATH.c	:	${LIBCPERCIVA_DIR}/alg
+SRCS	+=	sha256.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
+
+# CPU features detection
+.PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
+SRCS	+=	cpusupport_x86_rdrand.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
+
+# Crypto code
+.PATH.c	:	${LIBCPERCIVA_DIR}/crypto
+SRCS	+=	crypto_entropy.c
+SRCS	+=	crypto_entropy_rdrand.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/crypto
+
+# Utility functions
+.PATH.c :	${LIBCPERCIVA_DIR}/util
+SRCS	+=	entropy.c
+SRCS	+=	insecure_memzero.c
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+cflags-crypto_entropy_rdrand.o:
+	@echo '$${CFLAGS_X86_RDRAND}'
+
+test:	test_crypto_entropy
+	@./test_crypto_entropy
+
+.include <bsd.prog.mk>

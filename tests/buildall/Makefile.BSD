@@ -25,6 +25,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
 .PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
 SRCS	+=	cpusupport_x86_aesni.c
 SRCS	+=	cpusupport_x86_sse2.c
+SRCS	+=	cpusupport_x86_rdrand.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
 
 # Crypto code
@@ -35,6 +36,7 @@ SRCS	+=	crypto_aesctr.c
 SRCS	+=	crypto_dh.c
 SRCS	+=	crypto_dh_group14.c
 SRCS	+=	crypto_entropy.c
+SRCS	+=	crypto_entropy_rdrand.c
 SRCS	+=	crypto_verify_bytes.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/crypto
 
@@ -86,6 +88,9 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 cflags-crypto_aes_aesni.o:
 	@echo '$${CFLAGS_X86_AESNI}'
+
+cflags-crypto_entropy_rdrand.o:
+	@echo '$${CFLAGS_X86_RDRAND}'
 
 test:	buildall
 	true
