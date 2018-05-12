@@ -58,7 +58,7 @@ selftest(void)
 		return (0);
 }
 
-static void
+static _Noreturn void
 usage(void)
 {
 

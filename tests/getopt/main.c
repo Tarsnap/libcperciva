@@ -3,7 +3,7 @@
 
 #include "getopt.h"
 
-static void
+static _Noreturn void
 usage(void)
 {
 
