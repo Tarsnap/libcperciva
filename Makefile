@@ -4,6 +4,7 @@ PROGS=
 TESTS=	tests/buildall							\
 	tests/buildsingles						\
 	tests/crc32							\
+	tests/crypto_entropy						\
 	tests/getopt							\
 	tests/heap							\
 	tests/humansize							\
