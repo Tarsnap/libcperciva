@@ -6,7 +6,7 @@ foo(char * restrict x, char * restrict y)
 }
 
 int
-main()
+main(void)
 {
 	char x[10];
 	char y[10];

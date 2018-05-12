@@ -1,7 +1,7 @@
 #include <sys/socket.h>
 
 int
-main()
+main(void)
 {
 
 	return (MSG_NOSIGNAL);

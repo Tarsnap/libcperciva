@@ -1,7 +1,7 @@
 #include <time.h>
 
 int
-main()
+main(void)
 {
 	struct timespec ts;
 

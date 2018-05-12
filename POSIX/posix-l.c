@@ -1,5 +1,5 @@
 int
-main()
+main(void)
 {
 
 	return (0);
