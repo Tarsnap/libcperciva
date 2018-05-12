@@ -4,14 +4,14 @@
 
 /* Problem with FreeBSD 11.0 merely linking with -lrt. */
 static void
-pl_freebsd_link_lrt()
+pl_freebsd_link_lrt(void)
 {
 	/* Do nothing. */
 }
 
 /* Problem with FreeBSD 11.0 and printf(). */
 static void
-pl_freebsd_printf()
+pl_freebsd_printf(void)
 {
 	const char * printme = "";
 
@@ -20,7 +20,7 @@ pl_freebsd_printf()
 
 /* Problem with FreeBSD 11.0 and getdelim(). */
 static void
-pl_freebsd_getdelim()
+pl_freebsd_getdelim(void)
 {
 	size_t linecap = 0;
 	char * line = NULL;
@@ -30,7 +30,7 @@ pl_freebsd_getdelim()
 }
 
 int
-main()
+main(void)
 {
 
 	/* Test potential memory leaks. */
