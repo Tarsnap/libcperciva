@@ -81,7 +81,7 @@ instantiate(void)
 		update_from_rdrand();
 	}
 #endif
-	
+
 	/* Clean the stack. */
 	insecure_memzero(seed_material, 48);
 
