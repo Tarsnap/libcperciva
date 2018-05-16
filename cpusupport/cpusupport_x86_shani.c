@@ -17,9 +17,8 @@ CPUSUPPORT_FEATURE_DECL(x86, shani)
 	if (eax < 7)
 		goto unsupported;
 
-	/* Ask about CPU features. */
-	if (!__get_cpuid(1, &eax, &ebx, &ecx, &edx))
-		goto unsupported;
+	/* Ask about CPU features.  This macro takes e?x as pointers! */
+	__cpuid_count(7, 0, eax, ebx, ecx, edx);
 
 	/* Return the relevant feature bit. */
 	return ((ebx & CPUID_SHANI_BIT) ? 1 : 0);
