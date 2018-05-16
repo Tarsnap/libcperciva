@@ -12,7 +12,7 @@
 #define BLOCKLEN 10000
 #define BLOCKCOUNT 100000
 
-static void
+static int
 perftest(void)
 {
 #ifdef CLOCK_VIRTUAL
@@ -28,7 +28,7 @@ perftest(void)
 	/* Allocate and initialize input per FreeBSD md5(1) utility. */
 	if ((buf = malloc(BLOCKLEN)) == NULL) {
 		warnp("malloc");
-		exit(1);
+		goto err0;
 	}
 	for (i = 0; i < BLOCKLEN; i++)
 		buf[i] = (uint8_t)(i & 0xff);
@@ -42,7 +42,7 @@ perftest(void)
         /* Start timer */
 	if (clock_gettime(CLOCK_VIRTUAL, &st)) {
 		warnp("clock_gettime(CLOCK_VIRTUAL)");
-		exit(1);
+		goto err1;
 	}
 #endif
 
@@ -57,7 +57,7 @@ perftest(void)
 	/* End timer. */
 	if (clock_gettime(CLOCK_VIRTUAL, &en)) {
 		warnp("clock_gettime(CLOCK_VIRTUAL)");
-		exit(1);
+		goto err1;
 	}
 #endif
 
@@ -74,6 +74,15 @@ perftest(void)
 
 	/* Free allocated buffer. */
 	free(buf);
+
+	/* Success! */
+	return (0);
+
+err1:
+	free(buf);
+err0:
+	/* Failure! */
+	return (1);
 }
 
 static struct testcase {
@@ -150,8 +159,7 @@ main(int argc, char * argv[])
 	while ((ch = GETOPT(argc, argv)) != NULL) {
 		GETOPT_SWITCH(ch) {
 		GETOPT_OPT("-t"):
-			perftest();
-			exit(0);
+			exit(perftest());
 		GETOPT_OPT("-x"):
 			exit(selftest());
 		GETOPT_DEFAULT:
