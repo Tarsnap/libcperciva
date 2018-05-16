@@ -6,6 +6,7 @@
 
 #include "getopt.h"
 #include "hexify.h"
+#include "monoclock.h"
 #include "sha256.h"
 #include "warnp.h"
 
@@ -15,10 +16,8 @@
 static int
 perftest(void)
 {
-#ifdef CLOCK_VIRTUAL
-	struct timespec st, en;
-	double secs;
-#endif
+	struct timeval begin, end;
+	long long delta_us;
 	SHA256_CTX ctx;
 	uint8_t hbuf[32];
 	char hbuf_hex[65];
@@ -38,13 +37,11 @@ perftest(void)
 	    BLOCKCOUNT, BLOCKLEN);
 	fflush(stdout);
 
-#ifdef CLOCK_VIRTUAL
         /* Start timer */
-	if (clock_gettime(CLOCK_VIRTUAL, &st)) {
-		warnp("clock_gettime(CLOCK_VIRTUAL)");
+	if (monoclock_get(&begin)) {
+		warnp("monoclock_get()");
 		goto err1;
 	}
-#endif
 
 	/* Perform the computation. */
 	SHA256_Init(&ctx);
@@ -53,24 +50,23 @@ perftest(void)
 	SHA256_Final(hbuf, &ctx);
 	hexify(hbuf, hbuf_hex, 32);
 
-#ifdef CLOCK_VIRTUAL
 	/* End timer. */
-	if (clock_gettime(CLOCK_VIRTUAL, &en)) {
-		warnp("clock_gettime(CLOCK_VIRTUAL)");
+	if (monoclock_get(&end)) {
+		warnp("monoclock_get()");
 		goto err1;
 	}
-#endif
 
 	/* Report status. */
 	printf(" done\n");
 	printf("Digest = %s\n", hbuf_hex);
-#ifdef CLOCK_VIRTUAL
-	secs = (en.tv_sec - st.tv_sec) +
-	    (en.tv_nsec - st.tv_nsec) * 0.000000001;
-	printf("Time = %f seconds\n", secs);
+
+	delta_us = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
+	    (end.tv_usec - begin.tv_usec);
+
+	printf("Time = %f seconds\n", (double)delta_us / 1000000.0);
 	printf("Speed = %f bytes/second\n",
-	    (double)BLOCKLEN * (double)BLOCKCOUNT / secs);
-#endif
+	    (double)BLOCKLEN * (double)BLOCKCOUNT /
+	    ((double)delta_us / 1000000.0));
 
 	/* Free allocated buffer. */
 	free(buf);
