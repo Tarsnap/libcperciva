@@ -51,6 +51,9 @@ test_setuidgid_username_groupname() {
 	elif [ ${cmd_exitcode} -eq ${pass_exitcode} ]; then
 		# We match the expect output.
 		echo "0"
+	elif [ ${cmd_exitcode} -eq "${valgrind_exit_code}" ]; then
+		# Keep any valgrind failure.
+		echo "${valgrind_exit_code}"
 	else
 		# Fail
 		echo "1"
