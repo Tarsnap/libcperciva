@@ -1,13 +1,13 @@
 # These also apply to all subdirectories.
 *.o
 cpusupport-config.h
-# Other directories.
+# Test binaries and compiled files.
 tests/buildall/buildall
 tests/buildsingles/*-main
 tests/buildsingles/Makefile.inc2
 tests/crc32/test_crc32
+tests/crypto_entropy/test_crypto_entropy
 tests/getopt/test_getopt
-tests/getopt/test_getopt.log
 tests/heap/test_heap
 tests/humansize/test_humansize
 tests/monoclock/test_monoclock
@@ -16,5 +16,7 @@ tests/setuidgid/test_setuidgid
 tests/sha256/test_sha256
 tests/parsenum/test_parsenum
 tests/valgrind/potential-memleaks
+# Test output directories and generated files.
+tests/getopt/test_getopt.log
 tests-output/
 tests-valgrind/
