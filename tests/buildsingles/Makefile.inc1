@@ -16,7 +16,7 @@ HEADERS=\
 		sock.h sock_internal.h sock_util.h sysendian.h ttyfd.h warnp.h
 
 buildsingles: Makefile.inc2
-	make -f Makefile.inc2 CFLAGS="${CFLAGS}"	\
+	${MAKE} -f Makefile.inc2 CFLAGS="${CFLAGS}"	\
 		CFLAGS_POSIX="${CFLAGS_POSIX}" LDADD_POSIX="${LDADD_POSIX}" all
 
 Makefile.inc2: Makefile.inc1
