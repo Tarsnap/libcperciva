@@ -20,7 +20,8 @@ buildsingles: Makefile.inc2
 		CFLAGS_POSIX="${CFLAGS_POSIX}" LDADD_POSIX="${LDADD_POSIX}" all
 
 Makefile.inc2: Makefile.inc1
-	echo "all: ${HEADERS:.h=-main}" > Makefile.inc2
+	printf "all: ${HEADERS:.h=-main}\n\t: > test_buildsingles\n\n"	\
+	    > Makefile.inc2
 	for HN in ${HEADERS}; do				\
 		H=`ls ../../*/$${HN}`;				\
 		echo "$${HN%.h}-main: $${H}";			\
