@@ -1,5 +1,5 @@
 # Program name.
-PROG	=
+PROG	=	test_buildsingles
 
 # Don't install it.
 NOINST	= 	1
