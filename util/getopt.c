@@ -260,6 +260,10 @@ size_t
 getopt_lookup(const char * os)
 {
 
+#ifdef NDEBUG
+	(void)os;	/* UNUSED */
+#endif
+
 	/* Can't reset here. */
 	if (optreset)
 		DIE("Can't reset in the middle of getopt loop");
