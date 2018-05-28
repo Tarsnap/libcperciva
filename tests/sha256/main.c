@@ -6,19 +6,18 @@
 
 #include "getopt.h"
 #include "hexify.h"
+#include "monoclock.h"
 #include "sha256.h"
 #include "warnp.h"
 
 #define BLOCKLEN 10000
 #define BLOCKCOUNT 100000
 
-static void
+static int
 perftest(void)
 {
-#ifdef CLOCK_VIRTUAL
-	struct timespec st, en;
-	double secs;
-#endif
+	struct timeval begin, end;
+	long long delta_us;
 	SHA256_CTX ctx;
 	uint8_t hbuf[32];
 	char hbuf_hex[65];
@@ -28,7 +27,7 @@ perftest(void)
 	/* Allocate and initialize input per FreeBSD md5(1) utility. */
 	if ((buf = malloc(BLOCKLEN)) == NULL) {
 		warnp("malloc");
-		exit(1);
+		goto err0;
 	}
 	for (i = 0; i < BLOCKLEN; i++)
 		buf[i] = (uint8_t)(i & 0xff);
@@ -38,13 +37,11 @@ perftest(void)
 	    BLOCKCOUNT, BLOCKLEN);
 	fflush(stdout);
 
-#ifdef CLOCK_VIRTUAL
         /* Start timer */
-	if (clock_gettime(CLOCK_VIRTUAL, &st)) {
-		warnp("clock_gettime(CLOCK_VIRTUAL)");
-		exit(1);
+	if (monoclock_get(&begin)) {
+		warnp("monoclock_get()");
+		goto err1;
 	}
-#endif
 
 	/* Perform the computation. */
 	SHA256_Init(&ctx);
@@ -53,27 +50,35 @@ perftest(void)
 	SHA256_Final(hbuf, &ctx);
 	hexify(hbuf, hbuf_hex, 32);
 
-#ifdef CLOCK_VIRTUAL
 	/* End timer. */
-	if (clock_gettime(CLOCK_VIRTUAL, &en)) {
-		warnp("clock_gettime(CLOCK_VIRTUAL)");
-		exit(1);
+	if (monoclock_get(&end)) {
+		warnp("monoclock_get()");
+		goto err1;
 	}
-#endif
 
 	/* Report status. */
 	printf(" done\n");
 	printf("Digest = %s\n", hbuf_hex);
-#ifdef CLOCK_VIRTUAL
-	secs = (en.tv_sec - st.tv_sec) +
-	    (en.tv_nsec - st.tv_nsec) * 0.000000001;
-	printf("Time = %f seconds\n", secs);
+
+	delta_us = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
+	    (end.tv_usec - begin.tv_usec);
+
+	printf("Time = %f seconds\n", (double)delta_us / 1000000.0);
 	printf("Speed = %f bytes/second\n",
-	    (double)BLOCKLEN * (double)BLOCKCOUNT / secs);
-#endif
+	    (double)BLOCKLEN * (double)BLOCKCOUNT /
+	    ((double)delta_us / 1000000.0));
 
 	/* Free allocated buffer. */
 	free(buf);
+
+	/* Success! */
+	return (0);
+
+err1:
+	free(buf);
+err0:
+	/* Failure! */
+	return (1);
 }
 
 static struct testcase {
@@ -94,9 +99,10 @@ static struct testcase {
 	"db4bfcbd4da0cd85a60c3c37d3fbd8805c77f15fc6b1fdfe614ee0a7c8fdb4c0" },
 	{ "12345678901234567890123456789012345678901234567890123456789012345678901234567890",
 	"f371bc4a311f2b009eef952dd83ca80e2b60026c8e935592d0f9c308453c813e" },
-	{ "MD5 has not yet (2001-09-03) been broken, but sufficient attacks have been made \
-that its security is in some doubt",
-	"e6eae09f10ad4122a0e2a4075761d185a272ebd9f5aa489e998ff2f09cbfdd9f" }
+	{ "MD5 has not yet (2001-09-03) been broken, but sufficient attacks have been made that its security is in some doubt",
+	"e6eae09f10ad4122a0e2a4075761d185a272ebd9f5aa489e998ff2f09cbfdd9f" },
+	{ "MD5 is now considered broken for cryptographic purposes; for more information, see https://tools.ietf.org/html/rfc6151",
+	"c1faed8b43f81861a508d9f4034acb854706597d3d4eea52f55bdd47debd3e70"}
 };
 
 static int
@@ -149,8 +155,7 @@ main(int argc, char * argv[])
 	while ((ch = GETOPT(argc, argv)) != NULL) {
 		GETOPT_SWITCH(ch) {
 		GETOPT_OPT("-t"):
-			perftest();
-			exit(0);
+			exit(perftest());
 		GETOPT_OPT("-x"):
 			exit(selftest());
 		GETOPT_DEFAULT:
