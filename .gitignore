@@ -1,6 +1,7 @@
 # These also apply to all subdirectories.
 *.o
 cpusupport-config.h
+posix-flags.sh
 # Test binaries and compiled files.
 tests/buildall/buildall
 tests/buildsingles/*-main
