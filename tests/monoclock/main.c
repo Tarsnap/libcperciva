@@ -1,5 +1,6 @@
 #include <sys/time.h>
 
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -10,17 +11,28 @@
 int
 main(int argc, char * argv[])
 {
-	struct timeval tv;
+	struct timeval tv_wall, tv_cpu;
 
 	WARNP_INIT;
 
 	(void)argc; /* UNUSED */
 	(void)argv; /* UNUSED */
 
-	if (monoclock_get(&tv)) {
+	/* Get time and process CPU time. */
+	if (monoclock_get(&tv_wall)) {
 		warnp("monoclock_get()");
 		goto err0;
 	}
+	if (monoclock_get_cputime(&tv_cpu)) {
+		warnp("monoclock_get_cputime()");
+		goto err0;
+	}
+
+	/* Display times. */
+	printf("monoclock_get():\t\t%ju seconds,\t%06ji microseconds\n",
+	    (uintmax_t)tv_wall.tv_sec, (intmax_t)tv_wall.tv_usec);
+	printf("monoclock_get_cputime():\t%ju seconds,\t%06ji microseconds\n",
+	    (uintmax_t)tv_cpu.tv_sec, (intmax_t)tv_cpu.tv_usec);
 
 	/* Success! */
 	exit(0);
