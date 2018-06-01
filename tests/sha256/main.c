@@ -38,8 +38,8 @@ perftest(void)
 	fflush(stdout);
 
         /* Start timer */
-	if (monoclock_get(&begin)) {
-		warnp("monoclock_get()");
+	if (monoclock_get_cputime(&begin)) {
+		warnp("monoclock_get_cputime()");
 		goto err1;
 	}
 
@@ -51,8 +51,8 @@ perftest(void)
 	hexify(hbuf, hbuf_hex, 32);
 
 	/* End timer. */
-	if (monoclock_get(&end)) {
-		warnp("monoclock_get()");
+	if (monoclock_get_cputime(&end)) {
+		warnp("monoclock_get_cputime()");
 		goto err1;
 	}
 
