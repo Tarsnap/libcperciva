@@ -8,6 +8,7 @@ tests/buildsingles/*-main
 tests/buildsingles/Makefile.inc2
 tests/crc32/test_crc32
 tests/crypto_entropy/test_crypto_entropy
+tests/events/test_events
 tests/getopt/test_getopt
 tests/heap/test_heap
 tests/humansize/test_humansize
