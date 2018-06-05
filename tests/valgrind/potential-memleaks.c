@@ -28,6 +28,9 @@ pl_freebsd_getdelim(void)
 
 	if (getline(&line, &linecap, stdin) == -1)
 		printf("error in getline()\n");
+
+	/* Clean up. */
+	free(line);
 }
 
 #define MEMLEAKTEST(x) { #x, x }
