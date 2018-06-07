@@ -9,6 +9,10 @@ static int
 parsenum_equal(double x, double y)
 {
 
+	/* Check special status. */
+	if (fpclassify(x) != fpclassify(y))
+		return (0);
+
 	/* Deal with NANs. */
 	if (isnan(x) && isnan(y))
 		return (1);
