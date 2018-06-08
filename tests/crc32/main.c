@@ -5,6 +5,8 @@
 #include <string.h>
 
 #include "getopt.h"
+#include "monoclock.h"
+#include "warnp.h"
 
 #include "crc32c.h"
 
@@ -25,6 +27,96 @@ static struct testcase {
 	{ "This is a CRC32 hash using the Catagnoli polynomial",
 	    {0x1b, 0xc4, 0xb4, 0x28}}
 };
+
+/* Largest buffer must be first. */
+static const size_t perfsizes[] = {16384, 8192, 4096, 2048, 1024, 512, 256,
+    128, 64, 32, 16};
+static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
+static const size_t bytes_to_hash = 1 << 29;	/* approx 500 MB */
+
+static int
+perftest(void)
+{
+	CRC32C_CTX ctx;
+	uint8_t * largebuf;
+	uint8_t cbuf[4];
+	struct timeval begin, end;
+	long long delta_us;
+	long long delta_us_overall;
+	size_t i, j;
+	size_t num_hashes;
+
+	/* Allocate buffer to hold largest message. */
+	if ((largebuf = malloc(perfsizes[0])) == NULL) {
+		warnp("malloc");
+		goto err0;
+	}
+	memset(largebuf, 0, perfsizes[0]);
+
+	/* Inform user. */
+	printf("Hashing %zu bytes...\n", bytes_to_hash);
+
+	/* Initialize overall stats. */
+	delta_us_overall = 0;
+
+	/* Warm up. */
+	for (j = 0; j < 8000; j++) {
+		CRC32C_Init(&ctx);
+		CRC32C_Update(&ctx, largebuf, perfsizes[0]);
+		CRC32C_Final(cbuf, &ctx);
+	}
+
+	/* Run operations. */
+	for (i = 0; i < num_perf; i++) {
+		num_hashes = bytes_to_hash / perfsizes[i];
+
+		/* Get beginning time. */
+		if (monoclock_get_cputime(&begin)) {
+			warnp("monoclock_get_cputime()");
+			goto err1;
+		}
+
+		/* Hash all the bytes. */
+		for (j = 0; j < num_hashes; j++) {
+			CRC32C_Init(&ctx);
+			CRC32C_Update(&ctx, largebuf, perfsizes[i]);
+			CRC32C_Final(cbuf, &ctx);
+		}
+
+		/* Get ending time. */
+		if (monoclock_get_cputime(&end)) {
+			warnp("monoclock_get_cputime()");
+			goto err1;
+		}
+
+		/* Find and print elasped time and speed. */
+		delta_us = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
+		    (end.tv_usec - begin.tv_usec);
+		printf("... in %zu blocks of size %zu:\t%.02f s\t%.01f MB/s\n",
+		    num_hashes, perfsizes[i], (double)delta_us / 1000000,
+		    (double)bytes_to_hash / delta_us);
+
+		/* Update overall stats. */
+		delta_us_overall += delta_us;
+	}
+
+	/* Print overall stats. */
+	printf("Overall time and speed:\t%.02f s\t%.01f MB/s\n",
+	    (double)delta_us_overall / 1000000,
+	    (double)bytes_to_hash * num_perf / delta_us_overall);
+
+	/* Clean up. */
+	free(largebuf);
+
+	/* Success! */
+	return (0);
+
+err1:
+	free(largebuf);
+err0:
+	/* Failure! */
+	return (1);
+}
 
 static int
 selftest(void)
@@ -115,7 +207,8 @@ static void
 usage(void)
 {
 
-	fprintf(stderr, "usage: test_crc32 -x\n");
+	fprintf(stderr, "usage: test_crc32 -t\n");
+	fprintf(stderr, "       test_crc32 -x\n");
 	exit(1);
 }
 
@@ -124,9 +217,13 @@ main(int argc, char * argv[])
 {
 	const char * ch;
 
+	WARNP_INIT;
+
 	/* Process arguments. */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
 		GETOPT_SWITCH(ch) {
+		GETOPT_OPT("-t"):
+			exit(perftest());
 		GETOPT_OPT("-x"):
 			exit(selftest());
 		GETOPT_DEFAULT:
