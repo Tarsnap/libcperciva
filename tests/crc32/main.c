@@ -8,6 +8,9 @@
 
 #include "crc32c.h"
 
+#define LARGE_BUFSIZE 65536
+#define MAX_CHUNK 256
+
 static struct testcase {
 	const char * s;
 	uint8_t cbuf[4];
@@ -30,7 +33,12 @@ selftest(void)
 	uint8_t cbuf[4];
 	size_t i, j;
 	size_t failures = 0;
+	char * largebuf;
+	size_t bytes_processed;
+	size_t new_chunk;
+	uint8_t alt_buf[4];
 
+	/* Run regular test cases. */
 	for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
 		printf("Computing CRC32C of \"%s\"...", tests[i].s);
 		CRC32C_Init(&ctx);
@@ -52,10 +60,55 @@ selftest(void)
 		}
 	}
 
+	/* Test with a large buffer and unaligned access. */
+	printf("Computing CRC32C of a large buffer two different ways...");
+
+	/* Prepare a large buffer with repeating 01010101_2 = 85. */
+	if ((largebuf = malloc(LARGE_BUFSIZE)) == NULL)
+		goto err0;
+	memset(largebuf, 85, LARGE_BUFSIZE);
+
+	/* Compute checksum with one call. */
+	CRC32C_Init(&ctx);
+	CRC32C_Update(&ctx, (const uint8_t *)largebuf, LARGE_BUFSIZE);
+	CRC32C_Final(cbuf, &ctx);
+
+	/* Ensure we have a repeatable pattern of random values. */
+	srandom(0);
+
+	/* Compute checksum with multiple calls. */
+	CRC32C_Init(&ctx);
+	bytes_processed = 0;
+	while (bytes_processed < LARGE_BUFSIZE - MAX_CHUNK) {
+		new_chunk = ((unsigned long int)random()) % MAX_CHUNK;
+		CRC32C_Update(&ctx, (const uint8_t *)&largebuf[bytes_processed],
+		    new_chunk);
+		bytes_processed += new_chunk;
+	}
+	new_chunk = LARGE_BUFSIZE - bytes_processed;
+	CRC32C_Update(&ctx, (const uint8_t *)&largebuf[bytes_processed],
+	    new_chunk);
+	CRC32C_Final(alt_buf, &ctx);
+
+	/* Compare checksums. */
+	if (memcmp(cbuf, alt_buf, 4)) {
+		printf(" FAILED!\n");
+		failures++;
+	} else
+		printf(" PASSED!\n");
+
+	/* Clean up. */
+	free(largebuf);
+
+	/* Report overall success to exit code. */
 	if (failures)
 		return (1);
 	else
 		return (0);
+
+err0:
+	/* Failure! */
+	return (1);
 }
 
 static void
