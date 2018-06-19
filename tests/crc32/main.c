@@ -5,8 +5,13 @@
 #include <string.h>
 
 #include "getopt.h"
+#include "monoclock.h"
+#include "warnp.h"
 
 #include "crc32c.h"
+
+#define LARGE_BUFSIZE 65536
+#define MAX_CHUNK 256
 
 static struct testcase {
 	const char * s;
@@ -23,6 +28,96 @@ static struct testcase {
 	    {0x1b, 0xc4, 0xb4, 0x28}}
 };
 
+/* Largest buffer must be first. */
+static const size_t perfsizes[] = {16384, 8192, 4096, 2048, 1024, 512, 256,
+    128, 64, 32, 16};
+static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
+static const size_t bytes_to_hash = 1 << 29;	/* approx 500 MB */
+
+static int
+perftest(void)
+{
+	CRC32C_CTX ctx;
+	uint8_t * largebuf;
+	uint8_t cbuf[4];
+	struct timeval begin, end;
+	long long delta_us;
+	long long delta_us_overall;
+	size_t i, j;
+	size_t num_hashes;
+
+	/* Allocate buffer to hold largest message. */
+	if ((largebuf = malloc(perfsizes[0])) == NULL) {
+		warnp("malloc");
+		goto err0;
+	}
+	memset(largebuf, 0, perfsizes[0]);
+
+	/* Inform user. */
+	printf("Hashing %zu bytes...\n", bytes_to_hash);
+
+	/* Initialize overall stats. */
+	delta_us_overall = 0;
+
+	/* Warm up. */
+	for (j = 0; j < 8000; j++) {
+		CRC32C_Init(&ctx);
+		CRC32C_Update(&ctx, largebuf, perfsizes[0]);
+		CRC32C_Final(cbuf, &ctx);
+	}
+
+	/* Run operations. */
+	for (i = 0; i < num_perf; i++) {
+		num_hashes = bytes_to_hash / perfsizes[i];
+
+		/* Get beginning time. */
+		if (monoclock_get_cputime(&begin)) {
+			warnp("monoclock_get_cputime()");
+			goto err1;
+		}
+
+		/* Hash all the bytes. */
+		for (j = 0; j < num_hashes; j++) {
+			CRC32C_Init(&ctx);
+			CRC32C_Update(&ctx, largebuf, perfsizes[i]);
+			CRC32C_Final(cbuf, &ctx);
+		}
+
+		/* Get ending time. */
+		if (monoclock_get_cputime(&end)) {
+			warnp("monoclock_get_cputime()");
+			goto err1;
+		}
+
+		/* Find and print elasped time and speed. */
+		delta_us = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
+		    (end.tv_usec - begin.tv_usec);
+		printf("... in %zu blocks of size %zu:\t%.02f s\t%.01f MB/s\n",
+		    num_hashes, perfsizes[i], (double)delta_us / 1000000,
+		    (double)bytes_to_hash / delta_us);
+
+		/* Update overall stats. */
+		delta_us_overall += delta_us;
+	}
+
+	/* Print overall stats. */
+	printf("Overall time and speed:\t%.02f s\t%.01f MB/s\n",
+	    (double)delta_us_overall / 1000000,
+	    (double)bytes_to_hash * num_perf / delta_us_overall);
+
+	/* Clean up. */
+	free(largebuf);
+
+	/* Success! */
+	return (0);
+
+err1:
+	free(largebuf);
+err0:
+	/* Failure! */
+	return (1);
+}
+
 static int
 selftest(void)
 {
@@ -30,7 +125,12 @@ selftest(void)
 	uint8_t cbuf[4];
 	size_t i, j;
 	size_t failures = 0;
+	char * largebuf;
+	size_t bytes_processed;
+	size_t new_chunk;
+	uint8_t alt_buf[4];
 
+	/* Run regular test cases. */
 	for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
 		printf("Computing CRC32C of \"%s\"...", tests[i].s);
 		CRC32C_Init(&ctx);
@@ -52,17 +152,63 @@ selftest(void)
 		}
 	}
 
+	/* Test with a large buffer and unaligned access. */
+	printf("Computing CRC32C of a large buffer two different ways...");
+
+	/* Prepare a large buffer with repeating 01010101_2 = 85. */
+	if ((largebuf = malloc(LARGE_BUFSIZE)) == NULL)
+		goto err0;
+	memset(largebuf, 85, LARGE_BUFSIZE);
+
+	/* Compute checksum with one call. */
+	CRC32C_Init(&ctx);
+	CRC32C_Update(&ctx, (const uint8_t *)largebuf, LARGE_BUFSIZE);
+	CRC32C_Final(cbuf, &ctx);
+
+	/* Ensure we have a repeatable pattern of random values. */
+	srandom(0);
+
+	/* Compute checksum with multiple calls. */
+	CRC32C_Init(&ctx);
+	bytes_processed = 0;
+	while (bytes_processed < LARGE_BUFSIZE - MAX_CHUNK) {
+		new_chunk = ((unsigned long int)random()) % MAX_CHUNK;
+		CRC32C_Update(&ctx, (const uint8_t *)&largebuf[bytes_processed],
+		    new_chunk);
+		bytes_processed += new_chunk;
+	}
+	new_chunk = LARGE_BUFSIZE - bytes_processed;
+	CRC32C_Update(&ctx, (const uint8_t *)&largebuf[bytes_processed],
+	    new_chunk);
+	CRC32C_Final(alt_buf, &ctx);
+
+	/* Compare checksums. */
+	if (memcmp(cbuf, alt_buf, 4)) {
+		printf(" FAILED!\n");
+		failures++;
+	} else
+		printf(" PASSED!\n");
+
+	/* Clean up. */
+	free(largebuf);
+
+	/* Report overall success to exit code. */
 	if (failures)
 		return (1);
 	else
 		return (0);
+
+err0:
+	/* Failure! */
+	return (1);
 }
 
 static void
 usage(void)
 {
 
-	fprintf(stderr, "usage: test_crc32 -x\n");
+	fprintf(stderr, "usage: test_crc32 -t\n");
+	fprintf(stderr, "       test_crc32 -x\n");
 	exit(1);
 }
 
@@ -71,9 +217,13 @@ main(int argc, char * argv[])
 {
 	const char * ch;
 
+	WARNP_INIT;
+
 	/* Process arguments. */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
 		GETOPT_SWITCH(ch) {
+		GETOPT_OPT("-t"):
+			exit(perftest());
 		GETOPT_OPT("-x"):
 			exit(selftest());
 		GETOPT_DEFAULT:

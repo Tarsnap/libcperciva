@@ -18,6 +18,8 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
 # Utility functions
 .PATH.c	:	${LIBCPERCIVA_DIR}/util
 SRCS	+=	getopt.c
+SRCS	+=	monoclock.c
+SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	test_crc32
