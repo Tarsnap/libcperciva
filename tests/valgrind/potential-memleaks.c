@@ -1,4 +1,6 @@
 #include <errno.h>
+#include <grp.h>
+#include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,6 +35,23 @@ pl_freebsd_getdelim(void)
 	free(line);
 }
 
+/* Problem with NSS and getgrnam on Ubuntu 18.04 and FreeBSD 11.0. */
+static void
+pl_nss_getgrnam(void)
+{
+
+	getgrnam("fake-groupname");
+}
+
+/* Problem with NSS and getpwnam on Ubuntu 18.04 and FreeBSD 11.0. */
+static void
+pl_nss_getpwnam(void)
+{
+
+	getpwnam("fake-username");
+}
+
+
 #define MEMLEAKTEST(x) { #x, x }
 static const struct memleaktest {
 	const char * name;
@@ -40,7 +59,9 @@ static const struct memleaktest {
 } tests[] = {
 	MEMLEAKTEST(pl_freebsd_link_lrt),
 	MEMLEAKTEST(pl_freebsd_printf),
-	MEMLEAKTEST(pl_freebsd_getdelim)
+	MEMLEAKTEST(pl_freebsd_getdelim),
+	MEMLEAKTEST(pl_nss_getgrnam),
+	MEMLEAKTEST(pl_nss_getpwnam)
 };
 static const int num_tests = sizeof(tests) / sizeof(tests[0]);
 
