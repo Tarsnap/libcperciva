@@ -89,7 +89,7 @@ perftest(void)
 			goto err1;
 		}
 
-		/* Find and print elasped time and speed. */
+		/* Find and print elapsed time and speed. */
 		delta_us = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
 		    (end.tv_usec - begin.tv_usec);
 		printf("... in %zu blocks of size %zu:\t%.02f s\t%.01f MB/s\n",
