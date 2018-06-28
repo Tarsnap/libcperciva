@@ -9,6 +9,12 @@ static int
 parsenum_equal(double x, double y)
 {
 
+#if __clang__
+	_Pragma("clang diagnostic push")
+	_Pragma("clang diagnostic ignored \"-Wconversion\"")
+	_Pragma("clang diagnostic ignored \"-Wdouble-promotion\"")
+#endif
+
 	/* Check special status. */
 	if (fpclassify(x) != fpclassify(y))
 		return (0);
@@ -28,6 +34,10 @@ parsenum_equal(double x, double y)
 	/* Deal with zeros. */
 	if ((fpclassify(x) == FP_ZERO) && (fpclassify(y) == FP_ZERO))
 		return (1);
+
+#if __clang__
+	_Pragma("clang diagnostic pop")
+#endif
 
 	/* Deal with real numbers. */
 	if ((fabs(x - y) < 1) && (fabs(x - y) <= fabs(x + y) * 1e-6))
