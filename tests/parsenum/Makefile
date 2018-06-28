@@ -5,8 +5,17 @@ MAN1=
 SRCS=main.c warnp.c
 IDIRS=-I../../util
 LDADD_REQ=-lm
+SUBDIR_DEPTH=../..
+RELATIVE_DIR=tests/parsenum
 
-all:	${PROG}
+all:
+	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
+		cd ${SUBDIR_DEPTH}; \
+		${MAKE} BUILD_SUBDIR=${RELATIVE_DIR} \
+		    BUILD_TARGET=${PROG} buildsubdir; \
+	else \
+		${MAKE} ${PROG}; \
+	fi
 
 clean:
 	rm -f ${PROG} ${SRCS:.c=.o}

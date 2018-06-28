@@ -5,8 +5,17 @@ MAN1=
 SRCS=main.c elasticarray.c ptrheap.c timerqueue.c events_immediate.c events_network.c events_network_selectstats.c events_timer.c events.c getopt.c monoclock.c warnp.c
 IDIRS=-I../../datastruct -I../../events -I../../util
 LDADD_REQ=
+SUBDIR_DEPTH=../..
+RELATIVE_DIR=tests/events
 
-all:	${PROG}
+all:
+	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
+		cd ${SUBDIR_DEPTH}; \
+		${MAKE} BUILD_SUBDIR=${RELATIVE_DIR} \
+		    BUILD_TARGET=${PROG} buildsubdir; \
+	else \
+		${MAKE} ${PROG}; \
+	fi
 
 clean:
 	rm -f ${PROG} ${SRCS:.c=.o}
