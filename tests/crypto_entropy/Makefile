@@ -5,8 +5,17 @@ MAN1=
 SRCS=main.c sha256.c cpusupport_x86_rdrand.c crypto_entropy.c crypto_entropy_rdrand.c entropy.c insecure_memzero.c warnp.c
 IDIRS=-I../../alg -I../../cpusupport -I../../crypto -I../../util
 LDADD_REQ=
+SUBDIR_DEPTH=../..
+RELATIVE_DIR=tests/crypto_entropy
 
-all:	${PROG}
+all:
+	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
+		cd ${SUBDIR_DEPTH}; \
+		${MAKE} BUILD_SUBDIR=${RELATIVE_DIR} \
+		    BUILD_TARGET=${PROG} buildsubdir; \
+	else \
+		${MAKE} ${PROG}; \
+	fi
 
 clean:
 	rm -f ${PROG} ${SRCS:.c=.o}

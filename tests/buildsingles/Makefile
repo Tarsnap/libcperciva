@@ -5,8 +5,17 @@ MAN1=
 SRCS=main.c
 IDIRS=
 LDADD_REQ=
+SUBDIR_DEPTH=../..
+RELATIVE_DIR=tests/buildsingles
 
-all:	${PROG} all_extra
+all:
+	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
+		cd ${SUBDIR_DEPTH}; \
+		${MAKE} BUILD_SUBDIR=${RELATIVE_DIR} \
+		    BUILD_TARGET=${PROG} buildsubdir; \
+	else \
+		${MAKE} ${PROG} all_extra; \
+	fi
 
 clean:	clean_extra
 	rm -f ${PROG} ${SRCS:.c=.o}

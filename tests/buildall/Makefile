@@ -5,8 +5,17 @@ MAN1=
 SRCS=main.c crc32c.c md5.c sha1.c sha256.c cpusupport_x86_aesni.c cpusupport_x86_sse2.c cpusupport_x86_rdrand.c crypto_aes.c crypto_aes_aesni.c crypto_aesctr.c crypto_dh.c crypto_dh_group14.c crypto_entropy.c crypto_entropy_rdrand.c crypto_verify_bytes.c elasticarray.c elasticqueue.c ptrheap.c seqptrmap.c timerqueue.c events_immediate.c events_network.c events_network_selectstats.c events_timer.c events.c network_accept.c network_connect.c network_read.c network_write.c asprintf.c b64encode.c daemonize.c entropy.c getopt.c hexify.c humansize.c insecure_memzero.c monoclock.c noeintr.c readpass.c setuidgid.c sock.c sock_util.c ttyfd.c warnp.c
 IDIRS=-I../../alg -I../../cpusupport -I../../crypto -I../../datastruct -I../../events -I../../network -I../../util
 LDADD_REQ=-lcrypto
+SUBDIR_DEPTH=../..
+RELATIVE_DIR=tests/buildall
 
-all:	${PROG}
+all:
+	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
+		cd ${SUBDIR_DEPTH}; \
+		${MAKE} BUILD_SUBDIR=${RELATIVE_DIR} \
+		    BUILD_TARGET=${PROG} buildsubdir; \
+	else \
+		${MAKE} ${PROG}; \
+	fi
 
 clean:
 	rm -f ${PROG} ${SRCS:.c=.o}
