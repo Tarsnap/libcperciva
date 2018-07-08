@@ -45,6 +45,7 @@ feature() {
 
 # Detect CPU-detection features
 feature X86 CPUID ""
+feature X86 CPUID_COUNT ""
 
 # Detect specific features
 feature X86 AESNI "" "-maes" "-maes -Wno-cast-align" "-maes -Wno-missing-prototypes -Wno-cast-qual"
