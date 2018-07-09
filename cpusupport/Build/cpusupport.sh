@@ -52,3 +52,4 @@ feature X86 AESNI "" "-maes" "-maes -Wno-cast-align" "-maes -Wno-missing-prototy
 feature X86 RDRAND "" "-mrdrnd"
 feature X86 SHANI "" "-msse2 -msha" "-msse2 -msha -Wno-cast-align"
 feature X86 SSE2 "" "-msse2" "-msse2 -Wno-cast-align"
+feature X86 SSSE3 "" "-mssse3" "-mssse3 -Wno-cast-align"
