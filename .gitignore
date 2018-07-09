@@ -4,6 +4,7 @@ cpusupport-config.h
 posix-flags.sh
 # Test binaries and compiled files.
 tests/buildall/buildall
+tests/buildsingles/test_buildsingles
 tests/buildsingles/*-main
 tests/buildsingles/Makefile.inc2
 tests/crc32/test_crc32
