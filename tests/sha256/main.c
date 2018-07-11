@@ -124,7 +124,7 @@ selftest(void)
 		if (strcmp(hbuf_hex, tests[i].o)) {
 			printf(" FAILED!\n");
 			printf("Computed SHA256: %s\n", hbuf_hex);
-			printf("Correct CRC32C:  %s\n", tests[i].o);
+			printf("Correct SHA256:  %s\n", tests[i].o);
 			failures++;
 		} else {
 			printf(" PASSED!\n");
@@ -150,6 +150,8 @@ int
 main(int argc, char * argv[])
 {
 	const char * ch;
+
+	WARNP_INIT;
 
 	/* Process arguments. */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
