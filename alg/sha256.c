@@ -61,6 +61,12 @@ static const uint32_t Krnd[64] = {
 	0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
+/* Magic initialization constants. */
+static const uint32_t initial_state[8] = {
+	0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
+	0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19
+};
+
 /* Elementary functions used by SHA256 */
 #define Ch(x, y, z)	((x & (y ^ z)) ^ z)
 #define Maj(x, y, z)	((x & (y | z)) | (y & z))
@@ -185,12 +191,6 @@ SHA256_Pad(SHA256_CTX * ctx, uint32_t tmp32[static restrict 72])
 	/* Mix in the final block. */
 	SHA256_Transform(ctx->state, ctx->buf, &tmp32[0], &tmp32[64]);
 }
-
-/* Magic initialization constants. */
-static const uint32_t initial_state[8] = {
-	0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
-	0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19
-};
 
 /**
  * SHA256_Init(ctx):
