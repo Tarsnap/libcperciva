@@ -19,13 +19,16 @@ SRCS	+=	crc32c.c
 SRCS	+=	md5.c
 SRCS	+=	sha1.c
 SRCS	+=	sha256.c
+SRCS	+=	sha256_shani.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
 
 # CPU features detection
 .PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
 SRCS	+=	cpusupport_x86_aesni.c
-SRCS	+=	cpusupport_x86_sse2.c
 SRCS	+=	cpusupport_x86_rdrand.c
+SRCS	+=	cpusupport_x86_shani.c
+SRCS	+=	cpusupport_x86_sse2.c
+SRCS	+=	cpusupport_x86_ssse3.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
 
 # Crypto code
@@ -91,6 +94,9 @@ cflags-crypto_aes_aesni.o:
 
 cflags-crypto_entropy_rdrand.o:
 	@echo '$${CFLAGS_X86_RDRAND}'
+
+cflags-sha256_shani.o:
+	@echo '$${CFLAGS_X86_SHANI} $${CFLAGS_X86_SSSE3}'
 
 test:	buildall
 	true
