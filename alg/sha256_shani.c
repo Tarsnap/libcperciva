@@ -92,8 +92,8 @@ SHA256_Transform_shani(uint32_t state[static restrict 8],
 	S7654 = _mm_loadu_si128((const __m128i *)&state[4]);
 
 	/* Shuffle the 8 32-bit values into the order we need them. */
-	S0123 = _mm_shuffle_epi32(S3210, 0b00011011);
-	S4567 = _mm_shuffle_epi32(S7654, 0b00011011);
+	S0123 = _mm_shuffle_epi32(S3210, 0x1B);
+	S4567 = _mm_shuffle_epi32(S7654, 0x1B);
 	S0145 = _mm_unpackhi_epi64(S4567, S0123);
 	S2367 = _mm_unpacklo_epi64(S4567, S0123);
 
@@ -132,8 +132,8 @@ SHA256_Transform_shani(uint32_t state[static restrict 8],
 	/* Shuffle state back to the original word order and store. */
 	S0123 = _mm_unpackhi_epi64(S2367, S0145);
 	S4567 = _mm_unpacklo_epi64(S2367, S0145);
-	S3210 = _mm_shuffle_epi32(S0123, 0b00011011);
-	S7654 = _mm_shuffle_epi32(S4567, 0b00011011);
+	S3210 = _mm_shuffle_epi32(S0123, 0x1B);
+	S7654 = _mm_shuffle_epi32(S4567, 0x1B);
 	_mm_storeu_si128((__m128i *)&state[0], S3210);
 	_mm_storeu_si128((__m128i *)&state[4], S7654);
 }
