@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "cpusupport.h"
 #include "getopt.h"
 #include "monoclock.h"
 #include "warnp.h"
@@ -45,6 +46,12 @@ perftest(void)
 	long long delta_us_overall;
 	size_t i, j;
 	size_t num_hashes;
+	int use_hardware = 0;
+
+#ifdef CPUSUPPORT_X86_CRC32
+	if (cpusupport_x86_crc32())
+		use_hardware = 1;
+#endif
 
 	/* Allocate buffer to hold largest message. */
 	if ((largebuf = malloc(perfsizes[0])) == NULL) {
@@ -54,7 +61,11 @@ perftest(void)
 	memset(largebuf, 0, perfsizes[0]);
 
 	/* Inform user. */
-	printf("Hashing %zu bytes...\n", bytes_to_hash);
+	printf("Hashing %zu bytes", bytes_to_hash);
+	if (use_hardware)
+		printf(" using hardware CRC32C...\n");
+	else
+		printf(" using software CRC32C...\n");
 
 	/* Initialize overall stats. */
 	delta_us_overall = 0;
