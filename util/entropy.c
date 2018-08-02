@@ -4,9 +4,54 @@
 #include <stdint.h>
 #include <unistd.h>
 
+#include "apisupport.h"
 #include "warnp.h"
 
 #include "entropy.h"
+
+#ifdef APISUPPORT_LINUX_GETRANDOM
+#include <sys/random.h>
+#endif
+
+#ifdef APISUPPORT_LINUX_GETRANDOM
+static int
+entropy_read_linux_getrandom(uint8_t * buf, size_t buflen)
+{
+	ssize_t lenread;
+
+	/* Read bytes until we have filled the buffer. */
+	while (buflen > 0) {
+		/* Reading small buffers is recommended. */
+		if (buflen > 256)
+			lenread = 256;
+		else
+			lenread = (ssize_t)buflen;
+
+		/* Get a random buffer. */
+		if ((lenread = getrandom(buf, (size_t)lenread, 0)) == -1) {
+			warnp("getrandom()");
+			goto err0;
+		}
+
+		/* getrandom() should not return 0. */
+		if (lenread == 0) {
+			warn0("getrandom failed to produce bytes");
+			goto err0;
+		}
+
+		/* We've filled a portion of the buffer. */
+		buf += (size_t)lenread;
+		buflen -= (size_t)lenread;
+	}
+
+	/* Success! */
+	return (0);
+
+err0:
+	/* Failure! */
+	return (-1);
+}
+#endif
 
 /**
  * XXX Portability
@@ -33,6 +78,11 @@ entropy_read(uint8_t * buf, size_t buflen)
 		    buflen);
 		goto err0;
 	}
+
+#ifdef APISUPPORT_LINUX_GETRANDOM
+	if (apisupport_linux_getrandom())
+		return (entropy_read_linux_getrandom(buf, buflen));
+#endif
 
 	/* Open /dev/urandom. */
 	if ((fd = open("/dev/urandom", O_RDONLY)) == -1) {
