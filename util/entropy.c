@@ -4,9 +4,14 @@
 #include <stdint.h>
 #include <unistd.h>
 
+#include "apisupport.h"
 #include "warnp.h"
 
 #include "entropy.h"
+
+#ifdef APISUPPORT_LINUX_GETRANDOM
+#include <sys/random.h>
+#endif
 
 /**
  * XXX Portability
@@ -33,6 +38,16 @@ entropy_read(uint8_t * buf, size_t buflen)
 		    buflen);
 		goto err0;
 	}
+
+#ifdef APISUPPORT_LINUX_GETRANDOM
+	if (apisupport_linux_getrandom()) {
+		if (getrandom(buf, buflen, 0) != (ssize_t)buflen) {
+			warn0("getrandom()");
+			goto err0;
+		}
+		return (0);
+	}
+#endif
 
 	/* Open /dev/urandom. */
 	if ((fd = open("/dev/urandom", O_RDONLY)) == -1) {
