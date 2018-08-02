@@ -102,5 +102,6 @@
  * corresponding run-time detection code (apisupport_arch_feature.c) must be
  * compiled and linked in.
  */
+APISUPPORT_FEATURE(linux, getrandom, LINUX_GETRANDOM);
 
 #endif /* !_APISUPPORT_H_ */

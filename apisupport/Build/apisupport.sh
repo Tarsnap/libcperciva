@@ -42,3 +42,6 @@ feature() {
 		;;
 	esac
 }
+
+# Detect specific APIs features
+feature LINUX GETRANDOM ""
