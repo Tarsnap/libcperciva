@@ -14,8 +14,8 @@ TESTS=	tests/buildall							\
 	tests/setuidgid							\
 	tests/sha256							\
 	tests/valgrind
-PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX alg cpusupport crypto datastruct \
-	events network tests util
+PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX alg apisupport cpusupport	\
+	 datastruct events network tests util
 
 ### Shared code between Tarsnap projects.
 
