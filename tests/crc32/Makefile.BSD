@@ -15,6 +15,11 @@ SRCS	=	main.c
 SRCS	+=	crc32c.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
 
+# API features detection
+.PATH.c	:	${LIBCPERCIVA_DIR}/apisupport
+SRCS	+=	apisupport_linux_getrandom.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/apisupport
+
 # Utility functions
 .PATH.c	:	${LIBCPERCIVA_DIR}/util
 SRCS	+=	getopt.c
