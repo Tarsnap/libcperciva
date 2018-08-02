@@ -29,6 +29,11 @@ SRCS	+=	aws_readkeys.c
 SRCS	+=	aws_sign.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/aws
 
+# API features detection
+.PATH.c	:	${LIBCPERCIVA_DIR}/apisupport
+SRCS	+=	apisupport_linux_getrandom.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/apisupport
+
 # CPU features detection
 .PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
 SRCS	+=	cpusupport_x86_aesni.c

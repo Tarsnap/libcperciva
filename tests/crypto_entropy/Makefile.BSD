@@ -16,6 +16,11 @@ SRCS	+=	sha256.c
 SRCS	+=	sha256_shani.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
 
+# API features detection
+.PATH.c	:	${LIBCPERCIVA_DIR}/apisupport
+SRCS	+=	apisupport_linux_getrandom.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/apisupport
+
 # CPU features detection
 .PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
 SRCS	+=	cpusupport_x86_rdrand.c
