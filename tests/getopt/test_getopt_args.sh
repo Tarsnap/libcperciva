@@ -1,6 +1,7 @@
 #!/bin/sh -e
 
 ./test_getopt
+./test_getopt -
 ./test_getopt -b
 ./test_getopt --bar
 ./test_getopt -f bar
@@ -27,4 +28,3 @@ if ./test_getopt --bar=foo; then
 fi
 
 echo done 1>&2
-

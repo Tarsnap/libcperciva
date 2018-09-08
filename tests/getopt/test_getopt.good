@@ -3,6 +3,10 @@ bflag = 0
 Remaining arguments:
 Option being processed: (dummy)
 Option being processed: (dummy)
+bflag = 0
+Remaining arguments: -
+Option being processed: (dummy)
+Option being processed: (dummy)
 Option being processed: -b
 bflag = 1
 Remaining arguments:
