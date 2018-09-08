@@ -18,6 +18,14 @@
  * results in breakage when new options are added.  It also does not support
  * options appearing after non-options (e.g., "cp foo bar -R") since that is
  * a horrible GNU perversion.
+ *
+ * Upon encountering '--', it consumes that argument (by incrementing optind)
+ * and returns NULL to signal the end of option-processing.  Upon encountering
+ * any argument not starting with '-' (except as an argument to an option) it
+ * returns NULL to signal the end of option-processing (without consuming the
+ * argument).  Upon encountering '-' by itself (not immediately followed by a
+ * character) it returns NULL to signal the end of option-processing (without
+ * consuming the argument).
  */
 
 /* Work around LLVM bug. */
