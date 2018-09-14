@@ -20,12 +20,13 @@
  * a horrible GNU perversion.
  *
  * Upon encountering '--', it consumes that argument (by incrementing optind)
- * and returns NULL to signal the end of option-processing.  Upon encountering
- * any argument not starting with '-' (except as an argument to an option) it
- * returns NULL to signal the end of option-processing (without consuming the
- * argument).  Upon encountering '-' by itself (not immediately followed by a
- * character) it returns NULL to signal the end of option-processing (without
- * consuming the argument).
+ * and returns NULL to signal the end of option processing.  Upon encountering
+ * a bare '-' argument or any argument not starting with '-' it returns NULL
+ * to signal the end of option processing (without consuming the argument).
+ * Note that these behaviours do not apply when such strings are encountered
+ * as arguments to options; e.g., if "--foo" takes an argument, then the
+ * command line arguments "--foo -- --bar" is interpreted as having two
+ * options ("--foo --" and "--bar") and no left-over arguments.
  */
 
 /* Work around LLVM bug. */
