@@ -54,8 +54,8 @@ pl_nss_getpwnam(void)
 
 #define MEMLEAKTEST(x) { #x, x }
 static const struct memleaktest {
-	const char * name;
-	void (* func)(void);
+	const char * const name;
+	void (* const volatile func)(void);
 } tests[] = {
 	MEMLEAKTEST(pl_freebsd_link_lrt),
 	MEMLEAKTEST(pl_freebsd_printf),
