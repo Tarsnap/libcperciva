@@ -10,6 +10,7 @@ TESTS=	tests/aws							\
 	tests/getopt							\
 	tests/heap							\
 	tests/humansize							\
+	tests/json							\
 	tests/monoclock							\
 	tests/mpool							\
 	tests/parsenum							\
