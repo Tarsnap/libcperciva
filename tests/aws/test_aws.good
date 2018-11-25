@@ -1,0 +1,7 @@
+---- Trying to find AWS keys in /dev/null
+test_aws: Need ACCESS_KEY_ID and ACCESS_KEY_SECRET
+---- Trying to find AWS keys in format.key
+id:	XXXXXXXXXXXXXX
+secret:	YYYYYYYYYYYYYY
+---- Generate a header
+content:	230d8358dc8e8890b4c58deeb62912ee2f20357ae92a5cc861b98e68fe31acb5
