@@ -9,7 +9,7 @@
 /**
  * CRC32C_Update_SSE42(state, buf, len):
  * Feed ${len} bytes from the buffer ${buf} into the CRC32C whose state is
- * ${state}.  This implentation uses x86 SSE4.2 instructions, and should only
+ * ${state}.  This implementation uses x86 SSE4.2 instructions, and should only
  * be used if CPUSUPPORT_X86_CRC32 is defined and cpusupport_x86_crc32 returns
  * nonzero.  ${len} must be greater than, or equal to, 8.
  */
