@@ -2,6 +2,7 @@
 
 HEADERS=\
 	crc32c.h crc32c_sse42.h md5.h sha1.h sha256.h \
+	aws_readkeys.h aws_sign.h \
 	cpusupport.h \
 	crypto_aes.h crypto_aes_aesni.h crypto_aesctr.h crypto_dh.h \
 		crypto_dh_group14.h crypto_entropy.h crypto_entropy_rdrand.h \
