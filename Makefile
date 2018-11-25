@@ -1,7 +1,8 @@
 .POSIX:
 
 PROGS=
-TESTS=	tests/buildall							\
+TESTS=	tests/aws							\
+	tests/buildall							\
 	tests/buildsingles						\
 	tests/crc32							\
 	tests/crypto_entropy						\
