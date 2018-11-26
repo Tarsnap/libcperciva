@@ -1,0 +1,13 @@
+PROG=	test_json
+SRCS=	main.c
+MAN1=
+
+# Utility functions
+.PATH.c	:	../../util
+SRCS	+=	json.c
+IDIRS	+=	-I ../../util
+
+test:	all
+	@./test_json
+
+.include <bsd.prog.mk>
