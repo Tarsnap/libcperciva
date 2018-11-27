@@ -7,7 +7,7 @@ tests/aws/test_aws
 tests/buildall/buildall
 tests/buildsingles/test_buildsingles
 tests/buildsingles/*-main
-tests/buildsingles/Makefile.inc2
+tests/buildsingles/Makefile.tmp
 tests/crc32/test_crc32
 tests/crypto_entropy/test_crypto_entropy
 tests/events/test_events

@@ -16,19 +16,19 @@ HEADERS=\
 		monoclock.h noeintr.h parsenum.h readpass.h setuidgid.h \
 		sock.h sock_internal.h sock_util.h sysendian.h ttyfd.h warnp.h
 
-buildsingles: Makefile.inc2
-	${MAKE} -f Makefile.inc2 CFLAGS="${CFLAGS}"	\
+buildsingles: Makefile.tmp
+	${MAKE} -f Makefile.tmp CFLAGS="${CFLAGS}"	\
 		CFLAGS_POSIX="${CFLAGS_POSIX}" LDADD_POSIX="${LDADD_POSIX}" all
 
-Makefile.inc2: Makefile-headers
+Makefile.tmp: Makefile-headers
 	printf "all: ${HEADERS:.h=-main}\n\t: > test_buildsingles\n\n"	\
-	    > Makefile.inc2
+	    > Makefile.tmp
 	for HN in ${HEADERS}; do				\
 		H=`ls ../../*/$${HN}`;				\
 		echo "$${HN%.h}-main: $${H}";			\
 		echo "	${CC} -DHEADER=\"\\\"$${H}\\\"\" ${CFLAGS} -D_POSIX_C_SOURCE=200809L ${CFLAGS_POSIX} -o $${HN%.h}-main main.c ${LDADD_POSIX}";	\
 		echo;						\
-	done >> Makefile.inc2
+	done >> Makefile.tmp
 
 clean:
-	rm -f Makefile.inc2 ${HEADERS:.h=-main}
+	rm -f Makefile.tmp ${HEADERS:.h=-main}
