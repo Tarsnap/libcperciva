@@ -20,7 +20,7 @@ buildsingles: Makefile.inc2
 	${MAKE} -f Makefile.inc2 CFLAGS="${CFLAGS}"	\
 		CFLAGS_POSIX="${CFLAGS_POSIX}" LDADD_POSIX="${LDADD_POSIX}" all
 
-Makefile.inc2: Makefile.inc1
+Makefile.inc2: Makefile-headers
 	printf "all: ${HEADERS:.h=-main}\n\t: > test_buildsingles\n\n"	\
 	    > Makefile.inc2
 	for HN in ${HEADERS}; do				\
