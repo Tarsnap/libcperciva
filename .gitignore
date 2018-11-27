@@ -3,6 +3,7 @@
 cpusupport-config.h
 posix-flags.sh
 # Test binaries and compiled files.
+tests/aws/test_aws
 tests/buildall/buildall
 tests/buildsingles/test_buildsingles
 tests/buildsingles/*-main
@@ -13,6 +14,7 @@ tests/events/test_events
 tests/getopt/test_getopt
 tests/heap/test_heap
 tests/humansize/test_humansize
+tests/json/test_json
 tests/monoclock/test_monoclock
 tests/mpool/test_mpool
 tests/setuidgid/test_setuidgid
