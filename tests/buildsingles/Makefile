@@ -30,7 +30,7 @@ test:
 	true
 
 all_extra:
-	${MAKE} -f Makefile.inc1 CFLAGS_POSIX="${CFLAGS_POSIX}" CFLAGS="${CFLAGS}" buildsingles
+	${MAKE} -f Makefile-headers CFLAGS_POSIX="${CFLAGS_POSIX}" CFLAGS="${CFLAGS}" buildsingles
 
 clean_extra:
-	${MAKE} -f Makefile.inc1 clean
+	${MAKE} -f Makefile-headers clean
