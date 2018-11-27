@@ -1,3 +1,7 @@
+# This test only makes sense when it's run from the top-level directory,
+# due to a combination of the "generate top-level flag files" and the "generate
+# new Makefiles to test compiling headers individually".
+
 # Program name.
 PROG	=	test_buildsingles
 
