@@ -1,3 +1,7 @@
+# This test only makes sense when it's run from the top-level directory,
+# due to a combination of the "generate top-level flag files" and the "generate
+# new Makefiles to test compiling headers individually".
+
 # Program name.
 PROG	=	test_buildsingles
 
@@ -11,10 +15,10 @@ LIBCPERCIVA_DIR	=	../..
 SRCS	=	main.c
 
 all_extra:
-	${MAKE} -f Makefile.inc1 CFLAGS_POSIX="${CFLAGS_POSIX}" CFLAGS="${CFLAGS}" buildsingles
+	${MAKE} -f Makefile-headers CFLAGS_POSIX="${CFLAGS_POSIX}" CFLAGS="${CFLAGS}" buildsingles
 
 clean_extra:
-	${MAKE} -f Makefile.inc1 clean
+	${MAKE} -f Makefile-headers clean
 
 test:
 	true
