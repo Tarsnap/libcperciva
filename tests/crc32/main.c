@@ -42,8 +42,8 @@ perftest(void)
 	uint8_t * largebuf;
 	uint8_t cbuf[4];
 	struct timeval begin, end;
-	long long delta_us;
-	long long delta_us_overall;
+	double delta_s;
+	double delta_s_overall;
 	size_t i, j;
 	size_t num_hashes;
 	int use_hardware = 0;
@@ -68,7 +68,7 @@ perftest(void)
 		printf(" using software CRC32C...\n");
 
 	/* Initialize overall stats. */
-	delta_us_overall = 0;
+	delta_s_overall = 0;
 
 	/* Warm up. */
 	for (j = 0; j < 8000; j++) {
@@ -101,20 +101,19 @@ perftest(void)
 		}
 
 		/* Find and print elapsed time and speed. */
-		delta_us = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
-		    (end.tv_usec - begin.tv_usec);
+		delta_s = timeval_diff(begin, end);
 		printf("... in %zu blocks of size %zu:\t%.02f s\t%.01f MB/s\n",
-		    num_hashes, perfsizes[i], (double)delta_us / 1000000,
-		    (double)bytes_to_hash / delta_us);
+		    num_hashes, perfsizes[i], delta_s,
+		    (double)bytes_to_hash / 1e6 / delta_s);
 
 		/* Update overall stats. */
-		delta_us_overall += delta_us;
+		delta_s_overall += delta_s;
 	}
 
 	/* Print overall stats. */
 	printf("Overall time and speed:\t%.02f s\t%.01f MB/s\n",
-	    (double)delta_us_overall / 1000000,
-	    (double)bytes_to_hash * num_perf / delta_us_overall);
+	    delta_s_overall,
+	    (double)bytes_to_hash / 1e6 * num_perf / delta_s_overall);
 
 	/* Clean up. */
 	free(largebuf);
