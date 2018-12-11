@@ -17,7 +17,7 @@ static int
 perftest(void)
 {
 	struct timeval begin, end;
-	long long delta_us;
+	double delta_s;
 	SHA256_CTX ctx;
 	uint8_t hbuf[32];
 	char hbuf_hex[65];
@@ -60,13 +60,11 @@ perftest(void)
 	printf(" done\n");
 	printf("Digest = %s\n", hbuf_hex);
 
-	delta_us = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
-	    (end.tv_usec - begin.tv_usec);
+	delta_s = timeval_diff(begin, end);
 
-	printf("Time = %f seconds\n", (double)delta_us / 1000000.0);
+	printf("Time = %f seconds\n", delta_s);
 	printf("Speed = %f bytes/second\n",
-	    (double)BLOCKLEN * (double)BLOCKCOUNT /
-	    ((double)delta_us / 1000000.0));
+	    (double)BLOCKLEN * (double)BLOCKCOUNT / delta_s);
 
 	/* Free allocated buffer. */
 	free(buf);

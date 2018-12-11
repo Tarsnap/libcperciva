@@ -108,8 +108,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 		warnp("monoclock_get_cputime()");
 		goto err1;
 	}
-	delta_us = 1000000*((long long)(end.tv_sec - begin.tv_sec)) +
-	    (end.tv_usec - begin.tv_usec);
+	delta_us = (long long)(1e6 * timeval_diff(begin, end));
 
 	/* Clean up. */
 	free(arr);
