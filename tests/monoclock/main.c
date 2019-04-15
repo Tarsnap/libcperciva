@@ -12,6 +12,7 @@ int
 main(int argc, char * argv[])
 {
 	struct timeval tv_wall, tv_cpu;
+	double timer_resolution;
 
 	WARNP_INIT;
 
@@ -28,11 +29,18 @@ main(int argc, char * argv[])
 		goto err0;
 	}
 
+	/* Get timer resolution. */
+	if (monoclock_getres(&timer_resolution)) {
+		warnp("monoclock_getres()");
+		goto err0;
+	}
+
 	/* Display times. */
 	printf("monoclock_get():\t\t%ju seconds,\t%06ji microseconds\n",
 	    (uintmax_t)tv_wall.tv_sec, (intmax_t)tv_wall.tv_usec);
 	printf("monoclock_get_cputime():\t%ju seconds,\t%06ji microseconds\n",
 	    (uintmax_t)tv_cpu.tv_sec, (intmax_t)tv_cpu.tv_usec);
+	printf("monoclock_getres():\t\t%g\n", timer_resolution);
 
 	/* Success! */
 	exit(0);
