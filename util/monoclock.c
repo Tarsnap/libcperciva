@@ -142,7 +142,9 @@ monoclock_getres(double * resd)
 	/* Success! */
 	return (0);
 
+#if defined(USE_MONOTONIC) || defined(USE_REALTIME)
 err0:
 	/* Failure! */
 	return (-1);
+#endif
 }
