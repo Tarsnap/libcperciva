@@ -1,6 +1,8 @@
+#include <errno.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "parsenum.h"
 #include "warnp.h"
