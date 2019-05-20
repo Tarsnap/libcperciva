@@ -1,8 +1,9 @@
+#include <sys/time.h>
+
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 
 #include "getopt.h"
 #include "hexify.h"
