@@ -30,18 +30,31 @@ add_makefile_prog() {
 }
 
 add_object_files() {
-	( ${MAKEBSD} -V SRCS |					\
+	# Set up useful variables
+	OBJ=$(${MAKEBSD} -V SRCS |				\
 	    sed -e 's| cpusupport-config.h||' |			\
 	    tr ' ' '\n' |					\
-	    sed -E 's/.c$/.o/' |				\
-	    while read F; do
+	    sed -E 's/.c$/.o/' )
+	CPP_ARGS_FIXED="-std=c99 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -I${SUBDIR_DEPTH} -MM"
+	OUT_CC_BEGIN="\${CC} \${CFLAGS_POSIX} ${CFLAGS_HARDCODED}"
+	OUT_CC_MID="-I${SUBDIR_DEPTH} \${IDIRS} \${CPPFLAGS} \${CFLAGS}"
+
+	# Generate build instructions for each object
+	for F in $OBJ; do
 		S=`${MAKEBSD} source-${F}`
 		CF=`${MAKEBSD} cflags-${F}`
 		IDIRS=`${MAKEBSD} -V IDIRS`
-		echo `${CPP} ${S} -std=c99 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -I${SUBDIR_DEPTH} ${IDIRS} -MM -MT ${F}` \
-			| sed -e 's| \\ | |g'
-		echo "	\${CC} \${CFLAGS_POSIX} ${CFLAGS_HARDCODED} ${CF} -I${SUBDIR_DEPTH} \${IDIRS} \${CPPFLAGS} \${CFLAGS} -c ${S} -o ${F}"
-	    done ) >> $OUT
+		# Get the build instructions, then remove newlines, condense
+		# multiple spaces, remove line continuations, and replace the
+		# final space with a newline.
+		${CPP} ${S} ${CPP_ARGS_FIXED} ${IDIRS} -MT ${F} |	\
+		    tr '\n' ' ' |					\
+		    tr -s ' '	|					\
+		    sed -e 's| \\ | |g' |				\
+		    sed -e 's| $||g'
+		printf "\n"
+		echo "	${OUT_CC_BEGIN} ${CF} ${OUT_CC_MID} -c ${S} -o ${F}"
+	done >> $OUT
 }
 
 # Add header and variables
