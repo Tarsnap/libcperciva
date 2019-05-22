@@ -67,28 +67,28 @@ add_object_files
 # Add test (if applicable)
 if grep -q "test:" Makefile.BSD ; then
 	printf "\n" >> $OUT
-	( awk '/test:/, /^$/' Makefile.BSD |			\
-	    awk '$1' ) >> $OUT
+	awk '/test:/, /^$/' Makefile.BSD |			\
+	    awk '$1' >> $OUT
 fi
 
 # Add all_extra (if applicable)
 if grep -q "all_extra:" Makefile.BSD ; then
 	printf "\n" >> $OUT
-	( awk '/all_extra:/, /^$/' Makefile.BSD |		\
-	    awk '$1' ) >> $OUT
-	( sed -e 's/${MAKE} ${PROG}/${MAKE} ${PROG} all_extra/'	\
-	    Makefile > Makefile.new )
-	( mv Makefile.new Makefile )
+	awk '/all_extra:/, /^$/' Makefile.BSD |		\
+	    awk '$1' >> $OUT
+	sed -e 's/${MAKE} ${PROG}/${MAKE} ${PROG} all_extra/'	\
+	    Makefile > Makefile.new
+	mv Makefile.new Makefile
 fi
 
 # Add clean_extra (if applicable)
 if grep -q "clean_extra:" Makefile.BSD ; then
 	printf "\n" >> $OUT
-	( awk '/clean_extra:/, /^$/' Makefile.BSD |		\
-	    awk '$1' ) >> $OUT
-	( awk '/clean:/ {print $0 "\tclean_extra";next}{print}'	\
-	    Makefile > Makefile.new )
-	( mv Makefile.new Makefile )
+	awk '/clean_extra:/, /^$/' Makefile.BSD |		\
+	    awk '$1' >> $OUT
+	awk '/clean:/ {print $0 "\tclean_extra";next}{print}'	\
+	    Makefile > Makefile.new
+	mv Makefile.new Makefile
 fi
 
 # Clean up -config.h files
