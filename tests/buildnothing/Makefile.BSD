@@ -1,0 +1,4 @@
+test:
+	echo "SUCCESS"
+
+.include <bsd.prog.mk>
