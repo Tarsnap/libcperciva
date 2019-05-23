@@ -3,6 +3,7 @@
 PROGS=
 TESTS=	tests/aws							\
 	tests/buildall							\
+	tests/buildnothing						\
 	tests/buildsingles						\
 	tests/crc32							\
 	tests/crypto_entropy						\
