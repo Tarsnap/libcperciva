@@ -1,0 +1,21 @@
+# Program name.
+PROG	=	test_elasticarray
+
+# Don't install it.
+NOINST	= 	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# main test code
+SRCS	=	main.c
+
+# Utility functions
+.PATH.c :	${LIBCPERCIVA_DIR}/datastruct
+SRCS	+=	elasticarray.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/datastruct
+
+test:	test_elasticarray
+	./test_elasticarray
+
+.include <bsd.prog.mk>
