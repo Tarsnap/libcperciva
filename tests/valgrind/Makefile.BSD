@@ -2,7 +2,7 @@
 PROG	=	potential-memleaks
 
 # Don't install it.
-NOINST	= 	1
+NOINST	=	1
 
 # main test code
 SRCS	=	potential-memleaks.c
