@@ -29,7 +29,7 @@ test_intlist()
 	for (i = 0; i < NUM_ELEM; i++) {
 		x = (int)i;
 		if (intlist_append(list, &x, 1))
-			goto err0;
+			goto err1;
 	}
 
 	/* Use the list. */
@@ -44,6 +44,8 @@ test_intlist()
 	/* Success! */
 	return (0);
 
+err1:
+	intlist_free(list);
 err0:
 	/* Failure! */
 	return (-1);
@@ -65,12 +67,12 @@ test_dynlist()
 	for (i = 0; i < NUM_ELEM; i++) {
 		/* Dynamically allocate part of structure. */
 		if ((d.arr = malloc(sizeof(int))) == NULL)
-			goto err0;
+			goto err1;
 		d.arr[0] = (int)i;
 
 		/* Append item. */
 		if (dynlist_append(list, &d, 1))
-			goto err0;
+			goto err2;
 	}
 
 	/* Use the list. */
@@ -89,6 +91,14 @@ test_dynlist()
 	/* Success! */
 	return (0);
 
+err2:
+	free(d.arr);
+err1:
+	for (i = 0; i < dynlist_getsize(list); i++) {
+		d = *dynlist_get(list, i);
+		free(d.arr);
+	}
+	dynlist_free(list);
 err0:
 	/* Failure! */
 	return (-1);
@@ -110,14 +120,14 @@ test_pointerlist()
 	for (i = 0; i < NUM_ELEM; i++) {
 		/* Dynamically allocate item to append. */
 		if ((p = malloc(sizeof(struct dyn))) == NULL)
-			goto err0;
+			goto err1;
 		if ((p->arr = malloc(sizeof(int))) == NULL)
-			goto err0;
+			goto err2;
 		p->arr[0] = (int)i;
 
 		/* Append pointer to structure. */
 		if (pointerlist_append(list, &p, 1))
-			goto err0;
+			goto err3;
 	}
 
 	/* Use the list. */
@@ -137,6 +147,17 @@ test_pointerlist()
 	/* Success! */
 	return (0);
 
+err3:
+	free(p->arr);
+err2:
+	free(p);
+err1:
+	for (i = 0; i < pointerlist_getsize(list); i++) {
+		p = *pointerlist_get(list, i);
+		free(p->arr);
+		free(p);
+	}
+	pointerlist_free(list);
 err0:
 	/* Failure! */
 	return (-1);
