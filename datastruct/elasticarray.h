@@ -39,8 +39,7 @@ int elasticarray_resize(struct elasticarray *, size_t, size_t);
  * elasticarray_getsize(EA, reclen):
  * Return the number of length-${reclen} records in the array, rounding down
  * if there is a partial record (which can only occur if elasticarray_*
- * functions have been called with different values of reclen).  The value
- * ${reclen} must be positive.
+ * functions have been called with different values of reclen).
  */
 size_t elasticarray_getsize(struct elasticarray *, size_t);
 
