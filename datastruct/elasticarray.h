@@ -83,6 +83,13 @@ void * elasticarray_get(struct elasticarray *, size_t, size_t);
 void elasticarray_free(struct elasticarray *);
 
 /**
+ * elasticarray_free_items(EA, reclen, free_fp):
+ * Run the ${free_fp} on every member of the array, then free the elastic
+ * array ${EA}.  Takes O(1) time.
+ */
+void elasticarray_free_items(struct elasticarray *, size_t, void(void *));
+
+/**
  * elasticarray_export(EA, buf, nrec, reclen):
  * Return the data in the elastic array ${EA} as a buffer ${buf} containing
  * ${nrec} records of length ${reclen}.  Free the elastic array ${EA}.
@@ -108,6 +115,7 @@ int elasticarray_exportdup(struct elasticarray *, void **, size_t *, size_t);
  * int ${prefix}_truncate(${type} EA);
  * ${rectype} * ${prefix}_get(${type} EA, size_t pos);
  * void ${prefix}_free(${type} EA);
+ * void ${prefix}_free_items(${type} EA, void(void *));
  */
 #define ELASTICARRAY_DECL(type, prefix, rectype)			\
 	static inline struct prefix##_struct *				\
@@ -163,6 +171,13 @@ int elasticarray_exportdup(struct elasticarray *, void **, size_t *, size_t);
 	{								\
 		elasticarray_free((struct elasticarray *)EA);		\
 	}								\
+	static inline void						\
+	prefix##_free_items(struct prefix##_struct * EA,		\
+	    void(free_fp)(void *))					\
+	{								\
+		elasticarray_free_items((struct elasticarray *)EA,	\
+		    sizeof(rectype), free_fp);				\
+	}								\
 	static inline int						\
 	prefix##_export(struct prefix##_struct * EA, rectype ** buf,	\
 	    size_t * nrec)						\
@@ -191,6 +206,7 @@ int elasticarray_exportdup(struct elasticarray *, void **, size_t *, size_t);
 		(void)prefix##_truncate;				\
 		(void)prefix##_get;					\
 		(void)prefix##_free;					\
+		(void)prefix##_free_items;				\
 		(void)prefix##_export;					\
 		(void)prefix##_exportdup;				\
 		(void)prefix##_dummyptr;				\

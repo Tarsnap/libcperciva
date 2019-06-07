@@ -267,6 +267,25 @@ elasticarray_free(struct elasticarray * EA)
 }
 
 /**
+ * elasticarray_free_items(EA, free_fp):
+ * Run the ${free_fp} on every member of the array, then free the elastic
+ * array ${EA}.  Takes O(1) time.
+ */
+void
+elasticarray_free_items(struct elasticarray * EA, size_t reclen,
+    void(free_fp)(void *))
+{
+	size_t i;
+
+	/* Apply the function to every item in the list. */
+	for (i = 0; i < elasticarray_getsize(EA, reclen); i++)
+		free_fp(elasticarray_get(EA, reclen, i));
+
+	/* Free remaining memory. */
+	elasticarray_free(EA);
+}
+
+/**
  * elasticarray_export(EA, buf, nrec, reclen):
  * Return the data in the elastic array ${EA} as a buffer ${buf} containing
  * ${nrec} records of length ${reclen}.  Free the elastic array ${EA}.
