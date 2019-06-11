@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <errno.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -67,12 +68,16 @@ err0:
 /**
  * elasticarray_init(nrec, reclen):
  * Create and return an elastic array holding ${nrec} (uninitialized) records
- * of length ${reclen}.  Takes O(nrec * reclen) time.
+ * of length ${reclen}.  Takes O(nrec * reclen) time.  The value of ${reclen}
+ * must be positive.
  */
 struct elasticarray *
 elasticarray_init(size_t nrec, size_t reclen)
 {
 	struct elasticarray * EA;
+
+	/* Sanity check. */
+	assert(reclen > 0);
 
 	/* Allocate structure. */
 	if ((EA = malloc(sizeof(struct elasticarray))) == NULL)

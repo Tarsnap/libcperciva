@@ -22,7 +22,8 @@ struct elasticarray;
 /**
  * elasticarray_init(nrec, reclen):
  * Create and return an elastic array holding ${nrec} (uninitialized) records
- * of length ${reclen}.  Takes O(nrec * reclen) time.
+ * of length ${reclen}.  Takes O(nrec * reclen) time.  The value of ${reclen}
+ * must be positive.
  */
 struct elasticarray * elasticarray_init(size_t, size_t);
 
