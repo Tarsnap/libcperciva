@@ -51,6 +51,14 @@ err0:
 	return (-1);
 }
 
+/* Free a pointer to 'struct dyn'. */
+static void
+free_dyn(struct dyn * d)
+{
+
+	free(d->arr);
+}
+
 /* Elasticarray with structures containing dynamically-allocated values. */
 static int
 test_dynlist()
@@ -82,10 +90,7 @@ test_dynlist()
 	}
 
 	/* Free memory. */
-	for (i = 0; i < dynlist_getsize(list); i++) {
-		d = *dynlist_get(list, i);
-		free(d.arr);
-	}
+	dynlist_iter(list, free_dyn);
 	dynlist_free(list);
 
 	/* Success! */
@@ -94,14 +99,20 @@ test_dynlist()
 err2:
 	free(d.arr);
 err1:
-	for (i = 0; i < dynlist_getsize(list); i++) {
-		d = *dynlist_get(list, i);
-		free(d.arr);
-	}
+	dynlist_iter(list, free_dyn);
 	dynlist_free(list);
 err0:
 	/* Failure! */
 	return (-1);
+}
+
+/* Free a pointer to a pointer to 'struct dyn'. */
+static void
+free_p_dyn(struct dyn ** dp)
+{
+
+	free((*dp)->arr);
+	free(*dp);
 }
 
 /* Elasticarray with pointers. */
@@ -137,11 +148,7 @@ test_pointerlist()
 	}
 
 	/* Free memory. */
-	for (i = 0; i < pointerlist_getsize(list); i++) {
-		p = *pointerlist_get(list, i);
-		free(p->arr);
-		free(p);
-	}
+	pointerlist_iter(list, free_p_dyn);
 	pointerlist_free(list);
 
 	/* Success! */
@@ -152,11 +159,7 @@ err3:
 err2:
 	free(p);
 err1:
-	for (i = 0; i < pointerlist_getsize(list); i++) {
-		p = *pointerlist_get(list, i);
-		free(p->arr);
-		free(p);
-	}
+	pointerlist_iter(list, free_p_dyn);
 	pointerlist_free(list);
 err0:
 	/* Failure! */
