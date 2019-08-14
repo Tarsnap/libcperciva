@@ -62,6 +62,21 @@ parsenum_equal(double x, double y)
 	printf("Parsing \"%s\" as %s yields " target "... ", str, #var);	\
 	parsenum_ret = PARSENUM(&parsenum_x, str);
 
+#define TEST5_DO(str, var, min, max, target, base)		\
+	var parsenum_x;						\
+	int parsenum_ret;					\
+	printf("Parsing \"%s\" in base %i as %s between %s"	\
+	    " and %s (incl.) yields " target "... ", str, base,	\
+	    #var, #min, #max);					\
+	parsenum_ret = PARSENUM_BASE(&parsenum_x, str, min, max, base);
+
+#define TEST3_DO(str, var, target, base)			\
+	var parsenum_x;						\
+	int parsenum_ret;					\
+	printf("Parsing \"%s\" in base %i as %s yields "	\
+	    target "... ", str, base, #var);			\
+	parsenum_ret = PARSENUM_BASE(&parsenum_x, str, base);
+
 #define CHECK_SUCCESS(target)					\
 	if (parsenum_ret == 0) {				\
 		if (parsenum_equal((double)parsenum_x, (double)target)) { \
@@ -105,6 +120,27 @@ parsenum_equal(double x, double y)
 
 #define TEST2_FAILURE(str, var, target) do {			\
 	TEST2_DO(str, var, #target);				\
+	CHECK_FAILURE(target);					\
+} while (0)
+
+/* Handle alternate bases */
+#define TEST5_SUCCESS(str, var, min, max, target, base) do {	\
+	TEST5_DO(str, var, min, max, #target, base);		\
+	CHECK_SUCCESS(target);					\
+} while (0)
+
+#define TEST5_FAILURE(str, var, min, max, target, base) do {	\
+	TEST5_DO(str, var, min, max, #target, base);		\
+	CHECK_FAILURE(target);					\
+} while (0)
+
+#define TEST3_SUCCESS(str, var, target, base) do {		\
+	TEST3_DO(str, var, #target, base);			\
+	CHECK_SUCCESS(target);					\
+} while (0)
+
+#define TEST3_FAILURE(str, var, target, base) do {		\
+	TEST3_DO(str, var, #target, base);			\
 	CHECK_FAILURE(target);					\
 } while (0)
 
@@ -175,6 +211,18 @@ main(int argc, char * argv[])
 	TEST2_FAILURE("ffffFFFF", uint32_t, EINVAL);
 	TEST2_FAILURE("0XfffffFFFF", uint32_t, ERANGE);
 	TEST2_FAILURE("-1", uint32_t, ERANGE);
+
+	/* Handle alternate bases */
+	TEST3_SUCCESS("11", size_t, 17, 16);
+	TEST3_SUCCESS("11", size_t, 11, 0);
+	TEST3_FAILURE("122223333", uint32_t, ERANGE, 16);
+	TEST3_SUCCESS("122223333", uint32_t, 122223333, 0);
+	TEST3_FAILURE("ga", size_t, EINVAL, 16);
+	TEST3_SUCCESS("ga", size_t, 282, 17);
+
+	TEST5_SUCCESS("11", size_t, 0, 30, 17, 16);
+	TEST5_FAILURE("11", size_t, 0, 10, ERANGE, 16);
+	TEST5_FAILURE("ga", size_t, 0, 10, EINVAL, 16);
 
 	/* Success! */
 	exit(0);
