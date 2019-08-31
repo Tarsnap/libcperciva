@@ -144,13 +144,67 @@ parsenum_equal(double x, double y)
 	CHECK_FAILURE(target);					\
 } while (0)
 
+static void
+test_assert_failure(const char * argv_1)
+{
+	size_t assert_num;
+	int i;
+	double f;
+
+	/* Which test should we attempt? */
+	if (PARSENUM(&assert_num, argv_1, 1, 4)) {
+		warnp("Parameter should be an error case between 1 and 4: %s",
+		    argv_1);
+		exit(1);
+	}
+
+	/*
+	 * Each of these commands should end with an abort().  This will
+	 * produce a memory leak due to warnp_setprogname, but that's ok
+	 * because if we reach an abort() in a normal program then we have
+	 * bigger problems.
+	 */
+	switch(assert_num) {
+	case 1:
+		/* Signed integer without specified bounds. */
+		if (PARSENUM(&i, "1"))
+			exit(1);
+		break;
+	case 2:
+		/* Signed integer without specified bounds (with base). */
+		if (PARSENUM_BASE(&i, "1", 16))
+			exit(1);
+		break;
+	case 3:
+		/* Non-zero base applied to float. */
+		if (PARSENUM_BASE(&f, "1.23", 16))
+			exit(1);
+		break;
+	case 4:
+		/* Non-zero base applied to float (with bounds). */
+		if (PARSENUM_BASE(&f, "1.23", 0, 2, 16))
+			exit(1);
+		break;
+	default:
+		fprintf(stderr, "No such error case.\n");
+	}
+
+	/*
+	 * We should not reach here, but the test suite is expecting a
+	 * non-zero value, so exiting with 0 should produce a problem.
+	 */
+	exit(0);
+}
+
 int
 main(int argc, char * argv[])
 {
-	(void)argc; /* UNUSED */
-	(void)argv; /* UNUSED */
 
 	WARNP_INIT;
+
+	/* Test attempting to use PARSENUM improperly. */
+	if (argc > 1)
+		test_assert_failure(argv[1]);
 
 	/* Disable warning that 0x100000000 cannot fit into uint32_t. */
 #if __clang__
