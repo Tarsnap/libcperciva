@@ -6,7 +6,7 @@
 #include "warnp.h"
 
 #define INTERRUPT_AT 4
-#define INTERRUPT_BAIL 1000
+#define INTERRUPT_BAIL 10
 
 static int event_count = 0;
 static void * event_cookie = NULL;
@@ -31,6 +31,7 @@ event(void * cookie)
 	/* ... have an emergency exit. */
 	if (event_count > INTERRUPT_BAIL) {
 		warn0("events_interrupt() is broken.");
+		exit(1);
 	}
 
 	/* Success! */
