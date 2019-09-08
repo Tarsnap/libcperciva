@@ -8,8 +8,12 @@
 #define INTERRUPT_AT 4
 #define INTERRUPT_BAIL 10
 
+/* Variables for event testing in general. */
 static int event_count = 0;
 static void * event_cookie = NULL;
+
+/* Variable specifically for events_run(). */
+static int events_run_done = 0;
 
 static int
 event(void * cookie)
@@ -45,14 +49,67 @@ interrupt(int sig)
 	(void)sig; /* UNUSED */
 
 	events_interrupt();
+	events_run_done = 1;
+}
+
+static int
+test_interrupt_run()
+{
+
+	/* Queue an event. */
+	event_cookie = events_immediate_register(&event, NULL, 10);
+
+	/* Run event loop. */
+	do {
+		if (events_run()) {
+			warnp("error in event loop");
+			goto err0;
+		}
+	} while (!events_run_done);
+
+	/* Cancel the left-over event. */
+	events_immediate_cancel(event_cookie);
+
+	/* Success! */
+	return (0);
+
+err0:
+	/* Failure! */
+	return (-1);
+}
+
+static int
+test_interrupt_spin()
+{
+	int done = 0;
+	int ret;
+
+	/* Queue an event. */
+	event_cookie = events_immediate_register(&event, NULL, 10);
+
+	/* Run event loop. */
+	while ((ret = events_spin(&done))) {
+		if (ret == -1) {
+			warnp("error in event loop");
+			goto err0;
+		}
+	}
+
+	/* Cancel the left-over event. */
+	events_immediate_cancel(event_cookie);
+
+	/* Success! */
+	return (0);
+
+err0:
+	/* Failure! */
+	return (-1);
 }
 
 int
 main(int argc, char * argv[])
 {
 	struct sigaction sa;
-	int ret;
-	int done = 0;
 
 	WARNP_INIT;
 
@@ -66,35 +123,17 @@ main(int argc, char * argv[])
 	if (sigaction(SIGUSR1, &sa, NULL))
 		goto err0;
 
-	/* Queue an event. */
-	event_cookie = events_immediate_register(&event, NULL, 10);
+	/* Test interrupt with events_run(). */
+	if (test_interrupt_run())
+		goto err0;
 
-	/* Run event loop. */
-	while ((ret = events_run())) {
-		if (ret == -1) {
-			warnp("error in event loop");
-			goto err0;
-		}
-	}
-
-	/* Cancel the left-over event, then reset the loop counter. */
-	events_immediate_cancel(event_cookie);
+	/* Reset event count. */
 	printf("--- reset event loop ---\n");
 	event_count = 0;
 
-	/* Queue an event again and initialize count. */
-	event_cookie = events_immediate_register(&event, NULL, 10);
-
-	/* Run event loop again. */
-	while ((ret = events_spin(&done))) {
-		if (ret == -1) {
-			warnp("error in event loop");
-			goto err0;
-		}
-	}
-
-	/* Cancel the left-over event. */
-	events_immediate_cancel(event_cookie);
+	/* Test interrupt with events_spin(). */
+	if (test_interrupt_spin())
+		goto err0;
 
 	/* Success! */
 	exit(0);
