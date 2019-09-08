@@ -106,6 +106,64 @@ err0:
 	return (-1);
 }
 
+static int
+event_timer(void * cookie)
+{
+
+	(void)cookie; /* UNUSED */
+
+	/* Display debug info. */
+	printf("event %i\n", event_count);
+
+	/* Register new event; infinite loop unless we... */
+	event_cookie = events_timer_register_double(&event_timer, NULL, 0.01);
+	event_count++;
+
+	/* ... quit via interrupting, or... */
+	if (event_count == INTERRUPT_AT)
+		raise(SIGUSR1);
+
+	/* ... have an emergency exit. */
+	if (event_count > INTERRUPT_BAIL) {
+		warn0("events_interrupt() is broken with the timer.");
+		exit(1);
+	}
+
+	/* Success! */
+	return (0);
+}
+
+static int
+test_timer()
+{
+	int done = 0;
+	int ret;
+
+	/* Queue an event. */
+	event_cookie = events_timer_register_double(&event_timer, NULL, 0.01);
+
+	/* Run event loop. */
+	while ((ret = events_spin(&done))) {
+		if (ret == -1) {
+			warnp("error in event loop");
+			goto err0;
+		}
+	}
+
+	/* Cancel the left-over event. */
+	events_timer_cancel(event_cookie);
+
+	/* Clean up. */
+	events_shutdown();
+
+	/* Success! */
+	return (0);
+
+err0:
+	/* Failure! */
+	return (-1);
+}
+
 int
 main(int argc, char * argv[])
 {
@@ -133,6 +191,14 @@ main(int argc, char * argv[])
 
 	/* Test interrupt with events_spin(). */
 	if (test_interrupt_spin())
+		goto err0;
+
+	/* Reset event count. */
+	printf("--- reset event loop ---\n");
+	event_count = 0;
+
+	/* Test timer(). */
+	if (test_timer())
 		goto err0;
 
 	/* Success! */
