@@ -108,13 +108,20 @@ _Pragma("clang diagnostic pop")
  * For an unsigned integer variable ${x}, this can also be invoked as
  * PARSENUM_BASE(x, s, base), in which case the minimum and maximum values are
  * set to the limits of the unsigned integer type.
+ *
+ * For a floating-point variable ${x}, the ${base} must be 0.
  */
 #define PARSENUM_BASE3(x, s, base)					\
 	(								\
 		PARSENUM_PROLOGUE					\
 		errno = 0,						\
 		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
-			(ASSERT_FAIL("PARSENUM_BASE applied to float"), 1) : \
+			(((base) == 0) ?				\
+				((*(x)) = parsenum_float((s),		\
+				    (double)-INFINITY,			\
+				    (double)INFINITY)) :		\
+				(ASSERT_FAIL("PARSENUM_BASE applied to"	\
+				    " float with base != 0"), 1)) :	\
 		(((*(x)) = -1) > 0) ?					\
 			((*(x)) = parsenum_unsigned((s), 0, (*(x)),	\
 			    (*(x)), (base))) :				\
@@ -128,7 +135,11 @@ _Pragma("clang diagnostic pop")
 		PARSENUM_PROLOGUE					\
 		errno = 0,						\
 		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
-			(ASSERT_FAIL("PARSENUM_BASE applied to float"), 1) : \
+			(((base) == 0) ?				\
+				((*(x)) = parsenum_float((s),		\
+				    (double)(min), (double)(max))) :	\
+				(ASSERT_FAIL("PARSENUM_BASE applied to"	\
+				    " float with base != 0"), 1)) :	\
 		(((*(x)) = -1) <= 0) ?					\
 			((*(x)) = parsenum_signed((s),			\
 			    (*(x) <= 0) ? (min) : 0,			\
