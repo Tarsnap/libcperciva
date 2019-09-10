@@ -63,7 +63,8 @@ _Pragma("clang diagnostic pop")
 		(((*(x)) = -1) > 0) ?					\
 			((*(x)) = parsenum_unsigned((s), 0, (*(x)),	\
 			    (*(x)), 0)) :				\
-			(ASSERT_FAIL("PARSENUM applied to signed integer without specified bounds"), 1),	\
+			(ASSERT_FAIL("PARSENUM applied to signed"	\
+			    " integer without specified bounds"), 1),	\
 		errno != 0						\
 		PARSENUM_EPILOGUE					\
 	)
@@ -108,7 +109,7 @@ _Pragma("clang diagnostic pop")
  * PARSENUM_BASE(x, s, base), in which case the minimum and maximum values are
  * set to the limits of the unsigned integer type.
  */
-#define PARSENUM_BASE3(x, s, b)						\
+#define PARSENUM_BASE3(x, s, base)					\
 	(								\
 		PARSENUM_PROLOGUE					\
 		errno = 0,						\
@@ -116,8 +117,9 @@ _Pragma("clang diagnostic pop")
 			(ASSERT_FAIL("PARSENUM_BASE applied to float"), 1) : \
 		(((*(x)) = -1) > 0) ?					\
 			((*(x)) = parsenum_unsigned((s), 0, (*(x)),	\
-			    (*(x)), (b))) :				\
-			(ASSERT_FAIL("PARSENUM_BASE applied to signed integer without specified bounds"), 1),	\
+			    (*(x)), (base))) :				\
+			(ASSERT_FAIL("PARSENUM_BASE applied to signed"	\
+			    " integer without specified bounds"), 1),	\
 		errno != 0						\
 		PARSENUM_EPILOGUE					\
 	)
