@@ -278,6 +278,9 @@ main(int argc, char * argv[])
 	TEST5_FAILURE("11", size_t, 0, 10, ERANGE, 16);
 	TEST5_FAILURE("ga", size_t, 0, 10, EINVAL, 16);
 
+	TEST3_SUCCESS("11", float, 11, 0);
+	TEST5_SUCCESS("11", float, 0, 12, 11, 0);
+
 	/* Success! */
 	exit(0);
 

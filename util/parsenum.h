@@ -63,7 +63,8 @@ _Pragma("clang diagnostic pop")
 		(((*(x)) = -1) > 0) ?					\
 			((*(x)) = parsenum_unsigned((s), 0, (*(x)),	\
 			    (*(x)), 0)) :				\
-			(ASSERT_FAIL("PARSENUM applied to signed integer without specified bounds"), 1),	\
+			(ASSERT_FAIL("PARSENUM applied to signed"	\
+			    " integer without specified bounds"), 1),	\
 		errno != 0						\
 		PARSENUM_EPILOGUE					\
 	)
@@ -107,33 +108,45 @@ _Pragma("clang diagnostic pop")
  * For an unsigned integer variable ${x}, this can also be invoked as
  * PARSENUM_BASE(x, s, base), in which case the minimum and maximum values are
  * set to the limits of the unsigned integer type.
+ *
+ * For a floating-point variable ${x}, the ${base} must be 0.
  */
-#define PARSENUM_BASE3(x, s, b)						\
+#define PARSENUM_BASE3(x, s, base, _define_name)			\
 	(								\
 		PARSENUM_PROLOGUE					\
 		errno = 0,						\
 		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
-			(ASSERT_FAIL("PARSENUM_BASE applied to float"), 1) : \
+			(((base) == 0) ?				\
+				((*(x)) = parsenum_float((s),		\
+				    (double)-INFINITY,			\
+				    (double)INFINITY)) :		\
+				(ASSERT_FAIL(_define_name " applied to"	\
+				    " float with base != 0"), 1)) :	\
 		(((*(x)) = -1) > 0) ?					\
 			((*(x)) = parsenum_unsigned((s), 0, (*(x)),	\
-			    (*(x)), (b))) :				\
-			(ASSERT_FAIL("PARSENUM_BASE applied to signed integer without specified bounds"), 1),	\
+			    (*(x)), (base))) :				\
+			(ASSERT_FAIL(_define_name " applied to signed"	\
+			    " integer without specified bounds"), 1),	\
 		errno != 0						\
 		PARSENUM_EPILOGUE					\
 	)
-#define PARSENUM_BASE5(x, s, min, max, base)				\
+#define PARSENUM_BASE5(x, s, min, max, base, _define_name)		\
 	(								\
 		PARSENUM_PROLOGUE					\
 		errno = 0,						\
 		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
-			(ASSERT_FAIL("PARSENUM_BASE applied to float"), 1) : \
+			(((base) == 0) ?				\
+				((*(x)) = parsenum_float((s),		\
+				    (double)(min), (double)(max))) :	\
+				(ASSERT_FAIL(_define_name " applied to"	\
+				    " float with base != 0"), 1)) :	\
 		(((*(x)) = -1) <= 0) ?					\
 			((*(x)) = parsenum_signed((s),			\
 			    (*(x) <= 0) ? (min) : 0,			\
-			    (*(x) <= 0) ? (max) : 0, base)) :		\
+			    (*(x) <= 0) ? (max) : 0, (base))) :		\
 			(((*(x)) = parsenum_unsigned((s),		\
 			    (min) <= 0 ? 0 : (min),			\
-				(uintmax_t)(max), *(x), base)),		\
+				(uintmax_t)(max), *(x), (base))),	\
 			((((max) < 0) && (errno == 0)) ?		\
 			    (errno = ERANGE) : 0)),			\
 		errno != 0						\
@@ -141,7 +154,7 @@ _Pragma("clang diagnostic pop")
 	)
 
 /* Magic to select which version of PARSENUM_BASE to use. */
-#define PARSENUM_BASE(...)	PARSENUM_BASE_(PARSENUM_BASE_COUNT(__VA_ARGS__))(__VA_ARGS__)
+#define PARSENUM_BASE(...)	PARSENUM_BASE_(PARSENUM_BASE_COUNT(__VA_ARGS__))(__VA_ARGS__, "PARSENUM_BASE")
 #define PARSENUM_BASE_(N)	PARSENUM_BASE__(N)
 #define PARSENUM_BASE__(N)	PARSENUM_BASE ## N
 #define PARSENUM_BASE_COUNT(...)	PARSENUM_BASE_COUNT_(__VA_ARGS__, 5, 4, 3, 2, 1)
