@@ -153,9 +153,6 @@ test_timer()
 	/* Cancel the left-over event. */
 	events_timer_cancel(event_cookie);
 
-	/* Clean up. */
-	events_shutdown();
-
 	/* Success! */
 	return (0);
 
