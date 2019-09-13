@@ -96,7 +96,7 @@ _Pragma("clang diagnostic pop")
 #define PARSENUM_COUNT_(_1, _2, _3, _4, N, ...)	N
 
 /**
- * PARSENUM_BASE(x, s, min, max, base):
+ * PARSENUM_EX(x, s, min, max, base):
  * Parse the string ${s} according to the type of the unsigned integer or
  * signed integer variable ${x}, in the specified ${base}.  If the string
  * consists of optional whitespace followed by a number (and nothing else) and
@@ -106,12 +106,12 @@ _Pragma("clang diagnostic pop")
  * to EINVAL or ERANGE as appropriate.
  *
  * For an unsigned integer variable ${x}, this can also be invoked as
- * PARSENUM_BASE(x, s, base), in which case the minimum and maximum values are
+ * PARSENUM_EX(x, s, base), in which case the minimum and maximum values are
  * set to the limits of the unsigned integer type.
  *
  * For a floating-point variable ${x}, the ${base} must be 0.
  */
-#define PARSENUM_BASE3(x, s, base, _define_name)			\
+#define PARSENUM_EX3(x, s, base, _define_name)				\
 	(								\
 		PARSENUM_PROLOGUE					\
 		errno = 0,						\
@@ -130,7 +130,7 @@ _Pragma("clang diagnostic pop")
 		errno != 0						\
 		PARSENUM_EPILOGUE					\
 	)
-#define PARSENUM_BASE5(x, s, min, max, base, _define_name)		\
+#define PARSENUM_EX5(x, s, min, max, base, _define_name)		\
 	(								\
 		PARSENUM_PROLOGUE					\
 		errno = 0,						\
@@ -153,12 +153,12 @@ _Pragma("clang diagnostic pop")
 		PARSENUM_EPILOGUE					\
 	)
 
-/* Magic to select which version of PARSENUM_BASE to use. */
-#define PARSENUM_BASE(...)	PARSENUM_BASE_(PARSENUM_BASE_COUNT(__VA_ARGS__))(__VA_ARGS__, "PARSENUM_BASE")
-#define PARSENUM_BASE_(N)	PARSENUM_BASE__(N)
-#define PARSENUM_BASE__(N)	PARSENUM_BASE ## N
-#define PARSENUM_BASE_COUNT(...)	PARSENUM_BASE_COUNT_(__VA_ARGS__, 5, 4, 3, 2, 1)
-#define PARSENUM_BASE_COUNT_(_1, _2, _3, _4, _5, N, ...)	N
+/* Magic to select which version of PARSENUM_EX to use. */
+#define PARSENUM_EX(...)	PARSENUM_EX_(PARSENUM_EX_COUNT(__VA_ARGS__))(__VA_ARGS__, "PARSENUM_EX")
+#define PARSENUM_EX_(N)	PARSENUM_EX__(N)
+#define PARSENUM_EX__(N)	PARSENUM_EX ## N
+#define PARSENUM_EX_COUNT(...)	PARSENUM_EX_COUNT_(__VA_ARGS__, 5, 4, 3, 2, 1)
+#define PARSENUM_EX_COUNT_(_1, _2, _3, _4, _5, N, ...)	N
 
 /* Functions for performing the parsing and parameter checking. */
 static inline double
