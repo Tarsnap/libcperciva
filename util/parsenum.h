@@ -54,39 +54,9 @@ _Pragma("clang diagnostic pop")
  * set to +/- infinity or the limits of the unsigned integer type.
  */
 #define PARSENUM2(x, s)							\
-	(								\
-		PARSENUM_PROLOGUE					\
-		errno = 0,						\
-		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
-			((*(x)) = parsenum_float((s),			\
-			    (double)-INFINITY, (double)INFINITY)) :	\
-		(((*(x)) = -1) > 0) ?					\
-			((*(x)) = parsenum_unsigned((s), 0, (*(x)),	\
-			    (*(x)), 0)) :				\
-			(ASSERT_FAIL("PARSENUM applied to signed"	\
-			    " integer without specified bounds"), 1),	\
-		errno != 0						\
-		PARSENUM_EPILOGUE					\
-	)
+	PARSENUM_EX3(x, s, 0, "PARSENUM")
 #define PARSENUM4(x, s, min, max)					\
-	(								\
-		PARSENUM_PROLOGUE					\
-		errno = 0,						\
-		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
-			((*(x)) = parsenum_float((s), (double)(min),	\
-			    (double)(max))) :				\
-		(((*(x)) = -1) <= 0) ?					\
-			((*(x)) = parsenum_signed((s),			\
-			    (*(x) <= 0) ? (min) : 0,			\
-			    (*(x) <= 0) ? (max) : 0, 0)) :		\
-			(((*(x)) = parsenum_unsigned((s),		\
-			    (min) <= 0 ? 0 : (min),			\
-				(uintmax_t)(max), *(x), 0)),		\
-			((((max) < 0) && (errno == 0)) ?		\
-			    (errno = ERANGE) : 0)),			\
-		errno != 0						\
-		PARSENUM_EPILOGUE					\
-	)
+	PARSENUM_EX5(x, s, min, max, 0, "PARSENUM")
 
 /* Magic to select which version of PARSENUM to use. */
 #define PARSENUM(...)	PARSENUM_(PARSENUM_COUNT(__VA_ARGS__))(__VA_ARGS__)
