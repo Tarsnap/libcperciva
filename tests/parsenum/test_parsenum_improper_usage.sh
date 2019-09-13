@@ -9,12 +9,12 @@ rm -f $log
 grep -q "PARSENUM applied to signed integer without specified bounds" $log
 
 ! ./test_parsenum 2 2> $log
-grep -q "PARSENUM_BASE applied to signed integer without specified bounds" $log
+grep -q "PARSENUM_EX applied to signed integer without specified bounds" $log
 
 ! ./test_parsenum 3 2> $log
-grep -q "PARSENUM_BASE applied to float" $log
+grep -q "PARSENUM_EX applied to float" $log
 
 ! ./test_parsenum 4 2> $log
-grep -q "PARSENUM_BASE applied to float" $log
+grep -q "PARSENUM_EX applied to float" $log
 
 rm $log
