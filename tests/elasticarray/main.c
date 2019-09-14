@@ -166,6 +166,44 @@ err0:
 	return (-1);
 }
 
+/* Elasticarray with size 0. */
+static int
+test_emptylist()
+{
+	INTLIST list;
+	int x;		/* Not set to a value. */
+
+	/* Allocate list and check size. */
+	if ((list = intlist_init(0)) == NULL)
+		goto err0;
+	if (intlist_getsize(list) != 0)
+		goto err1;
+
+	/* Resize to 0 (should be a no-op) and check size. */
+	if (intlist_resize(list, 0))
+		goto err1;
+	if (intlist_getsize(list) != 0)
+		goto err1;
+
+	/* Append nothing.  The value of x should not be read.  Check size. */
+	if (intlist_append(list, &x, 0))
+		goto err1;
+	if (intlist_getsize(list) != 0)
+		goto err1;
+
+	/* Free memory. */
+	intlist_free(list);
+
+	/* Success! */
+	return (0);
+
+err1:
+	intlist_free(list);
+err0:
+	/* Failure! */
+	return (-1);
+}
+
 int
 main(int argc, char * argv[])
 {
@@ -183,6 +221,10 @@ main(int argc, char * argv[])
 
 	/* Elasticarray with pointers. */
 	if (test_pointerlist())
+		goto err0;
+
+	/* Elasticarray with size 0. */
+	if (test_emptylist())
 		goto err0;
 
 	/* Success! */
