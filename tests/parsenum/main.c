@@ -62,20 +62,20 @@ parsenum_equal(double x, double y)
 	printf("Parsing \"%s\" as %s yields " target "... ", str, #var);	\
 	parsenum_ret = PARSENUM(&parsenum_x, str);
 
-#define TEST5_DO(str, var, min, max, target, base)		\
+#define TEST_EX5_DO(str, var, min, max, target, base)		\
 	var parsenum_x;						\
 	int parsenum_ret;					\
 	printf("Parsing \"%s\" in base %i as %s between %s"	\
 	    " and %s (incl.) yields " target "... ", str, base,	\
 	    #var, #min, #max);					\
-	parsenum_ret = PARSENUM_BASE(&parsenum_x, str, min, max, base);
+	parsenum_ret = PARSENUM_EX(&parsenum_x, str, min, max, base);
 
-#define TEST3_DO(str, var, target, base)			\
+#define TEST_EX3_DO(str, var, target, base)			\
 	var parsenum_x;						\
 	int parsenum_ret;					\
 	printf("Parsing \"%s\" in base %i as %s yields "	\
 	    target "... ", str, base, #var);			\
-	parsenum_ret = PARSENUM_BASE(&parsenum_x, str, base);
+	parsenum_ret = PARSENUM_EX(&parsenum_x, str, base);
 
 #define CHECK_SUCCESS(target)					\
 	if (parsenum_ret == 0) {				\
@@ -123,24 +123,24 @@ parsenum_equal(double x, double y)
 	CHECK_FAILURE(target);					\
 } while (0)
 
-/* Handle alternate bases */
-#define TEST5_SUCCESS(str, var, min, max, target, base) do {	\
-	TEST5_DO(str, var, min, max, #target, base);		\
+/* Handle extended PARSENUM */
+#define TEST_EX5_SUCCESS(str, var, min, max, target, base) do {	\
+	TEST_EX5_DO(str, var, min, max, #target, base);		\
 	CHECK_SUCCESS(target);					\
 } while (0)
 
-#define TEST5_FAILURE(str, var, min, max, target, base) do {	\
-	TEST5_DO(str, var, min, max, #target, base);		\
+#define TEST_EX5_FAILURE(str, var, min, max, target, base) do {	\
+	TEST_EX5_DO(str, var, min, max, #target, base);		\
 	CHECK_FAILURE(target);					\
 } while (0)
 
-#define TEST3_SUCCESS(str, var, target, base) do {		\
-	TEST3_DO(str, var, #target, base);			\
+#define TEST_EX3_SUCCESS(str, var, target, base) do {		\
+	TEST_EX3_DO(str, var, #target, base);			\
 	CHECK_SUCCESS(target);					\
 } while (0)
 
-#define TEST3_FAILURE(str, var, target, base) do {		\
-	TEST3_DO(str, var, #target, base);			\
+#define TEST_EX3_FAILURE(str, var, target, base) do {		\
+	TEST_EX3_DO(str, var, #target, base);			\
 	CHECK_FAILURE(target);					\
 } while (0)
 
@@ -172,17 +172,17 @@ test_assert_failure(const char * argv_1)
 		break;
 	case 2:
 		/* Signed integer without specified bounds (with base). */
-		if (PARSENUM_BASE(&i, "1", 16))
+		if (PARSENUM_EX(&i, "1", 16))
 			exit(1);
 		break;
 	case 3:
 		/* Non-zero base applied to float. */
-		if (PARSENUM_BASE(&f, "1.23", 16))
+		if (PARSENUM_EX(&f, "1.23", 16))
 			exit(1);
 		break;
 	case 4:
 		/* Non-zero base applied to float (with bounds). */
-		if (PARSENUM_BASE(&f, "1.23", 0, 2, 16))
+		if (PARSENUM_EX(&f, "1.23", 0, 2, 16))
 			exit(1);
 		break;
 	default:
@@ -267,19 +267,19 @@ main(int argc, char * argv[])
 	TEST2_FAILURE("-1", uint32_t, ERANGE);
 
 	/* Handle alternate bases */
-	TEST3_SUCCESS("11", size_t, 17, 16);
-	TEST3_SUCCESS("11", size_t, 11, 0);
-	TEST3_FAILURE("122223333", uint32_t, ERANGE, 16);
-	TEST3_SUCCESS("122223333", uint32_t, 122223333, 0);
-	TEST3_FAILURE("ga", size_t, EINVAL, 16);
-	TEST3_SUCCESS("ga", size_t, 282, 17);
+	TEST_EX3_SUCCESS("11", size_t, 17, 16);
+	TEST_EX3_SUCCESS("11", size_t, 11, 0);
+	TEST_EX3_FAILURE("122223333", uint32_t, ERANGE, 16);
+	TEST_EX3_SUCCESS("122223333", uint32_t, 122223333, 0);
+	TEST_EX3_FAILURE("ga", size_t, EINVAL, 16);
+	TEST_EX3_SUCCESS("ga", size_t, 282, 17);
 
-	TEST5_SUCCESS("11", size_t, 0, 30, 17, 16);
-	TEST5_FAILURE("11", size_t, 0, 10, ERANGE, 16);
-	TEST5_FAILURE("ga", size_t, 0, 10, EINVAL, 16);
+	TEST_EX5_SUCCESS("11", size_t, 0, 30, 17, 16);
+	TEST_EX5_FAILURE("11", size_t, 0, 10, ERANGE, 16);
+	TEST_EX5_FAILURE("ga", size_t, 0, 10, EINVAL, 16);
 
-	TEST3_SUCCESS("11", float, 11, 0);
-	TEST5_SUCCESS("11", float, 0, 12, 11, 0);
+	TEST_EX3_SUCCESS("11", float, 11, 0);
+	TEST_EX5_SUCCESS("11", float, 0, 12, 11, 0);
 
 	/* Success! */
 	exit(0);
