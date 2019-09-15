@@ -282,6 +282,19 @@ main(int argc, char * argv[])
 	TEST_EX4_SUCCESS("11", float, 11, 0, 0);
 	TEST_EX6_SUCCESS("11", float, 0, 12, 11, 0, 0);
 
+	TEST_EX4_SUCCESS("12\", 34", size_t, 12, 0, 1);
+	TEST_EX4_SUCCESS("12\t, 34", size_t, 12, 0, 1);
+	TEST_EX4_FAILURE("12\", 34", size_t, EINVAL, 0, 0);
+	TEST_EX4_FAILURE("12\t, 34", size_t, EINVAL, 0, 0);
+	TEST_EX6_SUCCESS("-34\", 34", int, -50, 0, -34, 0, 1);
+	TEST_EX6_SUCCESS("-34\t, 34", int, -50, 0, -34, 0, 1);
+	TEST_EX6_FAILURE("-34\", 34", int, -50, 0, EINVAL, 0, 0);
+	TEST_EX6_FAILURE("-34\t, 34", int, -50, 0, EINVAL, 0, 0);
+	TEST_EX4_SUCCESS("11  ", float, 11, 0, 1);
+	TEST_EX6_SUCCESS("11\t ", float, 0, 12, 11, 0, 1);
+	TEST_EX4_FAILURE("11  ", float, EINVAL, 0, 0);
+	TEST_EX6_FAILURE("11\t ", float, 0, 12, EINVAL, 0, 0);
+
 	/* Success! */
 	exit(0);
 
