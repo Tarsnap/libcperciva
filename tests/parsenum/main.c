@@ -1,3 +1,5 @@
+#include <sys/resource.h>
+
 #include <errno.h>
 #include <math.h>
 #include <stdint.h>
@@ -150,11 +152,20 @@ test_assert_failure(const char * argv_1)
 	size_t assert_num;
 	int i;
 	double f;
+	struct rlimit rlp;
 
 	/* Which test should we attempt? */
 	if (PARSENUM(&assert_num, argv_1, 1, 4)) {
 		warnp("Parameter should be an error case between 1 and 4: %s",
 		    argv_1);
+		exit(1);
+	}
+
+	/* We know that we'll abort(), so disable core files. */
+	rlp.rlim_max = 0;
+	rlp.rlim_cur = 0;
+	if (setrlimit(RLIMIT_CORE, &rlp)) {
+		warnp("setrlimit");
 		exit(1);
 	}
 
