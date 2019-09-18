@@ -10,7 +10,7 @@ LIBCPERCIVA_DIR	=	../..
 # Library code required
 LDADD_REQ	= -lm
 
-# main test code
+# Main test code
 SRCS	=	main.c
 
 # Utility functions
