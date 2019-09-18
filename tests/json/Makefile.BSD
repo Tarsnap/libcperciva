@@ -1,11 +1,16 @@
-PROG=	test_json
+# Program name.
+PROG	=	test_json
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Main test code
 SRCS=	main.c
-MAN1=
 
 # Utility functions
-.PATH.c	:	../../util
+.PATH.c	:	${LIBCPERCIVA_DIR}/util
 SRCS	+=	json.c
-IDIRS	+=	-I ../../util
+IDIRS	+=	-I ${LIBCPERCIVA_DIR}/util
 
 test:	all
 	@./test_json
