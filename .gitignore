@@ -23,6 +23,7 @@ tests/sha256/test_sha256
 tests/parsenum/test_parsenum
 tests/valgrind/potential-memleaks
 # Test output directories and generated files.
+tests/events/test-events.log
 tests/getopt/test_getopt.log
 tests-output/
 tests-valgrind/
