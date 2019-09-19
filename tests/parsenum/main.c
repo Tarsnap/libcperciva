@@ -64,20 +64,21 @@ parsenum_equal(double x, double y)
 	printf("Parsing \"%s\" as %s yields " target "... ", str, #var);	\
 	parsenum_ret = PARSENUM(&parsenum_x, str);
 
-#define TEST_EX5_DO(str, var, min, max, target, base)		\
+#define TEST_EX6_DO(str, var, min, max, target, base, trailing)	\
 	var parsenum_x;						\
 	int parsenum_ret;					\
-	printf("Parsing \"%s\" in base %i as %s between %s"	\
-	    " and %s (incl.) yields " target "... ", str, base,	\
-	    #var, #min, #max);					\
-	parsenum_ret = PARSENUM_EX(&parsenum_x, str, min, max, base);
+	printf("Parsing \"%s\" in base %i as %s with trailing"	\
+	    " %i between %s and %s (incl.) yields " target	\
+	    "... ", str, base, #var, trailing, #min, #max);	\
+	parsenum_ret = PARSENUM_EX(&parsenum_x, str, min, max, base, trailing);
 
-#define TEST_EX3_DO(str, var, target, base)			\
+#define TEST_EX4_DO(str, var, target, base, trailing)		\
 	var parsenum_x;						\
 	int parsenum_ret;					\
-	printf("Parsing \"%s\" in base %i as %s yields "	\
-	    target "... ", str, base, #var);			\
-	parsenum_ret = PARSENUM_EX(&parsenum_x, str, base);
+	printf("Parsing \"%s\" in base %i as %s with trailing"	\
+	    " %i yields " target "... ", str, base, #var,	\
+	    trailing);						\
+	parsenum_ret = PARSENUM_EX(&parsenum_x, str, base, trailing);
 
 #define CHECK_SUCCESS(target)					\
 	if (parsenum_ret == 0) {				\
@@ -126,23 +127,23 @@ parsenum_equal(double x, double y)
 } while (0)
 
 /* Handle extended PARSENUM */
-#define TEST_EX5_SUCCESS(str, var, min, max, target, base) do {	\
-	TEST_EX5_DO(str, var, min, max, #target, base);		\
+#define TEST_EX6_SUCCESS(str, var, min, max, target, base, trailing) do { \
+	TEST_EX6_DO(str, var, min, max, #target, base, trailing); \
 	CHECK_SUCCESS(target);					\
 } while (0)
 
-#define TEST_EX5_FAILURE(str, var, min, max, target, base) do {	\
-	TEST_EX5_DO(str, var, min, max, #target, base);		\
+#define TEST_EX6_FAILURE(str, var, min, max, target, base, trailing) do { \
+	TEST_EX6_DO(str, var, min, max, #target, base, trailing); \
 	CHECK_FAILURE(target);					\
 } while (0)
 
-#define TEST_EX3_SUCCESS(str, var, target, base) do {		\
-	TEST_EX3_DO(str, var, #target, base);			\
+#define TEST_EX4_SUCCESS(str, var, target, base, trailing) do {	\
+	TEST_EX4_DO(str, var, #target, base, trailing);		\
 	CHECK_SUCCESS(target);					\
 } while (0)
 
-#define TEST_EX3_FAILURE(str, var, target, base) do {		\
-	TEST_EX3_DO(str, var, #target, base);			\
+#define TEST_EX4_FAILURE(str, var, target, base, trailing) do {	\
+	TEST_EX4_DO(str, var, #target, base, trailing);		\
 	CHECK_FAILURE(target);					\
 } while (0)
 
@@ -183,17 +184,17 @@ test_assert_failure(const char * argv_1)
 		break;
 	case 2:
 		/* Signed integer without specified bounds (with base). */
-		if (PARSENUM_EX(&i, "1", 16))
+		if (PARSENUM_EX(&i, "1", 16, 0))
 			exit(1);
 		break;
 	case 3:
 		/* Non-zero base applied to float. */
-		if (PARSENUM_EX(&f, "1.23", 16))
+		if (PARSENUM_EX(&f, "1.23", 16, 0))
 			exit(1);
 		break;
 	case 4:
 		/* Non-zero base applied to float (with bounds). */
-		if (PARSENUM_EX(&f, "1.23", 0, 2, 16))
+		if (PARSENUM_EX(&f, "1.23", 0, 2, 16, 0))
 			exit(1);
 		break;
 	default:
@@ -278,19 +279,32 @@ main(int argc, char * argv[])
 	TEST2_FAILURE("-1", uint32_t, ERANGE);
 
 	/* Handle alternate bases */
-	TEST_EX3_SUCCESS("11", size_t, 17, 16);
-	TEST_EX3_SUCCESS("11", size_t, 11, 0);
-	TEST_EX3_FAILURE("122223333", uint32_t, ERANGE, 16);
-	TEST_EX3_SUCCESS("122223333", uint32_t, 122223333, 0);
-	TEST_EX3_FAILURE("ga", size_t, EINVAL, 16);
-	TEST_EX3_SUCCESS("ga", size_t, 282, 17);
+	TEST_EX4_SUCCESS("11", size_t, 17, 16, 0);
+	TEST_EX4_SUCCESS("11", size_t, 11, 0, 0);
+	TEST_EX4_FAILURE("122223333", uint32_t, ERANGE, 16, 0);
+	TEST_EX4_SUCCESS("122223333", uint32_t, 122223333, 0, 0);
+	TEST_EX4_FAILURE("ga", size_t, EINVAL, 16, 0);
+	TEST_EX4_SUCCESS("ga", size_t, 282, 17, 0);
 
-	TEST_EX5_SUCCESS("11", size_t, 0, 30, 17, 16);
-	TEST_EX5_FAILURE("11", size_t, 0, 10, ERANGE, 16);
-	TEST_EX5_FAILURE("ga", size_t, 0, 10, EINVAL, 16);
+	TEST_EX6_SUCCESS("11", size_t, 0, 30, 17, 16, 0);
+	TEST_EX6_FAILURE("11", size_t, 0, 10, ERANGE, 16, 0);
+	TEST_EX6_FAILURE("ga", size_t, 0, 10, EINVAL, 16, 0);
 
-	TEST_EX3_SUCCESS("11", float, 11, 0);
-	TEST_EX5_SUCCESS("11", float, 0, 12, 11, 0);
+	TEST_EX4_SUCCESS("11", float, 11, 0, 0);
+	TEST_EX6_SUCCESS("11", float, 0, 12, 11, 0, 0);
+
+	TEST_EX4_SUCCESS("12\", 34", size_t, 12, 0, 1);
+	TEST_EX4_SUCCESS("12\t, 34", size_t, 12, 0, 1);
+	TEST_EX4_FAILURE("12\", 34", size_t, EINVAL, 0, 0);
+	TEST_EX4_FAILURE("12\t, 34", size_t, EINVAL, 0, 0);
+	TEST_EX6_SUCCESS("-34\", 34", int, -50, 0, -34, 0, 1);
+	TEST_EX6_SUCCESS("-34\t, 34", int, -50, 0, -34, 0, 1);
+	TEST_EX6_FAILURE("-34\", 34", int, -50, 0, EINVAL, 0, 0);
+	TEST_EX6_FAILURE("-34\t, 34", int, -50, 0, EINVAL, 0, 0);
+	TEST_EX4_SUCCESS("11  ", float, 11, 0, 1);
+	TEST_EX6_SUCCESS("11\t ", float, 0, 12, 11, 0, 1);
+	TEST_EX4_FAILURE("11  ", float, EINVAL, 0, 0);
+	TEST_EX6_FAILURE("11\t ", float, 0, 12, EINVAL, 0, 0);
 
 	/* Success! */
 	exit(0);
