@@ -5,11 +5,9 @@
 #include "events.h"
 #include "warnp.h"
 
-#define INTERRUPT_AT 4
-#define INTERRUPT_BAIL 10
+#include "events_counter.h"
 
-/* Variables for event testing in general. */
-static int event_count = 0;
+/* Variable for event testing in general. */
 static void * event_cookie = NULL;
 
 /* Variable specifically for events_run(). */
@@ -21,22 +19,11 @@ event(void * cookie)
 
 	(void)cookie; /* UNUSED */
 
-	/* Display debug info. */
-	printf("event %i\n", event_count);
-
-	/* Register new event; infinite loop unless we... */
+	/* Register new event; infinite loop unless it's interrupted. */
 	event_cookie = events_immediate_register(&event, NULL, 10);
-	event_count++;
 
-	/* ... quit via interrupting, or... */
-	if (event_count == INTERRUPT_AT)
-		raise(SIGUSR1);
-
-	/* ... have an emergency exit. */
-	if (event_count > INTERRUPT_BAIL) {
-		warn0("events_interrupt() is broken.");
-		exit(1);
-	}
+	/* Display count, increment, check to see if we should interrupt. */
+	events_counter_ping();
 
 	/* Success! */
 	return (0);
@@ -55,6 +42,9 @@ interrupt(int sig)
 static int
 test_interrupt_run()
 {
+
+	/* Reset counter. */
+	events_counter_reset();
 
 	/* Queue an event. */
 	event_cookie = events_immediate_register(&event, NULL, 10);
@@ -84,6 +74,9 @@ test_interrupt_spin()
 	int done = 0;
 	int ret;
 
+	/* Reset counter. */
+	events_counter_reset();
+
 	/* Queue an event. */
 	event_cookie = events_immediate_register(&event, NULL, 10);
 
@@ -112,22 +105,11 @@ event_timer(void * cookie)
 
 	(void)cookie; /* UNUSED */
 
-	/* Display debug info. */
-	printf("event %i\n", event_count);
-
-	/* Register new event; infinite loop unless we... */
+	/* Register new event; infinite loop unless it's interrupted. */
 	event_cookie = events_timer_register_double(&event_timer, NULL, 0.01);
-	event_count++;
 
-	/* ... quit via interrupting, or... */
-	if (event_count == INTERRUPT_AT)
-		raise(SIGUSR1);
-
-	/* ... have an emergency exit. */
-	if (event_count > INTERRUPT_BAIL) {
-		warn0("events_interrupt() is broken with the timer.");
-		exit(1);
-	}
+	/* Display count, increment, check to see if we should interrupt. */
+	events_counter_ping();
 
 	/* Success! */
 	return (0);
@@ -138,6 +120,9 @@ test_timer()
 {
 	int done = 0;
 	int ret;
+
+	/* Reset counter. */
+	events_counter_reset();
 
 	/* Queue an event. */
 	event_cookie = events_timer_register_double(&event_timer, NULL, 0.01);
@@ -168,8 +153,7 @@ main(int argc, char * argv[])
 
 	WARNP_INIT;
 
-	(void)argc;
-	(void)argv;
+	(void)argc;	/* UNUSED */
 
 	/* Configure SIGUSR1 to cancel the loop. */
 	sa.sa_handler = interrupt;
@@ -178,23 +162,11 @@ main(int argc, char * argv[])
 	if (sigaction(SIGUSR1, &sa, NULL))
 		goto err0;
 
-	/* Test interrupt with events_run(). */
+	/* Run tests. */
 	if (test_interrupt_run())
 		goto err0;
-
-	/* Reset event count. */
-	printf("--- reset event loop ---\n");
-	event_count = 0;
-
-	/* Test interrupt with events_spin(). */
 	if (test_interrupt_spin())
 		goto err0;
-
-	/* Reset event count. */
-	printf("--- reset event loop ---\n");
-	event_count = 0;
-
-	/* Test timer(). */
 	if (test_timer())
 		goto err0;
 
