@@ -122,7 +122,7 @@ readpass.o: ../../util/readpass.c ../../util/insecure_memzero.h ../../util/warnp
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../util/readpass.c -o readpass.o
 setuidgid.o: ../../util/setuidgid.c ../../util/parsenum.h ../../util/warnp.h ../../util/setuidgid.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../util/setuidgid.c -o setuidgid.o
-sock.o: ../../util/sock.c ../../util/imalloc.h ../../util/warnp.h ../../util/sock.h ../../util/sock_internal.h
+sock.o: ../../util/sock.c ../../util/imalloc.h ../../util/parsenum.h ../../util/warnp.h ../../util/sock.h ../../util/sock_internal.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../util/sock.c -o sock.o
 sock_util.o: ../../util/sock_util.c ../../util/asprintf.h ../../util/sock.h ../../util/sock_internal.h ../../util/sock_util.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../util/sock_util.c -o sock_util.o
