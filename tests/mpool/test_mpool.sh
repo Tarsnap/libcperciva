@@ -74,6 +74,15 @@ cmp_methods () {
 	run $SETS $REPS 1 "${SUFFIX}-mpool"
 	mpool=${val}
 
+	# Sanity check for 0-duration result
+	if [ "${malloc}" -eq "0" ] || [ "${mpool}" -eq "0" ]; then
+		# Don't include \n in this message; the test suite
+		# will add it.
+		printf "Test time is below clock resolution;" 1>&2
+		printf " cannot measure" 1>&2
+		exit 1
+	fi
+
 	ratio=$( echo "scale=2;${malloc}/${mpool}" | bc)
 	ratio_percent=$( echo "100*${malloc}/${mpool}" | bc)
 
