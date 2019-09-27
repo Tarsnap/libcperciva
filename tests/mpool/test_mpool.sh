@@ -2,8 +2,19 @@
 
 LOGFILE=$1
 
-MIN_OUT_OF=10
+WARM_UP=5
 
+# Do more testing if we're running it manually.  Using (4n+3) data
+# points makes it trivial to split the data into quadrants.
+if [ -n "${LOGFILE}" ]; then
+	N=30
+	REPEATS=$(( 4*N + 3 ))
+else
+	N=2
+	REPEATS=$(( 4*N + 3 ))
+fi
+
+# Generate loop variables
 make_count() {
 	END=$1
 	N=1
@@ -12,6 +23,8 @@ make_count() {
 		N=$((N + 1))
 	done
 }
+WARMUP_REPS=$( make_count ${WARM_UP} )
+BINARY_REPS=$( make_count ${REPEATS} )
 
 run() {
 	SETS=$1
@@ -19,16 +32,14 @@ run() {
 	MPOOL=$3
 	SUFFIX_THIS=$4
 
-	COUNT_REPS=$( make_count ${MIN_OUT_OF} )
-
 	# "Warm up"; don't record this data
-	for j in ${COUNT_REPS}; do
+	for j in ${WARMUP_REPS}; do
 		./test_mpool ${SETS} ${REPS} ${MPOOL} > /dev/null
 	done
 
 	arr=""
 	# Get raw data
-	for i in ${COUNT_REPS}; do
+	for i in ${BINARY_REPS}; do
 		usec=$( ./test_mpool ${SETS} ${REPS} ${MPOOL} )
 		arr="${arr} ${usec}"
 	done
@@ -45,10 +56,10 @@ run() {
 	fi
 
 	## Sort array, find minimum
-	arr=$( echo ${arr} | tr " " "\n" | sort -n | tr "\n" " " )
-	lowest=$( echo ${arr} | cut -d ' ' -f 1 )
-
+	sorted_arr=$( echo ${arr} | tr " " "\n" | sort -n | tr "\n" " " )
+	lowest=$( echo ${sorted_arr} | cut -d ' ' -f 1 )
 	val=${lowest}
+
 	return 0
 }
 
