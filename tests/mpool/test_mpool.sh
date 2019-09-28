@@ -68,14 +68,14 @@ run() {
 		done
 	fi
 
-	## Sort array, find minimum
+	## Sort array, find median
 	sorted_arr=$( echo ${arr_malloc} | tr " " "\n" | sort -n | tr "\n" " " )
-	lowest=$( echo ${sorted_arr} | cut -d ' ' -f 1 )
-	val_malloc=${lowest}
+	median=$( echo ${sorted_arr} | cut -d ' ' -f $(( 1 + ${REPEATS}/2 )) )
+	val_malloc=${median}
 
 	sorted_arr=$( echo ${arr_mpool} | tr " " "\n" | sort -n | tr "\n" " " )
-	lowest=$( echo ${sorted_arr} | cut -d ' ' -f 1 )
-	val_mpool=${lowest}
+	median=$( echo ${sorted_arr} | cut -d ' ' -f $(( 1 + ${REPEATS}/2 )) )
+	val_mpool=${median}
 
 	return 0
 }
