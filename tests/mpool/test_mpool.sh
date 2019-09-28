@@ -1,7 +1,20 @@
 #!/bin/sh
 
-MIN_OUT_OF=10
+LOGFILE=$1
 
+WARM_UP=5
+
+# Do more testing if we're running it manually.  Using (4n+3) data
+# points makes it trivial to split the data into quadrants.
+if [ -n "${LOGFILE}" ]; then
+	N=30
+	REPEATS=$(( 4*N + 3 ))
+else
+	N=2
+	REPEATS=$(( 4*N + 3 ))
+fi
+
+# Generate loop variables
 make_count() {
 	END=$1
 	N=1
@@ -10,31 +23,43 @@ make_count() {
 		N=$((N + 1))
 	done
 }
+WARMUP_REPS=$( make_count ${WARM_UP} )
+BINARY_REPS=$( make_count ${REPEATS} )
 
 run() {
 	SETS=$1
 	REPS=$2
 	MPOOL=$3
-
-	COUNT_REPS=$( make_count ${MIN_OUT_OF} )
+	SUFFIX_THIS=$4
 
 	# "Warm up"; don't record this data
-	for j in ${COUNT_REPS}; do
+	for j in ${WARMUP_REPS}; do
 		./test_mpool ${SETS} ${REPS} ${MPOOL} > /dev/null
 	done
 
 	arr=""
 	# Get raw data
-	for i in ${COUNT_REPS}; do
+	for i in ${BINARY_REPS}; do
 		usec=$( ./test_mpool ${SETS} ${REPS} ${MPOOL} )
 		arr="${arr} ${usec}"
 	done
 
-	## Sort array, find minimum
-	arr=$( echo ${arr} | tr " " "\n" | sort -n | tr "\n" " " )
-	lowest=$( echo ${arr} | cut -d ' ' -f 1 )
+	# Save data to log (if applicable)
+	if [ -n "${LOGFILE}" ]; then
+		filename="${LOGFILE}-${SUFFIX_THIS}.txt"
+		rm -f ${filename}
+		num=$(( SETS * REPS ))
+		for a in ${arr}; do
+			amortized=$( echo "scale=8;${a} / ${num};" | bc)
+			echo ${amortized} >> ${filename}
+		done
+	fi
 
+	## Sort array, find minimum
+	sorted_arr=$( echo ${arr} | tr " " "\n" | sort -n | tr "\n" " " )
+	lowest=$( echo ${sorted_arr} | cut -d ' ' -f 1 )
 	val=${lowest}
+
 	return 0
 }
 
@@ -42,11 +67,21 @@ cmp_methods () {
 	SETS=$1
 	REPS=$2
 	PERCENT_CUTOFF=$3
+	SUFFIX=$4
 
-	run $SETS $REPS 0
+	run $SETS $REPS 0 "${SUFFIX}-malloc"
 	malloc=${val}
-	run $SETS $REPS 1
+	run $SETS $REPS 1 "${SUFFIX}-mpool"
 	mpool=${val}
+
+	# Sanity check for 0-duration result
+	if [ "${malloc}" -eq "0" ] || [ "${mpool}" -eq "0" ]; then
+		# Don't include \n in this message; the test suite
+		# will add it.
+		printf "Test time is below clock resolution;" 1>&2
+		printf " cannot measure" 1>&2
+		exit 1
+	fi
 
 	ratio=$( echo "scale=2;${malloc}/${mpool}" | bc)
 	ratio_percent=$( echo "100*${malloc}/${mpool}" | bc)
@@ -65,14 +100,14 @@ printf "sets\treps\tratio\n"
 
 # Test with full benefit from malloc pool (the binary begins with an
 # initial pool of 100).
-cmp_methods 10000 100 200
+cmp_methods 10000 100 200 "full"
 
 # mpool is still considerably faster than malloc in this range.
-cmp_methods 1000 1000 200
+cmp_methods 1000 1000 200 "partial"
 
 # mpool is not much slower than malloc even when there's no benefit
 # from the pool.
-cmp_methods 1 1000000 75
+cmp_methods 1 1000000 75 "none"
 
 # Test again with valgrind (if enabled).
 if [ -n "${c_valgrind_cmd}" ]; then
