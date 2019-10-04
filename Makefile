@@ -9,6 +9,8 @@ TESTS=	tests/aws							\
 	tests/crypto_entropy						\
 	tests/elasticarray						\
 	tests/events							\
+	tests/events/network_client					\
+	tests/events/network_server					\
 	tests/getopt							\
 	tests/heap							\
 	tests/humansize							\

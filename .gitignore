@@ -11,6 +11,8 @@ tests/buildsingles/Makefile.tmp
 tests/crc32/test_crc32
 tests/crypto_entropy/test_crypto_entropy
 tests/elasticarray/test_elasticarray
+tests/events/network_client/test_events_network_client
+tests/events/network_server/test_events_network_server
 tests/events/test_events
 tests/getopt/test_getopt
 tests/heap/test_heap
@@ -24,6 +26,7 @@ tests/parsenum/test_parsenum
 tests/valgrind/potential-memleaks
 # Test output directories and generated files.
 tests/events/test-events.log
+tests/events/test-events-network.log
 tests/getopt/test_getopt.log
 tests-output/
 tests-valgrind/
