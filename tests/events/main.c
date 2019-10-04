@@ -1,4 +1,3 @@
-#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -6,12 +5,10 @@
 #include "warnp.h"
 
 #include "events_counter.h"
+#include "events_interrupter.h"
 
 /* Variable for event testing in general. */
 static void * event_cookie = NULL;
-
-/* Variable specifically for events_run(). */
-static int events_run_done = 0;
 
 static int
 event(void * cookie)
@@ -27,16 +24,6 @@ event(void * cookie)
 
 	/* Success! */
 	return (0);
-}
-
-static void
-interrupt(int sig)
-{
-
-	(void)sig; /* UNUSED */
-
-	events_interrupt();
-	events_run_done = 1;
 }
 
 static int
@@ -55,7 +42,7 @@ test_interrupt_run()
 			warnp("error in event loop");
 			goto err0;
 		}
-	} while (!events_run_done);
+	} while (!events_interrupter_interrupted());
 
 	/* Cancel the left-over event. */
 	events_immediate_cancel(event_cookie);
@@ -149,18 +136,16 @@ err0:
 int
 main(int argc, char * argv[])
 {
-	struct sigaction sa;
 
 	WARNP_INIT;
 
 	(void)argc;	/* UNUSED */
 
-	/* Configure SIGUSR1 to cancel the loop. */
-	sa.sa_handler = interrupt;
-	sigemptyset(&sa.sa_mask);
-	sa.sa_flags = 0;
-	if (sigaction(SIGUSR1, &sa, NULL))
+	/* Set up response to SIGUSR1. */
+	if (events_interrupter_init()) {
+		warnp("events_interrupter_init()");
 		goto err0;
+	}
 
 	/* Run tests. */
 	if (test_interrupt_run())
