@@ -3,8 +3,7 @@
 ADDR="[127.0.0.1]:8005"
 
 # Run tests
-# FIXME: omit test 2, because it demonstrates a bug in event_network.c
-for i in 1 ; do
+for i in 1 2 ; do
 	printf "%s\n" "==== test $i ===="
 	./network_server/test_events_network_server "${ADDR}" &
 	pid=$!
