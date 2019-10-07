@@ -35,18 +35,18 @@ test_setuidgid_username_groupname() {
 	if [ ${cmd_exitcode} -eq "$EX_NOPERM" ]; then
 		if [ ${skip_ok} -eq "1" ]; then
 			# Check if root
-			if [ `id -u` -eq "0" ]; then
-				# Fail.
-				echo "1"
+			if [ "$(id -u)" = "0" ]; then
+				# Fail
+				printf "1"
 			else
 				# Skip this check, since it relies on us having
 				# permission to change the uid and/or gid, and
 				# we're not root.
-				echo "-1"
+				printf "%s" "-1"
 			fi
 		else
 			# Fail
-			echo "1"
+			printf "1"
 		fi
 	else
 		expected_exitcode ${pass_exitcode} ${cmd_exitcode}

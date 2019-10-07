@@ -27,4 +27,4 @@ if ./test_getopt --bar=foo; then
 	false;
 fi
 
-echo done 1>&2
+echo "done" 1>&2
