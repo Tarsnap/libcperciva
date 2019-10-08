@@ -1,0 +1,6 @@
+==== test 1 ====
+--- reset event counter ---
+event 0
+event 1
+event 2
+event 3
