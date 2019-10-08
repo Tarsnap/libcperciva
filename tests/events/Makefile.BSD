@@ -10,6 +10,7 @@ LIBCPERCIVA_DIR	=	../..
 # Main test code
 SRCS	=	main.c
 SRCS	+=	events_counter.c
+SRCS	+=	events_interrupter.c
 
 # Data structures
 .PATH.c	:	${LIBCPERCIVA_DIR}/datastruct
