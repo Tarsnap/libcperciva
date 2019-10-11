@@ -6,15 +6,16 @@ test_output="${s_basename}-stdout.txt"
 
 ### Actual command
 scenario_cmd() {
+	cd ${scriptdir}/parsenum
+
 	setup_check_variables
-	cd ${scriptdir}/parsenum && ${c_valgrind_cmd} \
+	${c_valgrind_cmd}			\
 	    ./test_parsenum 1> ${test_output}
-	echo $? > ${c_exitfile}
+	echo "$?" > ${c_exitfile}
 
 	# Test improper usage -- this aborts with a memory leak, so don't
 	# use valgrind here.
 	setup_check_variables
-	cd ${scriptdir}/parsenum && \
-	    ./test_parsenum_improper_usage.sh
-	echo $? > ${c_exitfile}
+	./test_parsenum_improper_usage.sh
+	echo "$?" > ${c_exitfile}
 }

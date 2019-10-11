@@ -6,12 +6,14 @@ test_output="${s_basename}-stderr.txt"
 
 ### Actual command
 scenario_cmd() {
+	cd ${scriptdir}/aws
+
 	setup_check_variables
-	cd ${scriptdir}/aws/ && ${c_valgrind_cmd} \
+	${c_valgrind_cmd}			\
 	    ./test_aws 2> ${test_output}
 	echo "$?" > ${c_exitfile}
 
 	setup_check_variables
-	cmp ${scriptdir}/aws/test_aws.good ${test_output}
-	echo $? > ${c_exitfile}
+	cmp -s ${scriptdir}/aws/test_aws.good ${test_output}
+	echo "$?" > ${c_exitfile}
 }
