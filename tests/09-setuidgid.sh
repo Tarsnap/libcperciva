@@ -13,6 +13,8 @@ test_setuidgid_username_groupname() {
 	skip_ok=$2
 	username_groupname=$3
 
+	cd ${scriptdir}/setuidgid
+
 	setup_check_variables
 
 	# Print info about each check
@@ -26,8 +28,8 @@ test_setuidgid_username_groupname() {
 	printf "\n" >> ${test_stderr}
 
 	# Run command
-	cd ${scriptdir}/setuidgid/ && \
-	    ${c_valgrind_cmd} ./test_setuidgid "${username_groupname}"	\
+	${c_valgrind_cmd}			\
+	    ./test_setuidgid "${username_groupname}"	\
 	    2>> ${test_stderr}
 	cmd_exitcode=$?
 

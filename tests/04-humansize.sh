@@ -6,8 +6,10 @@ test_output="${s_basename}-stdout.txt"
 
 ### Actual command
 scenario_cmd() {
+	cd ${scriptdir}/humansize
+
 	setup_check_variables
-	cd ${scriptdir}/humansize && ${c_valgrind_cmd} \
+	${c_valgrind_cmd}			\
 	    ./test_humansize 1> ${test_output}
-	echo $? > ${c_exitfile}
+	echo "$?" > ${c_exitfile}
 }
