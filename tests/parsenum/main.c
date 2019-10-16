@@ -254,6 +254,9 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("0x7f", size_t, 0, 1000, 127);
 	TEST4_SUCCESS("0x77", size_t, 0, 1000, 119);
 	TEST4_SUCCESS("077", size_t, 0, 1000, 63);
+	TEST4_FAILURE("-50", size_t, -100, 0, ERANGE);
+	TEST4_FAILURE("-50", size_t, 0, -100, ERANGE);
+	TEST4_FAILURE("0", size_t, -200, -100, ERANGE);
 
 	TEST4_SUCCESS("0xFFFFffff", uint32_t, 0, 0xFFFFffff, UINT32_MAX);
 	TEST4_FAILURE("0x100000000", uint32_t, 0, 0xFFFFffff, ERANGE);
