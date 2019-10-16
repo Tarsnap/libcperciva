@@ -133,13 +133,40 @@ err0:
 	return (-1);
 }
 
+static int
+test_interrupt_empty_loop()
+{
+	int done = 0;
+	int ret;
+
+	/* Reset counter. */
+	events_counter_reset();
+
+	/* Run event loop. */
+	while ((ret = events_spin(&done))) {
+		if (ret == -1) {
+			warnp("error in event loop");
+			goto err0;
+		}
+	}
+
+	/* Success! */
+	return (0);
+
+err0:
+	/* Failure! */
+	return (-1);
+}
+
 int
 main(int argc, char * argv[])
 {
+	int empty_loop = 0;
 
 	WARNP_INIT;
 
-	(void)argc;	/* UNUSED */
+	if (argc > 1)
+		empty_loop = 1;
 
 	/* Set up response to SIGUSR1. */
 	if (events_interrupter_init()) {
@@ -148,12 +175,18 @@ main(int argc, char * argv[])
 	}
 
 	/* Run tests. */
-	if (test_interrupt_run())
-		goto err0;
-	if (test_interrupt_spin())
-		goto err0;
-	if (test_timer())
-		goto err0;
+	if (empty_loop) {
+		/* Needs external SIGUSR1 to cancel the event loop. */
+		if (test_interrupt_empty_loop())
+			goto err0;
+	} else {
+		if (test_interrupt_run())
+			goto err0;
+		if (test_interrupt_spin())
+			goto err0;
+		if (test_timer())
+			goto err0;
+	}
 
 	/* Success! */
 	exit(0);
