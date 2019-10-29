@@ -50,8 +50,8 @@ perftest(void)
 	size_t num_hashes;
 	int use_hardware = 0;
 
-#ifdef CPUSUPPORT_X86_CRC32
-	if (cpusupport_x86_crc32())
+#ifdef CPUSUPPORT_X86_CRC32_64
+	if (cpusupport_x86_crc32_64())
 		use_hardware = 1;
 #endif
 
