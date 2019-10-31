@@ -34,6 +34,22 @@ pl_freebsd_getdelim(void)
 	free(line);
 }
 
+/*
+ * Not FreeBSD's fault; the old valgrind-3.10.1 port doesn't recognize what's
+ * happening when their optimized strlen() looks at 8 bytes at once.
+ */
+static void
+pl_freebsd_strlen(void)
+{
+	/* More than 8 bytes, and not a multiple of 8. */
+	char problem[] = {1, 2, 3, 4, 5, 6, 7, 8, 0};
+
+	/* Play games to avoid the compiler optimizing away strlen(). */
+	size_t (* const volatile strlen_func)(const char *) = strlen;
+	volatile size_t len = strlen_func(problem);
+	(void)len;
+}
+
 /* Problem with NSS and getgrnam on Ubuntu 18.04 and FreeBSD 11.0. */
 static void
 pl_nss_getgrnam(void)
@@ -59,6 +75,7 @@ static const struct memleaktest {
 	MEMLEAKTEST(pl_freebsd_link_lrt),
 	MEMLEAKTEST(pl_freebsd_printf),
 	MEMLEAKTEST(pl_freebsd_getdelim),
+	MEMLEAKTEST(pl_freebsd_strlen),
 	MEMLEAKTEST(pl_nss_getgrnam),
 	MEMLEAKTEST(pl_nss_getpwnam)
 };
