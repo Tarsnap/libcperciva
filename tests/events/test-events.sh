@@ -1,5 +1,7 @@
 #!/bin/sh
 
+pidfile="test_events_pidfile.txt"
+
 # Run normal tests
 ./test_events > test-events.log
 
@@ -7,9 +9,12 @@
 cmp -s test-events.good test-events.log
 
 # Run a loop without any events
-./test_events 1 > test-empty-events.log &
-pid=$!
-sleep 1
+rm -f "${pidfile}"
+./test_events "${pidfile}" > test-empty-events.log &
+while [ ! -e "${pidfile}" ] ; do
+	sleep 1
+done
+pid=$( cat "${pidfile}" )
 kill -s USR1 ${pid}
 
 # Compare with good values

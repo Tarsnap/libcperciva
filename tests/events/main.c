@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "events.h"
 #include "warnp.h"
@@ -134,13 +135,45 @@ err0:
 }
 
 static int
-test_interrupt_empty_loop()
+write_pidfile(const char * filename)
+{
+	FILE * fp;
+
+	if ((fp = fopen(filename, "w")) == NULL) {
+		warnp("fopen(%s)", filename);
+		goto err0;
+	}
+	if (fprintf(fp, "%d", getpid()) < 0) {
+		warnp("fprintf");
+		goto err1;
+	}
+	if (fclose(fp)) {
+		warnp("fclose");
+		goto err0;
+	}
+
+	/* Success! */
+	return (0);
+
+err1:
+	fclose(fp);
+err0:
+	/* Failure! */
+	return (-1);
+}
+
+static int
+test_interrupt_empty_loop(const char * filename_pid)
 {
 	int done = 0;
 	int ret;
 
 	/* Reset counter. */
 	events_counter_reset();
+
+	/* We've finished initializing stuff; write the pidfile. */
+	if (write_pidfile(filename_pid))
+		goto err0;
 
 	/* Run event loop. */
 	while ((ret = events_spin(&done))) {
@@ -162,11 +195,14 @@ int
 main(int argc, char * argv[])
 {
 	int empty_loop = 0;
+	const char * filename_pid = NULL;
 
 	WARNP_INIT;
 
-	if (argc > 1)
+	if (argc > 1) {
 		empty_loop = 1;
+		filename_pid = argv[1];
+	}
 
 	/* Set up response to SIGUSR1. */
 	if (events_interrupter_init()) {
@@ -177,7 +213,7 @@ main(int argc, char * argv[])
 	/* Run tests. */
 	if (empty_loop) {
 		/* Needs external SIGUSR1 to cancel the event loop. */
-		if (test_interrupt_empty_loop())
+		if (test_interrupt_empty_loop(filename_pid))
 			goto err0;
 	} else {
 		if (test_interrupt_run())
