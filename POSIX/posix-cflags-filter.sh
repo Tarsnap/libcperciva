@@ -1,9 +1,14 @@
 # Should be sourced by
-#     command -p sh posix-cflags-filter.sh "$PATH"
+#     command -p sh posix-cflags-filter.sh "$PATH" "$CC"
 # from within a Makefile.
 # Produces a file to be sourced which edits CFLAGS.
 
-# Sanity check environment variables
+# Process & sanity check environment variables.
+if [ "$#" -ne 2 ]; then
+	echo "Incorrect number of arguments." 1>&2
+	exit 1
+fi
+CC=$2
 if [ -z "${CC}" ]; then
 	echo "\$CC is not defined!  Cannot run any compiler tests." 1>&2
 	exit 1
