@@ -46,13 +46,12 @@ buildsubdir: cflags-filter.sh cpusupport-config.h posix-flags.sh
 
 posix-flags.sh:
 	if [ -d ${LIBCPERCIVA_DIR}/POSIX/ ]; then			\
-		export CC="${CC}";					\
 		cd ${LIBCPERCIVA_DIR}/POSIX;				\
 		printf "export \"LDADD_POSIX=";				\
-		command -p sh posix-l.sh "$$PATH";			\
+		command -p sh posix-l.sh "$$PATH" "${CC}";		\
 		printf "\"\n";						\
 		printf "export \"CFLAGS_POSIX=";			\
-		command -p sh posix-cflags.sh "$$PATH";			\
+		command -p sh posix-cflags.sh "$$PATH" "${CC}";		\
 		printf "\"\n";						\
 	fi > $@
 	if [ ! -s $@ ]; then						\
@@ -61,9 +60,8 @@ posix-flags.sh:
 
 cflags-filter.sh:
 	if [ -d ${LIBCPERCIVA_DIR}/POSIX/ ]; then			\
-		export CC="${CC}";					\
 		cd ${LIBCPERCIVA_DIR}/POSIX;				\
-		command -p sh posix-cflags-filter.sh "$$PATH";		\
+		command -p sh posix-cflags-filter.sh "$$PATH" "${CC}";	\
 	fi > $@
 	if [ ! -s $@ ]; then						\
 		printf "# Compiler understands normal flags; ";		\
@@ -72,10 +70,9 @@ cflags-filter.sh:
 
 cpusupport-config.h:
 	if [ -d ${LIBCPERCIVA_DIR}/cpusupport/ ]; then			\
-		export CC="${CC}";					\
 		command -p sh						\
 		    ${LIBCPERCIVA_DIR}/cpusupport/Build/cpusupport.sh	\
-		    "$$PATH";						\
+		    "$$PATH" "${CC}";					\
 	fi > $@
 	if [ ! -s $@ ]; then						\
 		printf "#define CPUSUPPORT_NONE 1\n";			\
