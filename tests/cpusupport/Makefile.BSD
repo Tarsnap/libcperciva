@@ -1,0 +1,21 @@
+# Program name.
+PROG	=	test_cpusupport
+
+# Don't install it.
+NOINST	=	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Main test code
+SRCS	=	main.c
+
+# Utility functions
+.PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
+SRCS	+=	cpusupport_x86_sse2.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
+
+test:	test_cpusupport
+	./test_cpusupport
+
+.include <bsd.prog.mk>

@@ -7,6 +7,7 @@ TESTS=	tests/aws							\
 	tests/buildsingles						\
 	tests/crc32							\
 	tests/crypto_entropy						\
+	tests/cpusupport						\
 	tests/elasticarray						\
 	tests/events							\
 	tests/getopt							\
