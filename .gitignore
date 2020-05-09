@@ -15,6 +15,7 @@ tests/crypto_entropy/test_crypto_entropy
 tests/elasticarray/test_elasticarray
 tests/events/test_events
 tests/getopt/test_getopt
+tests/getopt-longjmp/test_getopt_longjmp
 tests/heap/test_heap
 tests/humansize/test_humansize
 tests/json/test_json

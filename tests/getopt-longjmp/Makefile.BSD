@@ -1,0 +1,21 @@
+# Program name.
+PROG	=	test_getopt_longjmp
+
+# Don't install it.
+NOINST	=	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Main test code
+SRCS	=	main.c
+
+# Utility functions
+.PATH.c	:	${LIBCPERCIVA_DIR}/util
+SRCS	+=	getopt.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_getopt_longjmp
+	./test_getopt_longjmp
+
+.include <bsd.prog.mk>

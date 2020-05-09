@@ -10,6 +10,7 @@ TESTS=	tests/aws							\
 	tests/elasticarray						\
 	tests/events							\
 	tests/getopt							\
+	tests/getopt-longjmp						\
 	tests/heap							\
 	tests/humansize							\
 	tests/json							\
