@@ -30,24 +30,12 @@
  */
 
 /* Work around LLVM bug. */
-#ifdef __clang__
-#warning Working around bug in LLVM optimizer
-#warning For more details see https://bugs.llvm.org/show_bug.cgi?id=27190
-#define DO_SETJMP _DO_SETJMP(__LINE__)
-#define _DO_SETJMP(x) __DO_SETJMP(x)
-#define __DO_SETJMP(x)							\
-	void * getopt_initloop = && getopt_initloop_ ## x;		\
-	getopt_initloop_ ## x:
-#define DO_LONGJMP							\
-	goto *getopt_initloop
-#else
 #define DO_SETJMP							\
 	sigjmp_buf getopt_initloop;					\
 	if (!getopt_initialized)					\
 		sigsetjmp(getopt_initloop, 0)
 #define DO_LONGJMP							\
 	siglongjmp(getopt_initloop, 1)
-#endif
 
 /* Avoid namespace collisions with libc getopt. */
 #define getopt	libcperciva_getopt
