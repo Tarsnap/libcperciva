@@ -60,6 +60,9 @@
 extern const char * optarg;
 extern int optind, opterr, optreset;
 
+/* Try to avoid the compiler "optimizing" in a non-standard-compliant manner. */
+extern volatile int getopt_guard;
+
 /* Dummy option string, equal to "(dummy)". */
 #define GETOPT_DUMMY getopt_dummy
 
@@ -98,8 +101,10 @@ extern int optind, opterr, optreset;
 #define _GETOPT_OPT(os, ln)	__GETOPT_OPT(os, ln)
 #define __GETOPT_OPT(os, ln)						\
 	case ln:							\
-		if (getopt_initialized)					\
+		if (getopt_initialized) {				\
+			getopt_guard = 0;				\
 			goto getopt_skip_ ## ln;			\
+		}							\
 		getopt_register_opt(os, ln - getopt_ln_min, 0);		\
 		DO_LONGJMP;						\
 	getopt_skip_ ## ln
@@ -119,6 +124,7 @@ extern int optind, opterr, optreset;
 	case ln:							\
 		if (getopt_initialized) {				\
 			assert(optarg != NULL);				\
+			getopt_guard = 0;				\
 			goto getopt_skip_ ## ln;			\
 		}							\
 		getopt_register_opt(os, ln - getopt_ln_min, 1);		\

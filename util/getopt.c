@@ -14,6 +14,9 @@ int optind = 1;
 int opterr = 1;
 int optreset = 1;
 
+/* Try to avoid the compiler "optimizing" in a non-standard-compliant manner. */
+volatile int getopt_guard = 0;
+
 /*
  * Quasi-internal global variables -- these are used via GETOPT macros.
  */
