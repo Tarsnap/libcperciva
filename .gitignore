@@ -24,6 +24,7 @@ tests/mpool/test_mpool
 tests/setuidgid/test_setuidgid
 tests/sha256/test_sha256
 tests/parsenum/test_parsenum
+tests/readpass_file/test_readpass_file
 tests/valgrind/potential-memleaks
 # Test output directories and generated files.
 tests/events/test-events.log

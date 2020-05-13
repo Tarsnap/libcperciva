@@ -1,0 +1,23 @@
+# Program name.
+PROG	=	test_readpass_file
+
+# Don't install it.
+NOINST	=	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Main test code
+SRCS	=	main.c
+
+# Utility functions
+.PATH.c	:	${LIBCPERCIVA_DIR}/util
+SRCS	+=	insecure_memzero.c
+SRCS	+=	readpass_file.c
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_readpass_file
+	./test_readpass_file
+
+.include <bsd.prog.mk>

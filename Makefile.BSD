@@ -16,6 +16,7 @@ TESTS=	tests/aws							\
 	tests/monoclock							\
 	tests/mpool							\
 	tests/parsenum							\
+	tests/readpass_file						\
 	tests/setuidgid							\
 	tests/sha256							\
 	tests/valgrind

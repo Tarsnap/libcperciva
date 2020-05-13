@@ -91,6 +91,7 @@ SRCS	+=	json.c
 SRCS	+=	monoclock.c
 SRCS	+=	noeintr.c
 SRCS	+=	readpass.c
+SRCS	+=	readpass_file.c
 SRCS	+=	setuidgid.c
 SRCS	+=	sock.c
 SRCS	+=	sock_util.c
