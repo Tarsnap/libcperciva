@@ -9,14 +9,14 @@ file_success() {
 	filename=$1
 	expect_pass=$2
 
-	setup_check_variables
+	setup_check_variables "test_readpass_file ${filename}"
 	output="${s_basename}-${s_count}.stdout"
 	${c_valgrind_cmd}			\
 	    ./test_readpass_file ${filename}	\
 	    1> ${output}
 	echo "$?" > ${c_exitfile}
 
-	setup_check_variables
+	setup_check_variables "test_readpass_file ${filename} expect pass"
 	grep -q "${expect_pass}" "${output}"
 	echo "$?" > ${c_exitfile}
 }
@@ -25,14 +25,14 @@ file_fail() {
 	filename=$1
 	expect_fail=$2
 
-	setup_check_variables
+	setup_check_variables "test_readpass_file ${filename}"
 	err_output="${s_basename}-${s_count}.stderr"
 	${c_valgrind_cmd}			\
 	    ./test_readpass_file ${filename}	\
 	    2> ${err_output}
 	expected_exitcode 1 "$?" > ${c_exitfile}
 
-	setup_check_variables
+	setup_check_variables "test_readpass_file ${filename} expect fail"
 	grep -q "${expect_fail}" "${err_output}"
 	echo "$?" > ${c_exitfile}
 }

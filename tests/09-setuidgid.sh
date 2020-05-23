@@ -15,7 +15,7 @@ test_setuidgid_username_groupname() {
 
 	cd ${scriptdir}/setuidgid
 
-	setup_check_variables
+	setup_check_variables "setuidgid on ${username_groupname}"
 
 	# Print info about each check
 	printf "=== check ${s_count}" >> ${test_stderr}
