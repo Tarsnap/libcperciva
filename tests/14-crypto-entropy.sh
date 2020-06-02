@@ -7,7 +7,7 @@ c_valgrind_min=1
 scenario_cmd() {
 	cd ${scriptdir}/crypto_entropy
 
-	setup_check_variables
+	setup_check_variables "test_crypto_entropy"
 	${c_valgrind_cmd}			\
 	    ./test_crypto_entropy > /dev/null
 	echo "$?" > ${c_exitfile}

@@ -9,7 +9,7 @@ longjmp_output="${s_basename}-longjmp-stderr.txt"
 scenario_cmd() {
 	cd ${scriptdir}/getopt
 
-	setup_check_variables
+	setup_check_variables "test_getopt.sh"
 	# Pass ${c_valgrind_cmd} to the script
 	c_valgrind_cmd=${c_valgrind_cmd}	\
 	    ./test_getopt.sh 1> ${test_output}
@@ -19,7 +19,7 @@ scenario_cmd() {
 	# putting a=1 before a siglongjmp).
 	cd ${scriptdir}/getopt-longjmp
 
-	setup_check_variables
+	setup_check_variables "test_getopt_longjmp"
 	c_valgrind_cmd=${c_valgrind_cmd}	\
 	    ./test_getopt_longjmp 2> ${longjmp_output}
 	echo "$?" > ${c_exitfile}
