@@ -58,6 +58,11 @@ if ! ${CC} -D_POSIX_C_SOURCE=200809L $D/posix-restrict.c 2>/dev/null; then
 	if ${CC} -D_POSIX_C_SOURCE=200809L -std=c99 $D/posix-restrict.c 2>/dev/null; then
 		[ ${FIRST} = "NO" ] && printf " "; FIRST=NO
 		printf %s "-std=c99"
+	else
+		# We cannot work around this error; don't bother
+		# trying to compile the project.
+		echo "Could not work around 'restrict' keyword error." 1>&2
+		exit 1
 	fi
 fi
 rm -f a.out
