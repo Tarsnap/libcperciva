@@ -32,6 +32,12 @@ pass1(int argc, char * argv[])
 			fprintf(stderr, "foo: %s\n", optarg);
 			break;
 		GETOPT_DEFAULT:
+			/*
+			 * We can't call usage(), because that would exit(1).
+			 * This test deliberately does not include
+			 * GETOPT_MISSING_ARG, so it is likely that we will
+			 * reach this point.
+			 */
 			fprintf(stderr, "usage: blah blah blah\n");
 		}
 	}
@@ -98,11 +104,13 @@ int
 main(int argc, char * argv[])
 {
 
-	/* Process arguments. */
+	/* Process the arguments without GETOPT_MISSING_ARG. */
 	pass1(argc, argv);
 
-	/* Reset getopt state and process arguments again. */
+	/* Reset getopt state. */
 	optreset = 1;
+
+	/* Process the arguments again, with GETOPT_MISSING_ARG this time. */
 	pass2(argc, argv);
 
 	return (0);
