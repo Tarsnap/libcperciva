@@ -1,14 +1,19 @@
 #!/bin/sh
 
+# Allow overriding the default compilers and flags to test.
+CCS="${CCS:-c99 cc clang gcc}"
+FLAGS="${FLAGS:--O0 -O1 -O2}"
+
+# Working variables.
 bin=test_getopt_longjmp
 failed=""
 
-for CC in c99 cc clang gcc 
+for CC in ${CCS}
 do
 	# Reset posix-flags.sh for each compiler.
 	rm -f ../../posix-flags.sh
 
-	for O in -O0 -O1 -O2
+	for O in ${FLAGS}
 	do
 		# Check each compiler-flag combination.
 		thisbin=$CC$O
