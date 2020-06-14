@@ -281,6 +281,14 @@ main(int argc, char * argv[])
 	TEST2_FAILURE("0XfffffFFFF", uint32_t, ERANGE);
 	TEST2_FAILURE("-1", uint32_t, ERANGE);
 
+	TEST4_SUCCESS("123", uintmax_t, 0, UINTMAX_MAX, 123);
+	TEST4_SUCCESS("123", uintmax_t, -200, 200, 123);
+	TEST4_FAILURE("-123", uintmax_t, -200, -100, ERANGE);
+
+	TEST4_SUCCESS("123", intmax_t, 0, INTMAX_MAX, 123);
+	TEST4_SUCCESS("-123", intmax_t, -200, -100, -123);
+	TEST4_SUCCESS("123", intmax_t, INTMAX_MIN, INTMAX_MAX, 123);
+
 	/* Handle alternate bases */
 	TEST_EX4_SUCCESS("11", size_t, 17, 16, 0);
 	TEST_EX4_SUCCESS("11", size_t, 11, 0, 0);
