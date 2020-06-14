@@ -2,7 +2,7 @@
 
 # Temporary output
 log=abort.log
-rc=rc.txt
+rcfile=rc.txt
 
 # Check test_parsenum case
 run_test() {
@@ -19,9 +19,9 @@ run_test() {
 	# $(), and writing the exit code to a file, was necessary to cover
 	# Linux, FreeBSD, MacOS X, and Solaris.
 	(
-	    $(./test_parsenum $1 2>${log}; echo "$?" > "${rc}" ) 2>/dev/null
+	    $(./test_parsenum $1 2>${log}; echo "$?" > "${rcfile}" ) 2>/dev/null
 	) 2>/dev/null
-	rc=$( cat "${rc}" )
+	rc=$( cat "${rcfile}" )
 
 	# Check the exit code.  Many shells will set the exit code to 134
 	# (being 128 + SIGABRT), but some do not.  POSIX merely specifies that
@@ -46,4 +46,4 @@ run_test 4 "PARSENUM_EX applied to float with base != 0"
 
 # Clean up
 rm $log
-rm $rc
+rm $rcfile
