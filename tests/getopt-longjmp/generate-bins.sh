@@ -5,12 +5,15 @@ failed=""
 
 for CC in c99 cc clang gcc 
 do
+	# Reset posix-flags.sh for each compiler.
+	rm -f ../../posix-flags.sh
+
 	for O in -O0 -O1 -O2
 	do
 		# Check each compiler-flag combination.
 		thisbin=$CC$O
 		make clean && make CC=$CC CFLAGS=$O
-		if ./${bin} $i ; then
+		if ./${bin} ; then
 			# Don't keep a working binary.
 			rm ${bin}
 		else
