@@ -28,7 +28,7 @@ event(void * cookie)
 }
 
 static int
-test_interrupt_run()
+test_interrupt_run(void)
 {
 
 	/* Reset counter. */
@@ -57,7 +57,7 @@ err0:
 }
 
 static int
-test_interrupt_spin()
+test_interrupt_spin(void)
 {
 	int done = 0;
 	int ret;
@@ -104,7 +104,7 @@ event_timer(void * cookie)
 }
 
 static int
-test_timer()
+test_timer(void)
 {
 	int done = 0;
 	int ret;

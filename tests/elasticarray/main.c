@@ -15,7 +15,7 @@ ELASTICARRAY_DECL(POINTERLIST, pointerlist, struct dyn *);
 
 /* Elasticarray with simple integers. */
 static int
-test_intlist()
+test_intlist(void)
 {
 	INTLIST list;
 	size_t i;
@@ -61,7 +61,7 @@ free_dyn(struct dyn * d)
 
 /* Elasticarray with structures containing dynamically-allocated values. */
 static int
-test_dynlist()
+test_dynlist(void)
 {
 	DYNLIST list;
 	struct dyn d;
@@ -117,7 +117,7 @@ free_p_dyn(struct dyn ** dp)
 
 /* Elasticarray with pointers. */
 static int
-test_pointerlist()
+test_pointerlist(void)
 {
 	POINTERLIST list;
 	struct dyn * p;
@@ -168,7 +168,7 @@ err0:
 
 /* Elasticarray with size 0. */
 static int
-test_emptylist()
+test_emptylist(void)
 {
 	INTLIST list;
 	int x;		/* Not set to a value. */
