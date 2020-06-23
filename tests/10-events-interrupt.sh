@@ -25,6 +25,7 @@ scenario_cmd() {
 	(
 		${c_valgrind_cmd}					\
 			./test_events ${pidfile} > ${test_emptyloop_output}
+		echo "$?" > ${c_exitfile}
 		# Finished writing the logfile
 		touch ${flag_1}
 	) &
