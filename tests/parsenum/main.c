@@ -13,7 +13,7 @@ static int
 parsenum_equal(double x, double y)
 {
 
-#if __clang__
+#if defined(__clang__)
 	_Pragma("clang diagnostic push")
 	_Pragma("clang diagnostic ignored \"-Wconversion\"")
 	_Pragma("clang diagnostic ignored \"-Wdouble-promotion\"")
@@ -39,7 +39,7 @@ parsenum_equal(double x, double y)
 	if ((fpclassify(x) == FP_ZERO) && (fpclassify(y) == FP_ZERO))
 		return (1);
 
-#if __clang__
+#if defined(__clang__)
 	_Pragma("clang diagnostic pop")
 #endif
 
@@ -219,7 +219,7 @@ main(int argc, char * argv[])
 		test_assert_failure(argv[1]);
 
 	/* Disable warning that 0x100000000 cannot fit into uint32_t. */
-#if __clang__
+#if defined(__clang__)
 	_Pragma("clang diagnostic ignored \"-Wtautological-constant-out-of-range-compare\"")
 #elif __GNUC__ >= 5 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 	_Pragma("GCC diagnostic ignored \"-Wtype-limits\"")
