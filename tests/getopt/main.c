@@ -3,6 +3,22 @@
 
 #include "getopt.h"
 
+/* Work around a false positive warning from clang. */
+#if defined(__clang__)
+
+#define WARNING_UNINITIALIZED_SUPPRESS					\
+_Pragma("clang diagnostic push")					\
+_Pragma("clang diagnostic ignored \"-Wconditional-uninitialized\"")
+#define WARNING_UNINITIALIZED_ALLOW					\
+_Pragma("clang diagnostic pop")
+
+/* Do nothing. */
+#else
+#define WARNING_UNINITIALIZED_SUPPRESS
+#define WARNING_UNINITIALIZED_ALLOW
+
+#endif
+
 static void
 usage(void)
 {
@@ -22,6 +38,7 @@ main(int argc, char * argv[])
 	/* Process the arguments without GETOPT_MISSING_ARG. */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
 		fprintf(stderr, "Option being processed: %s\n", ch);
+		WARNING_UNINITIALIZED_SUPPRESS
 		GETOPT_SWITCH(ch) {
 		GETOPT_OPT("-b"):
 			/* FALLTHROUGH */
@@ -34,6 +51,7 @@ main(int argc, char * argv[])
 			fprintf(stderr, "foo: %s\n", optarg);
 			break;
 		GETOPT_DEFAULT:
+			WARNING_UNINITIALIZED_ALLOW
 			/*
 			 * We can't call usage(), because that would exit(1).
 			 * This test deliberately does not include
@@ -69,6 +87,7 @@ main(int argc, char * argv[])
 	 */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
 		fprintf(stderr, "Option being processed: %s\n", ch);
+		WARNING_UNINITIALIZED_SUPPRESS
 		GETOPT_SWITCH(ch) {
 		GETOPT_OPT("-b"):
 			/* FALLTHROUGH */
@@ -83,6 +102,7 @@ main(int argc, char * argv[])
 		GETOPT_MISSING_ARG:
 			fprintf(stderr, "missing argument\n");
 		GETOPT_DEFAULT:
+			WARNING_UNINITIALIZED_ALLOW
 			usage();
 		}
 	}
