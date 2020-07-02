@@ -11,9 +11,11 @@ usage(void)
 	exit(1);
 }
 
-static void
-pass1(int argc, char * argv[])
+int
+main(int argc, char * argv[])
 {
+	int argc_orig = argc;
+	char ** argv_orig = argv;
 	const char * ch;
 	int bflag = 0;
 
@@ -54,21 +56,17 @@ pass1(int argc, char * argv[])
 	}
 	fprintf(stderr, "\n");
 
+	/* Reset getopt state. */
+	optreset = 1;
+	argc = argc_orig;
+	argv = argv_orig;
+	bflag = 0;
+
 	/*
-	 * Silence "value stored is never read" warnings; the adjustments to
-	 * arg[cv] at the end of the argument-parsing loop are idiomatic.
+	 * Process the arguments again, with GETOPT_MISSING_ARG this time.
+	 * This should be in the same function as before, to make sure
+	 * that we're not (ab)using any function-local language constructs.
 	 */
-	(void)argc;
-	(void)argv;
-}
-
-static void
-pass2(int argc, char * argv[])
-{
-	const char * ch;
-	int bflag = 0;
-
-	/* Process the arguments again, with GETOPT_MISSING_ARG this time. */
 	while ((ch = GETOPT(argc, argv)) != NULL) {
 		fprintf(stderr, "Option being processed: %s\n", ch);
 		GETOPT_SWITCH(ch) {
@@ -97,21 +95,6 @@ pass2(int argc, char * argv[])
 	 */
 	(void)argc;
 	(void)argv;
-
-}
-
-int
-main(int argc, char * argv[])
-{
-
-	/* Process the arguments without GETOPT_MISSING_ARG. */
-	pass1(argc, argv);
-
-	/* Reset getopt state. */
-	optreset = 1;
-
-	/* Process the arguments again, with GETOPT_MISSING_ARG this time. */
-	pass2(argc, argv);
 
 	return (0);
 }
