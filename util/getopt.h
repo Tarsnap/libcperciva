@@ -40,6 +40,17 @@
 	getopt_initloop_ ## x:
 #define DO_LONGJMP							\
 	goto *getopt_initloop
+
+/* Work around GCC < 9 bug. */
+#elif defined(__GNUC__) && (__GNUC__ < 9)
+#define DO_SETJMP							\
+	sigjmp_buf getopt_initloop;					\
+	if (!getopt_initialized)					\
+		sigsetjmp(getopt_initloop, 0)
+#define DO_LONGJMP							\
+	siglongjmp(getopt_initloop, 1);					\
+	__builtin_unreachable()
+
 #else
 #define DO_SETJMP							\
 	sigjmp_buf getopt_initloop;					\
