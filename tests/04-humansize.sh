@@ -6,7 +6,7 @@ test_output="${s_basename}-stdout.txt"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/humansize
+	cd ${scriptdir}/humansize || exit
 
 	setup_check_variables "test_humansize"
 	${c_valgrind_cmd}			\

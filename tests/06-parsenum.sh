@@ -6,7 +6,7 @@ test_output="${s_basename}-stdout.txt"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/parsenum
+	cd ${scriptdir}/parsenum || exit
 
 	setup_check_variables "test_parsenum"
 	${c_valgrind_cmd}			\

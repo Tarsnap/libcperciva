@@ -6,7 +6,7 @@ test_output="${s_basename}-stdout.txt"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/heap
+	cd ${scriptdir}/heap || exit
 
 	setup_check_variables "test_heap.sh"
 	# Pass ${c_valgrind_cmd} to the script

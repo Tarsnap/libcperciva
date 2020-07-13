@@ -39,7 +39,7 @@ file_fail() {
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/readpass_file
+	cd ${scriptdir}/readpass_file || exit
 
 	# Easy password files
 	file_success good-noeol.pass "hunter2"

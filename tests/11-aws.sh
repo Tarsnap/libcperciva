@@ -6,7 +6,7 @@ test_output="${s_basename}-stderr.txt"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/aws
+	cd ${scriptdir}/aws || exit
 
 	setup_check_variables "test_aws"
 	${c_valgrind_cmd}			\

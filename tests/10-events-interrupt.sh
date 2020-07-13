@@ -9,7 +9,7 @@ flag_1="${s_basename}-1.flag"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/events
+	cd ${scriptdir}/events || exit
 
 	setup_check_variables "test_events"
 	${c_valgrind_cmd}			\

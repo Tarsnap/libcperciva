@@ -7,7 +7,7 @@ longjmp_output="${s_basename}-longjmp-stderr.txt"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/getopt
+	cd ${scriptdir}/getopt || exit
 
 	setup_check_variables "test_getopt.sh"
 	# Pass ${c_valgrind_cmd} to the script
@@ -17,7 +17,7 @@ scenario_cmd() {
 
 	# Check for undesired assignment (i.e. the compiler
 	# putting a=1 before a siglongjmp).
-	cd ${scriptdir}/getopt-longjmp
+	cd ${scriptdir}/getopt-longjmp || exit
 
 	setup_check_variables "test_getopt_longjmp"
 	c_valgrind_cmd=${c_valgrind_cmd}	\
