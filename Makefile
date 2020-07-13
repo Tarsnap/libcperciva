@@ -20,6 +20,7 @@ TESTS=	tests/aws							\
 	tests/parsenum							\
 	tests/readpass_file						\
 	tests/setuidgid							\
+	tests/sha1							\
 	tests/sha256							\
 	tests/valgrind
 BINDIR_DEFAULT=	/usr/local/bin
