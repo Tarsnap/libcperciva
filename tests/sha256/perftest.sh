@@ -1,5 +1,6 @@
 #!/bin/sh
 
+TIME_COMMAND="./test_sha256 -t"
 CFLAGS_ORIG="${CFLAGS:-}"
 
 for COMPILER in "$@"; do
@@ -13,7 +14,7 @@ for COMPILER in "$@"; do
 		make clean all >/dev/null 2>/dev/null
 		echo "$CC $CFLAGS"
 		seq 3 | while read X; do
-			./test_sha256 -t |
+			${TIME_COMMAND} |
 			    grep Time |
 			    cut -f 3 -d ' ';
 		done |
