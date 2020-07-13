@@ -2,9 +2,10 @@
 
 for COMPILER in "$@"; do
 	for OFLAG in "-O2" "-O3 -march=native"; do
-		export CC="$COMPILER $OFLAG"
+		export CC="$COMPILER"
+		export CFLAGS="${OFLAG}"
 		make clean all >/dev/null 2>/dev/null
-		echo $CC
+		echo "$CC $CFLAGS"
 		seq 3 | while read X; do
 			./test_sha256 -t |
 			    grep Time |
