@@ -12,6 +12,7 @@ TESTS=	tests/aws							\
 	tests/getopt-longjmp						\
 	tests/heap							\
 	tests/humansize							\
+	tests/md5							\
 	tests/json							\
 	tests/monoclock							\
 	tests/mpool							\

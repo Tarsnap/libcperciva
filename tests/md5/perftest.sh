@@ -1,6 +1,6 @@
 #!/bin/sh
 
-TIME_COMMAND="./test_sha256 -t"
+TIME_COMMAND="./test_md5 -t"
 CFLAGS_ORIG="${CFLAGS:-}"
 
 for COMPILER in "$@"; do
