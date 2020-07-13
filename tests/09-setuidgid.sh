@@ -13,7 +13,7 @@ test_setuidgid_username_groupname() {
 	skip_ok=$2
 	username_groupname=$3
 
-	cd ${scriptdir}/setuidgid
+	cd ${scriptdir}/setuidgid || exit
 
 	setup_check_variables "setuidgid on ${username_groupname}"
 

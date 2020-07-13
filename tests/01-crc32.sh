@@ -6,7 +6,7 @@ test_output="${s_basename}-stdout.txt"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/crc32
+	cd ${scriptdir}/crc32 || exit
 
 	setup_check_variables "test_crc32"
 	${c_valgrind_cmd}			\
