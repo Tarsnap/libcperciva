@@ -1,0 +1,30 @@
+# Program name.
+PROG	=	test_md5
+
+# Don't install it.
+NOINST	=	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Main test code
+SRCS	=	main.c
+
+# Algorithms
+.PATH.c	:	${LIBCPERCIVA_DIR}/alg
+SRCS	+=	md5.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
+
+# Utility functions
+.PATH.c :	${LIBCPERCIVA_DIR}/util
+SRCS	+=	getopt.c
+SRCS	+=	hexify.c
+SRCS	+=	insecure_memzero.c
+SRCS	+=	monoclock.c
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_md5
+	./test_md5 -x
+
+.include <bsd.prog.mk>

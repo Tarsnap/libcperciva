@@ -14,6 +14,7 @@ TESTS=	tests/aws							\
 	tests/heap							\
 	tests/humansize							\
 	tests/json							\
+	tests/md5							\
 	tests/monoclock							\
 	tests/mpool							\
 	tests/parsenum							\

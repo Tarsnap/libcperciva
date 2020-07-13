@@ -19,6 +19,7 @@ tests/getopt-longjmp/test_getopt_longjmp
 tests/heap/test_heap
 tests/humansize/test_humansize
 tests/json/test_json
+tests/md5/test_md5
 tests/monoclock/test_monoclock
 tests/mpool/test_mpool
 tests/setuidgid/test_setuidgid
