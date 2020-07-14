@@ -6,7 +6,7 @@ test_output="${s_basename}-stdout.txt"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/sha1
+	cd ${scriptdir}/sha1 || exit
 
 	setup_check_variables "test_sha1"
 	${c_valgrind_cmd}			\
