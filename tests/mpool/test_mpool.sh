@@ -70,11 +70,11 @@ run() {
 
 	## Sort array, find median
 	sorted_arr=$( echo ${arr_malloc} | tr " " "\n" | sort -n | tr "\n" " " )
-	median=$( echo ${sorted_arr} | cut -d ' ' -f $(( 1 + ${REPEATS}/2 )) )
+	median=$( echo ${sorted_arr} | cut -d ' ' -f $(( 1 + REPEATS/2 )) )
 	val_malloc=${median}
 
 	sorted_arr=$( echo ${arr_mpool} | tr " " "\n" | sort -n | tr "\n" " " )
-	median=$( echo ${sorted_arr} | cut -d ' ' -f $(( 1 + ${REPEATS}/2 )) )
+	median=$( echo ${sorted_arr} | cut -d ' ' -f $(( 1 + REPEATS/2 )) )
 	val_mpool=${median}
 
 	return 0
@@ -103,7 +103,7 @@ cmp_methods () {
 	ratio_percent=$( echo "100*${malloc}/${mpool}" | bc)
 
 	printf "${SETS}\t${REPS}\t${ratio}\n"
-	if [ $(( ${ratio_percent} )) -lt ${PERCENT_CUTOFF} ]; then
+	if [ "${ratio_percent}" -lt "${PERCENT_CUTOFF}" ]; then
 		# Don't include \n in this message.
 		printf "mpool was only ${ratio_percent}%%; wanted " 1>&2
 		printf "${PERCENT_CUTOFF}%% of malloc speed... " 1>&2
