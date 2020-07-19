@@ -7,8 +7,8 @@
 
 #include "getopt.h"
 #include "hexify.h"
-#include "monoclock.h"
 #include "md5.h"
+#include "monoclock.h"
 #include "warnp.h"
 
 #define BLOCKLEN 10000
