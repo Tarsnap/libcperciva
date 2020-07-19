@@ -22,7 +22,8 @@ TESTS=	tests/aws							\
 	tests/setuidgid							\
 	tests/sha1							\
 	tests/sha256							\
-	tests/valgrind
+	tests/valgrind							\
+	tests/warnp
 BINDIR_DEFAULT=	/usr/local/bin
 CFLAGS_DEFAULT=	-O2
 LIBCPERCIVA_DIR=	.

@@ -21,7 +21,8 @@ TESTS=	tests/aws							\
 	tests/setuidgid							\
 	tests/sha1							\
 	tests/sha256							\
-	tests/valgrind
+	tests/valgrind							\
+	tests/warnp
 PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX Makefile aws alg cpusupport	\
 	crypto datastruct events network tests util
 
