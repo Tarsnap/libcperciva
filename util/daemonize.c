@@ -30,6 +30,10 @@ daemonize(const char * spid)
 		goto err0;
 	}
 
+	/* Clear the output buffers before forking. */
+	fflush(stdout);
+	fflush(stderr);
+
 	/*
 	 * Fork into the parent process (which waits for a poke and exits)
 	 * and the child process (which keeps going).
