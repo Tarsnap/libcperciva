@@ -143,7 +143,7 @@ check_optional_valgrind() {
 			printf "valgrind must be at least version 3.13\n" 1>&2
 			exit 1;
 		fi
-		if [ "${major}" == "3" ] && [ "${minor}" -lt "13" ]; then
+		if [ "${major}" -eq "3" ] && [ "${minor}" -lt "13" ]; then
 			printf "valgrind must be at least version 3.13\n" 1>&2
 			exit 1;
 		fi
