@@ -16,17 +16,20 @@ check_output() {
 	# We should have 2 lines with "warnp errno".
 	test "$(grep -c "warnp errno" "${filename}")" -eq "2"
 
-	# We should have 7 lines in total.
-	test "$(wc -l < "${filename}")" -eq "7"
+	# We should have 8 lines in total.
+	test "$(wc -l < "${filename}")" -eq "8"
 
 	# We should have 2 lines without a colon.
 	test "$(grep -c -v "test_warnp:" "${filename}")" -eq "2"
 
-	# We should have 5 lines with a colon.
-	test "$(grep -c "test_warnp:" "${filename}")" -eq "5"
+	# We should have 6 lines with a colon.
+	test "$(grep -c "test_warnp:" "${filename}")" -eq "6"
 
 	# We should have 1 line with "~_________" from the long message.
 	test "$(grep -c "~_________" "${filename}")" -eq "1"
+
+	# Check that stderr output was re-established.
+	test "$(grep -c "back to stderr" "${filename}")" -eq "1"
 }
 
 ### Actual command

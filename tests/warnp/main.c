@@ -68,6 +68,14 @@ main(int argc, char * argv[])
 	/* Print messages. */
 	print_stuff(extra_message);
 
+	/* Switch to syslog. */
+	warnp_syslog(1);
+	print_stuff(extra_message);
+
+	/* Back to stderr. */
+	warnp_syslog(0);
+	warn0("back to stderr");
+
 	/* Success! */
 	exit(0);
 }
