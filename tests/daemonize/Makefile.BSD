@@ -1,0 +1,23 @@
+# Program name.
+PROG	=	test_daemonize
+
+# Don't install it.
+NOINST	=	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Main test code
+SRCS	=	main.c
+
+# Utility functions
+.PATH.c	:	${LIBCPERCIVA_DIR}/util
+SRCS	+=	daemonize.c
+SRCS	+=	noeintr.c
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	test_daemonize
+	./test-daemonize
+
+.include <bsd.prog.mk>
