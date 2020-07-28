@@ -17,6 +17,10 @@ static void
 done(void)
 {
 
+	/* If we're currently using syslog, close the file descriptor. */
+	if (use_syslog)
+		closelog();
+
 	free(name);
 	name = NULL;
 }
@@ -111,6 +115,10 @@ warnx(const char * fmt, ...)
 void
 warnp_syslog(int enable)
 {
+
+	/* If we're currently using syslog, close the file descriptor. */
+	if (use_syslog)
+		closelog();
 
 	use_syslog = enable;
 }
