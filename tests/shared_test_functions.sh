@@ -243,6 +243,7 @@ setup_check_variables() {
 		val_logfilename="${s_val_basename}-${count_str}-%p.log"
 		c_valgrind_cmd="valgrind \
 			--log-file=${val_logfilename} \
+			--track-fds=yes \
 			--leak-check=full --show-leak-kinds=all \
 			--errors-for-leak-kinds=all \
 			--suppressions=${valgrind_suppressions}"
@@ -310,6 +311,14 @@ check_valgrind_logfile() {
 			# There is an unsuppressed leak.
 			echo "${logfile}"
 		fi
+	fi
+
+	# Check for the wrong number of open fds.  We expect 4:
+	# std{in,out,err}, plus the valgrind logfile.
+	fds_in_use=$(grep "FILE DESCRIPTORS" "${logfile}" | awk '{print $4}')
+	if [ "${fds_in_use}" != "4" ] ; then
+		# There is an unsuppressed leak.
+		echo "${logfile}"
 	fi
 }
 
