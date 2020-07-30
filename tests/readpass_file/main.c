@@ -16,7 +16,7 @@ main(int argc, char * argv[])
 
 	/* Process arguments. */
 	if (argc != 2) {
-		fprintf(stderr, "usage: tests_readpass_file FILENAME\n");
+		fprintf(stderr, "usage: test_readpass_file FILENAME\n");
 		goto err0;
 	}
 	filename = argv[1];
