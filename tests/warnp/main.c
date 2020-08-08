@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "parsenum.h"
 #include "warnp.h"
 
 /* Print a 300-character message. */
@@ -51,19 +52,9 @@ print_stuff(const char * extra_message)
 	print_long_message();
 }
 
-int
-main(int argc, char * argv[])
+static void
+check_stderr_syslog(const char * extra_message)
 {
-	const char * extra_message;
-
-	WARNP_INIT;
-
-	/* Parse command-line argument. */
-	if (argc != 2) {
-		fprintf(stderr, "usage: test_warnp STRING\n");
-		exit(1);
-	}
-	extra_message = argv[1];
 
 	/* Print messages. */
 	print_stuff(extra_message);
@@ -75,6 +66,36 @@ main(int argc, char * argv[])
 	/* Back to stderr. */
 	warnp_syslog(0);
 	warn0("back to stderr");
+}
+
+int
+main(int argc, char * argv[])
+{
+	const char * extra_message;
+	int desired_test;
+
+	WARNP_INIT;
+
+	/* Parse command-line argument. */
+	if (argc != 3) {
+		fprintf(stderr, "usage: test_warnp STRING NUM\n");
+		exit(1);
+	}
+	extra_message = argv[1];
+	if (PARSENUM(&desired_test, argv[2], 1, 1)) {
+		warnp("parsenum");
+		goto err0;
+	}
+
+	/* Run the desired test. */
+	switch(desired_test) {
+	case 1:
+		check_stderr_syslog(extra_message);
+		break;
+	default:
+		warn0("invalid test number");
+		goto err0;
+	}
 
 	/* Switch to syslog again. */
 	warnp_syslog(1);
@@ -82,4 +103,8 @@ main(int argc, char * argv[])
 
 	/* Success! */
 	exit(0);
+
+err0:
+	/* Failure! */
+	exit(1);
 }

@@ -36,11 +36,11 @@ check_output() {
 scenario_cmd() {
 	cd ${scriptdir}/warnp || exit
 
-	# Run binary.
+	# Run binary to check stderr vs. syslog.
 	nonce="normal"
 	setup_check_variables "test_warnp"
 	${c_valgrind_cmd}			\
-	    ./test_warnp "${nonce}" 2> ${test_output}
+	    ./test_warnp "${nonce}" 1 2> ${test_output}
 	echo "$?" > ${c_exitfile}
 
 	# Check console output.
