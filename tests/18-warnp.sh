@@ -3,6 +3,7 @@
 ### Constants
 c_valgrind_min=1
 test_output="${s_basename}-stderr.txt"
+test_output_multithreaded="${s_basename}-multithreaded-stderr.txt"
 
 # Check that the output matches what's expected.  We can't use a "good output"
 # file because strerror() returns a locale-dependent error message.
@@ -47,4 +48,15 @@ scenario_cmd() {
 	setup_check_variables "test_warnp output console"
 	$(set -e ; check_output "${test_output}" "${nonce}")
 	echo "$?" > ${c_exitfile}
+
+	# Run binary to check multithreaded output.
+	setup_check_variables "test_warnp multithreaded"
+	${c_valgrind_cmd}			\
+	    ./test_warnp "${nonce}" 2 2> ${test_output_multithreaded}
+	echo "$?" > ${c_exitfile}
+
+	# Check multithreaded console output.
+	setup_check_variables "test_warnp multithreaded output"
+	grep -q -v "test_warnp: " "${test_output_multithreaded}"
+	expected_exitcode 1 "$?" > ${c_exitfile}
 }
