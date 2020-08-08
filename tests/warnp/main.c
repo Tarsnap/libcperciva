@@ -76,6 +76,10 @@ main(int argc, char * argv[])
 	warnp_syslog(0);
 	warn0("back to stderr");
 
+	/* Switch to syslog again. */
+	warnp_syslog(1);
+	warn0("syslog again");
+
 	/* Success! */
 	exit(0);
 }
