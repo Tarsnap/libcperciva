@@ -1,8 +1,13 @@
 #include <errno.h>
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
+#include "parsenum.h"
 #include "warnp.h"
+
+#define NUM_THREADS 3
 
 /* Print a 300-character message. */
 static void
@@ -51,19 +56,9 @@ print_stuff(const char * extra_message)
 	print_long_message();
 }
 
-int
-main(int argc, char * argv[])
+static void
+check_stderr_syslog(const char * extra_message)
 {
-	const char * extra_message;
-
-	WARNP_INIT;
-
-	/* Parse command-line argument. */
-	if (argc != 2) {
-		fprintf(stderr, "usage: test_warnp STRING\n");
-		exit(1);
-	}
-	extra_message = argv[1];
 
 	/* Print messages. */
 	print_stuff(extra_message);
@@ -75,6 +70,90 @@ main(int argc, char * argv[])
 	/* Back to stderr. */
 	warnp_syslog(0);
 	warn0("back to stderr");
+}
+
+static void *
+workthread(void * cookie)
+{
+	int num = *((int *)cookie);
+	int i;
+
+	/* Output a bunch of messages. */
+	for (i = 0; i < 10; i++) {
+		errno = ENOENT;
+		warnp("thread #%i val %i", num, i);
+	}
+
+	/* Success! */
+	return (NULL);
+}
+
+static int
+check_multithread(void)
+{
+	pthread_t thr[NUM_THREADS];
+	int nums[NUM_THREADS];
+	int i;
+	int rc;
+
+	/* Create threads. */
+	for (i = 0; i < NUM_THREADS; i++) {
+		nums[i] = i;
+		if ((rc = pthread_create(&thr[i], NULL, workthread, &nums[i]))
+		    != 0) {
+			warn0("pthread_create: %s", strerror(rc));
+			goto err0;
+		}
+	}
+
+	/* Wait until they're finished. */
+	for (i = 0; i < NUM_THREADS; i++) {
+		if ((rc = pthread_join(thr[i], NULL)) != 0) {
+			warn0("pthread_join: %s", strerror(rc));
+			goto err0;
+		}
+	}
+
+	/* Success! */
+	return (0);
+
+err0:
+	/* Failure! */
+	return (-1);
+}
+
+int
+main(int argc, char * argv[])
+{
+	const char * extra_message;
+	int desired_test;
+
+	WARNP_INIT;
+
+	/* Parse command-line argument. */
+	if (argc != 3) {
+		fprintf(stderr, "usage: test_warnp STRING NUM\n");
+		exit(1);
+	}
+	extra_message = argv[1];
+	if (PARSENUM(&desired_test, argv[2], 1, 2)) {
+		warnp("parsenum");
+		goto err0;
+	}
+
+	/* Run the desired test. */
+	switch(desired_test) {
+	case 1:
+		check_stderr_syslog(extra_message);
+		break;
+	case 2:
+		if(check_multithread())
+			goto err0;
+		break;
+	default:
+		warn0("invalid test number");
+		goto err0;
+	}
 
 	/* Switch to syslog again. */
 	warnp_syslog(1);
@@ -82,4 +161,8 @@ main(int argc, char * argv[])
 
 	/* Success! */
 	exit(0);
+
+err0:
+	/* Failure! */
+	exit(1);
 }

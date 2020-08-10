@@ -4,6 +4,9 @@ PROG	=	test_warnp
 # Don't install it.
 NOINST	=	1
 
+# Library code reuqired
+LDADD_REQ	=	-lpthread
+
 # Useful relative directories
 LIBCPERCIVA_DIR	=	../..
 
