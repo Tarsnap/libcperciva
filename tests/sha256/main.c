@@ -71,8 +71,14 @@ perftest(void)
 	delta_s = timeval_diff(begin, end);
 
 	printf("Time = %f seconds\n", delta_s);
+	/*
+	 * We're hashing BLOCKLEN + SMALLBLOCKLEN, but in spiped
+	 * we're sending 1024 bytes, plus the extra overhead of
+	 * 4+8.  So to imitate spiped, we'll calculate the speed
+	 * here pretending that we only hashed 1024 bytes.
+	 */
 	printf("Speed = %f bytes/second\n",
-	    (double)(BLOCKLEN + SMALLBLOCKLEN) * (double)BLOCKCOUNT / delta_s);
+	    (double)(BLOCKLEN - 4) * (double)BLOCKCOUNT / delta_s);
 
 	/* Free allocated buffer. */
 	free(buf);
