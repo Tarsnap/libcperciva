@@ -7,6 +7,9 @@ NOINST	=	1
 # Useful relative directories
 LIBCPERCIVA_DIR	=	../..
 
+# Library code required
+LDADD_REQ	= -lcrypto
+
 # Main test code
 SRCS	=	main.c
 
@@ -18,9 +21,17 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
 
 # CPU features detection
 .PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
+SRCS	+=	cpusupport_x86_aesni.c
 SRCS	+=	cpusupport_x86_shani.c
 SRCS	+=	cpusupport_x86_ssse3.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
+
+# Crypto
+.PATH.c	:	${LIBCPERCIVA_DIR}/crypto
+SRCS	+=	crypto_aes.c
+SRCS	+=	crypto_aes_aesni.c
+SRCS	+=	crypto_aesctr.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/crypto
 
 # Utility functions
 .PATH.c :	${LIBCPERCIVA_DIR}/util
@@ -30,6 +41,9 @@ SRCS	+=	insecure_memzero.c
 SRCS	+=	monoclock.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+cflags-crypto_aes_aesni.o:
+	@echo '$${CFLAGS_X86_AESNI}'
 
 cflags-sha256_shani.o:
 	@echo '$${CFLAGS_X86_SHANI} $${CFLAGS_X86_SSSE3}'

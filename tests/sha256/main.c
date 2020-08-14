@@ -11,9 +11,73 @@
 #include "sha256.h"
 #include "warnp.h"
 
+#include "crypto_aes.h"
+#include "crypto_aesctr.h"
+#include "sysendian.h"
+
 #define BLOCKLEN 1028
 #define SMALLBLOCKLEN 8
 #define BLOCKCOUNT 965251
+
+/* INVESTIGATE: copied from spiped/proto/proto_crypt.c */
+
+struct proto_keys {
+	struct crypto_aes_key * k_aes;
+	uint8_t k_hmac[32];
+	uint64_t pnum;
+};
+
+/**
+ * mkkeypair(kbuf):
+ * Convert the 64 bytes of ${kbuf} into a protocol key structure.
+ */
+static struct proto_keys *
+mkkeypair(uint8_t kbuf[64])
+{
+	struct proto_keys * k;
+
+	/* Allocate a structure. */
+	if ((k = malloc(sizeof(struct proto_keys))) == NULL)
+		goto err0;
+
+	/* Expand the AES key. */
+	if ((k->k_aes = crypto_aes_key_expand(&kbuf[0], 32)) == NULL)
+		goto err1;
+
+	/* Fill in HMAC key. */
+	memcpy(k->k_hmac, &kbuf[32], 32);
+
+	/* The first packet will be packet number zero. */
+	k->pnum = 0;
+
+	/* Success! */
+	return (k);
+
+err1:
+	free(k);
+err0:
+	/* Failure! */
+	return (NULL);
+}
+
+/**
+ * proto_crypt_free(k):
+ * Free the protocol key structure ${k}.
+ */
+static void
+proto_crypt_free(struct proto_keys * k)
+{
+
+	/* Be compatible with free(NULL). */
+	if (k == NULL)
+		return;
+
+	/* Free the AES key. */
+	crypto_aes_key_free(k->k_aes);
+
+	/* Free the key structure. */
+	free(k);
+}
 
 static int
 perftest(void)
@@ -43,6 +107,16 @@ perftest(void)
 	    BLOCKCOUNT, BLOCKLEN, SMALLBLOCKLEN);
 	fflush(stdout);
 
+	/* Prepare for proto_crypt_enc(). */
+	uint8_t kbuf[64];
+	memset(kbuf, 0, 64);
+
+	static struct proto_keys * k;
+	if ((k = mkkeypair(kbuf)) == NULL) {
+		warn0("mkkeypair");
+		goto err1;
+	}
+
         /* Start timer */
 	if (monoclock_get_cputime(&begin)) {
 		warnp("monoclock_get_cputime()");
@@ -51,6 +125,7 @@ perftest(void)
 
 	/* Perform the computation. */
 	for (i = 0; i < BLOCKCOUNT; i++) {
+		crypto_aesctr_buf(k->k_aes, k->pnum, buf, buf, BLOCKLEN);
 		SHA256_Init(&ctx);
 		SHA256_Update(&ctx, buf, BLOCKLEN);
 		SHA256_Update(&ctx, smallbuf, SMALLBLOCKLEN);
@@ -82,6 +157,7 @@ perftest(void)
 
 	/* Free allocated buffer. */
 	free(buf);
+	proto_crypt_free(k);
 
 	/* Success! */
 	return (0);
