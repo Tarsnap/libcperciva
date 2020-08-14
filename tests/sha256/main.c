@@ -11,8 +11,9 @@
 #include "sha256.h"
 #include "warnp.h"
 
-#define BLOCKLEN 10000
-#define BLOCKCOUNT 100000
+#define BLOCKLEN 1028
+#define SMALLBLOCKLEN 8
+#define BLOCKCOUNT 965251
 
 static int
 perftest(void)
@@ -23,6 +24,7 @@ perftest(void)
 	uint8_t hbuf[32];
 	char hbuf_hex[65];
 	uint8_t * buf;
+	uint8_t smallbuf[SMALLBLOCKLEN];
 	size_t i;
 
 	/* Allocate and initialize input per FreeBSD md5(1) utility. */
@@ -32,10 +34,13 @@ perftest(void)
 	}
 	for (i = 0; i < BLOCKLEN; i++)
 		buf[i] = (uint8_t)(i & 0xff);
+	for (i = 0; i < SMALLBLOCKLEN; i++)
+		smallbuf[i] = (uint8_t)(i & 0xff);
 
 	/* Report what we're doing. */
-	printf("SHA256 time trial. Digesting %d %d-byte blocks ...",
-	    BLOCKCOUNT, BLOCKLEN);
+	printf("SHA256 time trial. Digesting %d pairs of %d bytes followed "
+	    "by %d-byte blocks...",
+	    BLOCKCOUNT, BLOCKLEN, SMALLBLOCKLEN);
 	fflush(stdout);
 
         /* Start timer */
@@ -48,6 +53,7 @@ perftest(void)
 	for (i = 0; i < BLOCKCOUNT; i++) {
 		SHA256_Init(&ctx);
 		SHA256_Update(&ctx, buf, BLOCKLEN);
+		SHA256_Update(&ctx, smallbuf, SMALLBLOCKLEN);
 		SHA256_Final(hbuf, &ctx);
 	}
 	hexify(hbuf, hbuf_hex, 32);
@@ -66,7 +72,7 @@ perftest(void)
 
 	printf("Time = %f seconds\n", delta_s);
 	printf("Speed = %f bytes/second\n",
-	    (double)BLOCKLEN * (double)BLOCKCOUNT / delta_s);
+	    (double)(BLOCKLEN + SMALLBLOCKLEN) * (double)BLOCKCOUNT / delta_s);
 
 	/* Free allocated buffer. */
 	free(buf);
