@@ -45,10 +45,11 @@ perftest(void)
 	}
 
 	/* Perform the computation. */
-	SHA256_Init(&ctx);
-	for (i = 0; i < BLOCKCOUNT; i++)
+	for (i = 0; i < BLOCKCOUNT; i++) {
+		SHA256_Init(&ctx);
 		SHA256_Update(&ctx, buf, BLOCKLEN);
-	SHA256_Final(hbuf, &ctx);
+		SHA256_Final(hbuf, &ctx);
+	}
 	hexify(hbuf, hbuf_hex, 32);
 
 	/* End timer. */
