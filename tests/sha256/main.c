@@ -19,6 +19,14 @@
 #define SMALLBLOCKLEN 8
 #define BLOCKCOUNT 965251
 
+/* INVESTIGATE: copied from spiped/proto/proto_crypt.h */
+
+/* Maximum size of an unencrypted packet. */
+#define PCRYPT_MAXDSZ 1024
+
+/* Size of an encrypted packet. */
+#define PCRYPT_ESZ (PCRYPT_MAXDSZ + 4 /* len */ + 32 /* hmac */)
+
 /* INVESTIGATE: copied from spiped/proto/proto_crypt.c */
 
 struct proto_keys {
@@ -79,16 +87,51 @@ proto_crypt_free(struct proto_keys * k)
 	free(k);
 }
 
+/*
+ * proto_crypt_enc(ibuf, len, obuf, k):
+ * Encrypt ${len} bytes from ${ibuf} into PCRYPT_ESZ bytes using the keys in
+ * ${k}, and write the result into ${obuf}.
+ */
+static void
+proto_crypt_enc(uint8_t * ibuf, size_t len, uint8_t obuf[PCRYPT_ESZ],
+    struct proto_keys * k)
+{
+	HMAC_SHA256_CTX ctx;
+	uint8_t pnum_exp[8];
+
+	/* Sanity-check the length. */
+	assert(len <= PCRYPT_MAXDSZ);
+
+	/* Copy the decrypted data into the encrypted buffer. */
+	memcpy(obuf, ibuf, len);
+
+	/* Pad up to PCRYPT_MAXDSZ with zeroes. */
+	memset(&obuf[len], 0, PCRYPT_MAXDSZ - len);
+
+	/* Add the length. */
+	be32enc(&obuf[PCRYPT_MAXDSZ], (uint32_t)len);
+
+	/* Encrypt the buffer in-place. */
+	crypto_aesctr_buf(k->k_aes, k->pnum, obuf, obuf, PCRYPT_MAXDSZ + 4);
+
+	/* Append an HMAC. */
+	be64enc(pnum_exp, k->pnum);
+	HMAC_SHA256_Init(&ctx, k->k_hmac, 32);
+	HMAC_SHA256_Update(&ctx, obuf, PCRYPT_MAXDSZ + 4);
+	HMAC_SHA256_Update(&ctx, pnum_exp, 8);
+	HMAC_SHA256_Final(&obuf[PCRYPT_MAXDSZ + 4], &ctx);
+
+	/* Increment packet number. */
+	k->pnum += 1;
+}
+
 static int
 perftest(void)
 {
 	struct timeval begin, end;
 	double delta_s;
-	SHA256_CTX ctx;
-	uint8_t hbuf[32];
 	char hbuf_hex[65];
 	uint8_t * buf;
-	uint8_t smallbuf[SMALLBLOCKLEN];
 	size_t i;
 
 	/* Allocate and initialize input per FreeBSD md5(1) utility. */
@@ -98,8 +141,6 @@ perftest(void)
 	}
 	for (i = 0; i < BLOCKLEN; i++)
 		buf[i] = (uint8_t)(i & 0xff);
-	for (i = 0; i < SMALLBLOCKLEN; i++)
-		smallbuf[i] = (uint8_t)(i & 0xff);
 
 	/* Report what we're doing. */
 	printf("SHA256 time trial. Digesting %d pairs of %d bytes followed "
@@ -117,6 +158,11 @@ perftest(void)
 		goto err1;
 	}
 
+	uint8_t obuf[1028];
+	memset(&obuf[0], 0, 1024);
+	/* Pretend to have 1024 bytes of data. */
+	be32enc(&obuf[1024], 1024);
+
         /* Start timer */
 	if (monoclock_get_cputime(&begin)) {
 		warnp("monoclock_get_cputime()");
@@ -125,13 +171,9 @@ perftest(void)
 
 	/* Perform the computation. */
 	for (i = 0; i < BLOCKCOUNT; i++) {
-		crypto_aesctr_buf(k->k_aes, k->pnum, buf, buf, BLOCKLEN);
-		SHA256_Init(&ctx);
-		SHA256_Update(&ctx, buf, BLOCKLEN);
-		SHA256_Update(&ctx, smallbuf, SMALLBLOCKLEN);
-		SHA256_Final(hbuf, &ctx);
+		proto_crypt_enc(buf, 1024, obuf, k);
 	}
-	hexify(hbuf, hbuf_hex, 32);
+	hexify(&obuf[PCRYPT_MAXDSZ + 4], hbuf_hex, 32);
 
 	/* End timer. */
 	if (monoclock_get_cputime(&end)) {
