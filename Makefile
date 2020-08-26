@@ -6,6 +6,7 @@ TESTS=	tests/aws							\
 	tests/buildnothing						\
 	tests/buildsingles						\
 	tests/crc32							\
+	tests/crypto_aes						\
 	tests/crypto_entropy						\
 	tests/daemonize							\
 	tests/elasticarray						\

@@ -10,6 +10,7 @@ tests/buildall/buildall
 tests/buildsingles/test_buildsingles
 tests/buildsingles/*-main
 tests/buildsingles/Makefile.tmp
+tests/crypto_aes/test_crypto_aes
 tests/crc32/test_crc32
 tests/crypto_entropy/test_crypto_entropy
 tests/daemonize/test_daemonize
