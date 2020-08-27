@@ -61,7 +61,7 @@ parsenum_equal(double x, double y)
 #define TEST2_DO(str, var, target)				\
 	var parsenum_x;						\
 	int parsenum_ret;					\
-	printf("Parsing \"%s\" as %s yields " target "... ", str, #var);	\
+	printf("Parsing \"%s\" as %s yields " target "... ", str, #var); \
 	parsenum_ret = PARSENUM(&parsenum_x, str);
 
 #define TEST_EX6_DO(str, var, min, max, target, base, trailing)	\
@@ -220,7 +220,8 @@ main(int argc, char * argv[])
 
 	/* Disable warning that 0x100000000 cannot fit into uint32_t. */
 #if defined(__clang__)
-	_Pragma("clang diagnostic ignored \"-Wtautological-constant-out-of-range-compare\"")
+	_Pragma("clang diagnostic ignored		\
+	    \"-Wtautological-constant-out-of-range-compare\"")
 #elif __GNUC__ >= 5 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)
 	_Pragma("GCC diagnostic ignored \"-Wtype-limits\"")
 #endif
