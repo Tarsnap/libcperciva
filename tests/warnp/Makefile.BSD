@@ -18,7 +18,7 @@ SRCS	=	main.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-test:	test_warnp
+test:	all
 	./test_warnp
 
 .include <bsd.prog.mk>

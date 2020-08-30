@@ -26,5 +26,5 @@ main.o: main.c ../../datastruct/elasticarray.h
 elasticarray.o: ../../datastruct/elasticarray.c ../../datastruct/elasticarray.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../datastruct/elasticarray.c -o elasticarray.o
 
-test:	test_elasticarray
+test:	all
 	./test_elasticarray

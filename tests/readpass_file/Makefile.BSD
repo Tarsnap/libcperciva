@@ -17,7 +17,7 @@ SRCS	+=	readpass_file.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-test:	test_readpass_file
+test:	all
 	./test_readpass_file
 
 .include <bsd.prog.mk>

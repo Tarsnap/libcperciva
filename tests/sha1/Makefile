@@ -36,5 +36,5 @@ monoclock.o: ../../util/monoclock.c ../../util/warnp.h ../../util/monoclock.h
 warnp.o: ../../util/warnp.c ../../util/warnp.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../util/warnp.c -o warnp.o
 
-test:	test_sha1
+test:	all
 	./test_sha1 -x

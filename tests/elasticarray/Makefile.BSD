@@ -15,7 +15,7 @@ SRCS	=	main.c
 SRCS	+=	elasticarray.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/datastruct
 
-test:	test_elasticarray
+test:	all
 	./test_elasticarray
 
 .include <bsd.prog.mk>

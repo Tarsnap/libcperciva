@@ -27,4 +27,4 @@ json.o: ../../util/json.c ../../util/json.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../util/json.c -o json.o
 
 test:	all
-	@./test_json
+	./test_json
