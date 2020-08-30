@@ -44,7 +44,7 @@ static const struct testcase perftestcase = {
 	    "00112233445566778899aabbccddeeff",
 	    "a7cbdceb16a2b37924794d01fa4a5796"
 };
-static const size_t bytes_to_hash = 1 << 30;	/* approx 1 GB */
+static const size_t bytes_to_encrypt = 1 << 30;	/* approx 1 GB */
 
 /* Print a name, then an array in hex. */
 static void
@@ -137,7 +137,7 @@ perftest(void)
 	struct timeval begin, end;
 	double delta_s;
 	size_t i;
-	size_t num_blocks = bytes_to_hash / 16;
+	size_t num_blocks = bytes_to_encrypt / 16;
 
 	/* Inform user about the hardware optimization status. */
 	print_hardware("Performance test of AES");
@@ -164,7 +164,7 @@ perftest(void)
 		goto err1;
 	}
 
-	/* Hash all the bytes. */
+	/* Encrypt all the bytes. */
 	for (i = 0; i < num_blocks; i++)
 		crypto_aes_encrypt_block(cbuf, cbuf, key_exp);
 
@@ -177,7 +177,7 @@ perftest(void)
 	/* Find and print elapsed time and speed. */
 	delta_s = timeval_diff(begin, end);
 	printf("... in %zu blocks of size 16:\t%.06f s\t%.01f MB/s\n",
-	    num_blocks, delta_s, (double)bytes_to_hash / 1e6 / delta_s);
+	    num_blocks, delta_s, (double)bytes_to_encrypt / 1e6 / delta_s);
 
 	/* Clean up. */
 	crypto_aes_key_free(key_exp);
