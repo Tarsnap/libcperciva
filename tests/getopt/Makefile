@@ -26,5 +26,5 @@ main.o: main.c ../../util/getopt.h
 getopt.o: ../../util/getopt.c ../../util/getopt.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../util/getopt.c -o getopt.o
 
-test:	test_getopt
+test:	all
 	./test_getopt.sh
