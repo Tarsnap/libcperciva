@@ -43,6 +43,6 @@ cflags-sha256_shani.o:
 	@echo '$${CFLAGS_X86_SHANI} $${CFLAGS_X86_SSSE3}'
 
 test:	test_crypto_entropy
-	@./test_crypto_entropy
+	./test_crypto_entropy
 
 .include <bsd.prog.mk>
