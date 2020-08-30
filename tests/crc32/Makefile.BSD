@@ -31,7 +31,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 cflags-crc32c_sse42.o:
 	@echo '$${CFLAGS_X86_CRC32_64}'
 
-test:	test_crc32
+test:	all
 	./test_crc32 -x
 
 .include <bsd.prog.mk>

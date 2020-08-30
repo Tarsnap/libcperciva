@@ -21,7 +21,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/datastruct
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-test:	test_heap
+test:	all
 	./test_heap.sh
 
 .include <bsd.prog.mk>

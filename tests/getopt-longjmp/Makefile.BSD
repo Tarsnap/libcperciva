@@ -15,7 +15,7 @@ SRCS	=	main.c
 SRCS	+=	getopt.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-test:	test_getopt_longjmp
+test:	all
 	./test_getopt_longjmp
 
 .include <bsd.prog.mk>

@@ -15,7 +15,7 @@ SRCS	=	main.c
 SRCS	+=	getopt.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-test:	test_getopt
+test:	all
 	./test_getopt.sh
 
 .include <bsd.prog.mk>

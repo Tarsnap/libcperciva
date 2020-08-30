@@ -19,7 +19,7 @@ SRCS	+=	monoclock.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-test:	test_mpool
+test:	all
 	./test_mpool.sh
 
 # Temporarily disable warning until the new mpool code

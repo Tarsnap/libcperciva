@@ -24,7 +24,7 @@ SRCS	+=	monoclock.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-test:	test_md5
+test:	all
 	./test_md5 -x
 
 .include <bsd.prog.mk>

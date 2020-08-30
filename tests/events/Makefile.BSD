@@ -35,7 +35,7 @@ SRCS	+=	monoclock.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-test:	test_events
+test:	all
 	./test-events.sh
 
 .include <bsd.prog.mk>

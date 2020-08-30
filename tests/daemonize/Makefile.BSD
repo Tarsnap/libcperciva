@@ -17,7 +17,7 @@ SRCS	+=	noeintr.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-test:	test_daemonize
+test:	all
 	./test-daemonize
 
 .include <bsd.prog.mk>
