@@ -12,6 +12,7 @@ tests/buildsingles/*-main
 tests/buildsingles/Makefile.tmp
 tests/crypto_aes/test_crypto_aes
 tests/crc32/test_crc32
+tests/crypto_aesctr/test_crypto_aesctr
 tests/crypto_entropy/test_crypto_entropy
 tests/daemonize/test_daemonize
 tests/elasticarray/test_elasticarray
