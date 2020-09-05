@@ -174,8 +174,10 @@ perftest(void)
 		goto err1;
 	}
 
-	/* Find and print elapsed time and speed. */
+	/* Prepare output. */
 	delta_s = timeval_diff(begin, end);
+
+	/* Print results. */
 	printf("... in %zu blocks of size 16:\t%.06f s\t%.01f MB/s\n",
 	    num_blocks, delta_s, (double)bytes_to_encrypt / 1e6 / delta_s);
 
