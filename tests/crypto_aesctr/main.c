@@ -31,7 +31,7 @@ struct testcase {
 };
 
 /* Test vectors. */
-static const struct testcase tests[] = {
+static const struct testcase tests_all[] = {
 	/* 128-bit AES-CTR. */
 	{"000102030405060708090a0b0c0d0e0f",
 	    " ",
@@ -338,8 +338,8 @@ err0:
 	return (1);
 }
 
-static int
-selftest(void)
+static size_t
+selftest_cases(const struct testcase * tests, size_t num_tests)
 {
 	struct crypto_aes_key * key_exp;
 	uint8_t plaintext_arr[MAX_PLAINTEXT_LENGTH];
@@ -349,7 +349,6 @@ selftest(void)
 	size_t i;
 	size_t len;
 	size_t failures = 0;
-	size_t num_tests = sizeof(tests) / sizeof(tests[0]);
 
 	/* Inform user about the hardware optimization status. */
 	print_hardware("Checking test vectors of AES");
@@ -386,6 +385,24 @@ selftest(void)
 		crypto_aes_key_free(key_exp);
 	}
 
+	return (failures);
+
+err0:
+	/* Failure! */
+	return (1);
+}
+
+static int
+selftest(void)
+{
+	size_t num_tests;
+	int failures = 0;
+
+	/* Test with nonce = 0. */
+	num_tests = sizeof(tests_all) / sizeof(tests_all[0]);
+	if (selftest_cases(tests_all, num_tests))
+		failures++;
+
 	/* Test unaligned access. */
 	if (selftest_unaligned_access(16))
 		failures++;
@@ -397,10 +414,6 @@ selftest(void)
 		return (1);
 	else
 		return (0);
-
-err0:
-	/* Failure! */
-	return (1);
 }
 
 static void
