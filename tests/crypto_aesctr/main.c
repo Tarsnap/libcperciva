@@ -339,7 +339,7 @@ err0:
 }
 
 static size_t
-selftest_cases(const struct testcase * tests, size_t num_tests)
+selftest_cases(const struct testcase * tests, size_t num_tests, uint64_t nonce)
 {
 	struct crypto_aes_key * key_exp;
 	uint8_t plaintext_arr[MAX_PLAINTEXT_LENGTH];
@@ -368,7 +368,7 @@ selftest_cases(const struct testcase * tests, size_t num_tests)
 		len = strlen(tests[i].plaintext_str);
 
 		/* Encrypt with AES-CTR. */
-		crypto_aesctr_buf(key_exp, 0, plaintext_arr,
+		crypto_aesctr_buf(key_exp, nonce, plaintext_arr,
 		    cbuf, len);
 
 		/* Check result. */
@@ -400,7 +400,7 @@ selftest(void)
 
 	/* Test with nonce = 0. */
 	num_tests = sizeof(tests_all) / sizeof(tests_all[0]);
-	if (selftest_cases(tests_all, num_tests))
+	if (selftest_cases(tests_all, num_tests, 0))
 		failures++;
 
 	/* Test unaligned access. */
