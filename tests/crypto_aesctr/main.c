@@ -204,7 +204,7 @@ perftest(void)
 
 	/* Warm up. */
 	for (j = 0; j < 100000; j++)
-		crypto_aesctr_buf(key_exp, 0, largebuf, largebuf, perfsizes[0]);
+		crypto_aesctr_buf(key_exp, j, largebuf, largebuf, perfsizes[0]);
 
 	/* Reset plaintext input. */
 	memset(largebuf, 0, maxbufsize);
@@ -222,7 +222,7 @@ perftest(void)
 
 		/* Encrypt all the bytes. */
 		for (j = 0; j < num_blocks; j++)
-			crypto_aesctr_buf(key_exp, 0, largebuf, largebuf,
+			crypto_aesctr_buf(key_exp, j, largebuf, largebuf,
 			    bufsize);
 
 		/* Get ending time. */
