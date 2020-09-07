@@ -28,7 +28,7 @@ def generate_for_keylen(keylen):
     print("--- test cases for %i-bit AES-CTR" % (keylen * 8))
 
     for plaintext in PLAINTEXTS:
-        # Always intialize to the same key and initial value (for these cases).
+        # Always initialize to the same key and initial value (for these cases).
         ctr = Crypto.Util.Counter.new(128, initial_value=0)
         aesctr = Crypto.Cipher.AES.new(key,
                                        Crypto.Cipher.AES.MODE_CTR,

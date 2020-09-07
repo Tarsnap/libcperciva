@@ -4,7 +4,7 @@ PROG	=	test_warnp
 # Don't install it.
 NOINST	=	1
 
-# Library code reuqired
+# Library code required
 LDADD_REQ	=	-lpthread
 
 # Useful relative directories
