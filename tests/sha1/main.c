@@ -49,7 +49,6 @@ perftest(void)
 	for (i = 0; i < BLOCKCOUNT; i++)
 		SHA1_Update(&ctx, buf, BLOCKLEN);
 	SHA1_Final(hbuf, &ctx);
-	hexify(hbuf, hbuf_hex, 20);
 
 	/* End timer. */
 	if (monoclock_get_cputime(&end)) {
@@ -57,12 +56,13 @@ perftest(void)
 		goto err1;
 	}
 
-	/* Report status. */
-	printf(" done\n");
-	printf("Digest = %s\n", hbuf_hex);
-
+	/* Prepare output. */
+	hexify(hbuf, hbuf_hex, 20);
 	delta_s = timeval_diff(begin, end);
 
+	/* Print results. */
+	printf(" done\n");
+	printf("Digest = %s\n", hbuf_hex);
 	printf("Time = %f seconds\n", delta_s);
 	printf("Speed = %f bytes/second\n",
 	    (double)BLOCKLEN * (double)BLOCKCOUNT / delta_s);

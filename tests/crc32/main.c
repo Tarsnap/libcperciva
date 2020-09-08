@@ -37,6 +37,25 @@ static const size_t perfsizes[] = {16384, 8192, 4096, 2048, 1024, 512, 256,
 static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
 static const size_t bytes_to_hash = 1 << 29;	/* approx 500 MB */
 
+/* Print a string, then whether or not we're using hardware instructions. */
+static void
+print_hardware(const char * str)
+{
+	int use_hardware = 0;
+
+#ifdef CPUSUPPORT_X86_CRC32_64
+	if (cpusupport_x86_crc32_64())
+		use_hardware = 1;
+#endif
+
+	/* Inform the user. */
+	printf("%s", str);
+	if (use_hardware)
+		printf(" using hardware CRC32.\n");
+	else
+		printf(" using software CRC32.\n");
+}
+
 static int
 perftest(void)
 {
@@ -48,12 +67,6 @@ perftest(void)
 	double delta_s_overall;
 	size_t i, j;
 	size_t num_hashes;
-	int use_hardware = 0;
-
-#ifdef CPUSUPPORT_X86_CRC32_64
-	if (cpusupport_x86_crc32_64())
-		use_hardware = 1;
-#endif
 
 	/* Allocate buffer to hold largest message. */
 	if ((largebuf = malloc(perfsizes[0])) == NULL) {
@@ -63,11 +76,9 @@ perftest(void)
 	memset(largebuf, 0, perfsizes[0]);
 
 	/* Inform user. */
-	printf("Hashing %zu bytes", bytes_to_hash);
-	if (use_hardware)
-		printf(" using hardware CRC32C...\n");
-	else
-		printf(" using software CRC32C...\n");
+	print_hardware("CRC32C time trial");
+	printf("Hashing %zu bytes.\n", bytes_to_hash);
+	fflush(stdout);
 
 	/* Initialize overall stats. */
 	delta_s_overall = 0;
@@ -102,11 +113,14 @@ perftest(void)
 			goto err1;
 		}
 
-		/* Find and print elapsed time and speed. */
+		/* Prepare output. */
 		delta_s = timeval_diff(begin, end);
+
+		/* Print results. */
 		printf("... in %zu blocks of size %zu:\t%.02f s\t%.01f MB/s\n",
 		    num_hashes, perfsizes[i], delta_s,
 		    (double)bytes_to_hash / 1e6 / delta_s);
+		fflush(stdout);
 
 		/* Update overall stats. */
 		delta_s_overall += delta_s;

@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "cpusupport.h"
 #include "getopt.h"
 #include "hexify.h"
 #include "monoclock.h"
@@ -13,6 +14,25 @@
 
 #define BLOCKLEN 10000
 #define BLOCKCOUNT 100000
+
+/* Print a string, then whether or not we're using hardware instructions. */
+static void
+print_hardware(const char * str)
+{
+	int use_hardware = 0;
+
+#if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3)
+	if (cpusupport_x86_shani() && cpusupport_x86_ssse3())
+		use_hardware = 1;
+#endif
+
+	/* Inform the user. */
+	printf("%s", str);
+	if (use_hardware)
+		printf(" using hardware SHANI.\n");
+	else
+		printf(" using software SHA.\n");
+}
 
 static int
 perftest(void)
@@ -34,7 +54,8 @@ perftest(void)
 		buf[i] = (uint8_t)(i & 0xff);
 
 	/* Report what we're doing. */
-	printf("SHA256 time trial. Digesting %d %d-byte blocks ...",
+	print_hardware("SHA256 time trial");
+	printf("Digesting %d %d-byte blocks ...",
 	    BLOCKCOUNT, BLOCKLEN);
 	fflush(stdout);
 
@@ -49,7 +70,6 @@ perftest(void)
 	for (i = 0; i < BLOCKCOUNT; i++)
 		SHA256_Update(&ctx, buf, BLOCKLEN);
 	SHA256_Final(hbuf, &ctx);
-	hexify(hbuf, hbuf_hex, 32);
 
 	/* End timer. */
 	if (monoclock_get_cputime(&end)) {
@@ -57,12 +77,13 @@ perftest(void)
 		goto err1;
 	}
 
-	/* Report status. */
-	printf(" done\n");
-	printf("Digest = %s\n", hbuf_hex);
-
+	/* Prepare output. */
+	hexify(hbuf, hbuf_hex, 32);
 	delta_s = timeval_diff(begin, end);
 
+	/* Print results. */
+	printf(" done\n");
+	printf("Digest = %s\n", hbuf_hex);
 	printf("Time = %f seconds\n", delta_s);
 	printf("Speed = %f bytes/second\n",
 	    (double)BLOCKLEN * (double)BLOCKCOUNT / delta_s);
