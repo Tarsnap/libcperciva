@@ -30,9 +30,8 @@ struct testcase {
 	const char * ciphertext_hex;
 };
 
-/* Test vectors. */
-static const struct testcase tests_all[] = {
-	/* 128-bit AES-CTR. */
+/* Test vectors for 128-bit AES-CTR with nonce = 0. */
+static const struct testcase tests_128[] = {
 	{"000102030405060708090a0b0c0d0e0f",
 	    " ",
 	    "e6"},
@@ -59,8 +58,11 @@ static const struct testcase tests_all[] = {
 	    "85c4585ea7e17ce71c3ba112c0bbf84b476670fdf4b2c730"},
 	{"000102030405060708090a0b0c0d0e0f",
 	    "This block is exactly 32 chars!!",
-	    "92c95244a7ed37ed0c24a10bd2e8bd01122567f9ece0872c6918d58217870c2b"},
-	/* 256-bit AES-CTR. */
+	    "92c95244a7ed37ed0c24a10bd2e8bd01122567f9ece0872c6918d58217870c2b"}
+};
+
+/* Test vectors for 256-bit AES-CTR with nonce = 0. */
+static const struct testcase tests_256[] = {
 	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
 	    " ",
 	    "d2"},
@@ -401,8 +403,11 @@ selftest(void)
 	int failures = 0;
 
 	/* Test with nonce = 0. */
-	num_tests = sizeof(tests_all) / sizeof(tests_all[0]);
-	if (selftest_cases(tests_all, num_tests, 0))
+	num_tests = sizeof(tests_128) / sizeof(tests_128[0]);
+	if (selftest_cases(tests_128, num_tests, 0))
+		failures++;
+	num_tests = sizeof(tests_256) / sizeof(tests_256[0]);
+	if (selftest_cases(tests_256, num_tests, 0))
 		failures++;
 
 	/* Test unaligned access. */
