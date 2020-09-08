@@ -92,6 +92,68 @@ static const struct testcase tests_256[] = {
 	    "a6f869c50a2bf3bfca98ba03ae0e12f8913e02c23399acd78695f3503ab1171c"}
 };
 
+/* Test vectors for 128-bit AES-CTR with nonce = 0xfedcba9876543210. */
+static const struct testcase tests_128_nonce[] = {
+	{"000102030405060708090a0b0c0d0e0f",
+	    " ",
+	    "63"},
+	{"000102030405060708090a0b0c0d0e0f",
+	    "A",
+	    "02"},
+	{"000102030405060708090a0b0c0d0e0f",
+	    "AAAA",
+	    "02300a32"},
+	{"000102030405060708090a0b0c0d0e0f",
+	    "AB",
+	    "0233"},
+	{"000102030405060708090a0b0c0d0e0f",
+	    "hello",
+	    "2b14271f8f"},
+	{"000102030405060708090a0b0c0d0e0f",
+	    "hello world",
+	    "2b14271f8f7127f296f0b4"},
+	{"000102030405060708090a0b0c0d0e0f",
+	    "This is 16 chars",
+	    "17192200c03823bdd5aaf010cecb29a8"},
+	{"000102030405060708090a0b0c0d0e0f",
+	    "Ceci n'est pas 24 chars.",
+	    "0014281ac03f77f897e8f003c7d97be959ad1b32e7a821fc"},
+	{"000102030405060708090a0b0c0d0e0f",
+	    "This block is exactly 32 chars!!",
+	    "17192200c0333cf287f7f01ad58a3ea30cee0c36fffa61e00e92a68867980033"}
+};
+
+/* Test vectors for 256-bit AES-CTR with nonce = 0xfedcba9876543210. */
+static const struct testcase tests_256_nonce[] = {
+	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+	    " ",
+	    "85"},
+	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+	    "A",
+	    "e4"},
+	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+	    "AAAA",
+	    "e4c76b77"},
+	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+	    "AB",
+	    "e4c4"},
+	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+	    "hello",
+	    "cde3465aab"},
+	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+	    "hello world",
+	    "cde3465aab17071e120acc"},
+	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+	    "This is 16 chars",
+	    "f1ee4345e45e03515150887d04b12e86"},
+	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+	    "Ceci n'est pas 24 chars.",
+	    "e6e3495fe45957141312886e0da37cc712af205ada714715"},
+	{"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f",
+	    "This block is exactly 32 chars!!",
+	    "f1ee4345e4551c1e030d88771ff0398d47ec375ec22307091796f213f6a60e00"}
+};
+
 /* Largest buffer must be last. */
 static const size_t perfsizes[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
 static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
@@ -399,6 +461,7 @@ err0:
 static int
 selftest(void)
 {
+	uint64_t nonce;
 	size_t num_tests;
 	int failures = 0;
 
@@ -408,6 +471,15 @@ selftest(void)
 		failures++;
 	num_tests = sizeof(tests_256) / sizeof(tests_256[0]);
 	if (selftest_cases(tests_256, num_tests, 0))
+		failures++;
+
+	/* Test with nonce = 0xfedcba9876543210. */
+	nonce = 0xfedcba9876543210;
+	num_tests = sizeof(tests_128_nonce) / sizeof(tests_128_nonce[0]);
+	if (selftest_cases(tests_128_nonce, num_tests, nonce))
+		failures++;
+	num_tests = sizeof(tests_256_nonce) / sizeof(tests_256_nonce[0]);
+	if (selftest_cases(tests_256_nonce, num_tests, nonce))
 		failures++;
 
 	/* Test unaligned access. */

@@ -85,3 +85,8 @@ def generate_for_keylen(keylen, nonce, c_var_name):
 
 generate_for_keylen(16, 0, "tests_128")
 generate_for_keylen(32, 0, "tests_256")
+
+# The nonce is a uint64_t in our C code.
+nonce = 0xfedcba9876543210
+generate_for_keylen(16, nonce, "tests_128_nonce")
+generate_for_keylen(32, nonce, "tests_256_nonce")
