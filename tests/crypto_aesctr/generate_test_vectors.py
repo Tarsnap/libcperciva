@@ -3,6 +3,7 @@
 """ Generate AES-CTR test vectors with an independent implementation. """
 
 import binascii
+import struct
 
 import Crypto.Util.Counter
 import Crypto.Cipher.AES
@@ -15,7 +16,7 @@ PLAINTEXTS = [
     ]
 
 
-def generate_for_keylen(keylen):
+def generate_for_keylen(keylen, nonce):
     """ Print plaintext and ciphertext for the given key length.  """
     # key: 00 01 02 03 04...
     key_arr = bytearray(b'\0' * keylen)
@@ -23,11 +24,14 @@ def generate_for_keylen(keylen):
         key_arr[i] = i
     key = bytes(key_arr)
 
+    # Format nonce bytes.
+    nonce_bytes = struct.pack(">Q", nonce)
+
     print("--- test cases for %i-bit AES-CTR" % (keylen * 8))
 
     for plaintext in PLAINTEXTS:
         # Always initialize to the same key and initial value (for these cases).
-        ctr = Crypto.Util.Counter.new(128, initial_value=0)
+        ctr = Crypto.Util.Counter.new(64, initial_value=0, prefix=nonce_bytes)
         aesctr = Crypto.Cipher.AES.new(key,
                                        Crypto.Cipher.AES.MODE_CTR,
                                        counter=ctr)
@@ -41,5 +45,5 @@ def generate_for_keylen(keylen):
             binascii.hexlify(ciphertext).decode("ascii")))
 
 
-generate_for_keylen(16)
-generate_for_keylen(32)
+generate_for_keylen(16, 0)
+generate_for_keylen(32, 0)
