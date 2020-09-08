@@ -14,8 +14,6 @@ PLAINTEXTS = [
     "This block is exactly 32 chars!!",
     ]
 
-INITIAL_VECTOR = b'\0' * 16
-
 
 def generate_for_keylen(keylen):
     """ Print plaintext and ciphertext for the given key length.  """
@@ -32,8 +30,7 @@ def generate_for_keylen(keylen):
         ctr = Crypto.Util.Counter.new(128, initial_value=0)
         aesctr = Crypto.Cipher.AES.new(key,
                                        Crypto.Cipher.AES.MODE_CTR,
-                                       counter=ctr,
-                                       IV=INITIAL_VECTOR)
+                                       counter=ctr)
 
         ciphertext = aesctr.encrypt(plaintext.encode())
 
