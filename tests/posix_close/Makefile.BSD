@@ -1,0 +1,25 @@
+# Program name.
+PROG	=	test_posix_close
+
+# Don't install it.
+NOINST	=	1
+
+# Library code required
+LDADD_REQ	=	-lpthread
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Main test code
+SRCS	=	main.c
+SRCS	+=	open_close.c
+SRCS	+=	send_alarms.c
+
+# Utility functions
+.PATH.c :	${LIBCPERCIVA_DIR}/util
+SRCS	+=	noeintr.c
+SRCS	+=	posix_close_normal.c
+SRCS	+=	warnp.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+.include <bsd.prog.mk>
