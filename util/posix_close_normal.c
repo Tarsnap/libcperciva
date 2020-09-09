@@ -40,6 +40,9 @@ posix_close(int fd, int flags)
 	int s[2];
 	int i;
 	ssize_t r;
+#if USE_PTHREAD
+	int rc;
+#endif
 
 	/* Sanity check. */
 	assert(flags == 0);
@@ -62,8 +65,8 @@ posix_close(int fd, int flags)
 
 	/* In a multithreaded environment, lock the mutex here. */
 #if USE_PTHREAD
-	if ((rc = pthread_mutex_lock(mutex)) != 0) {
-		warn0("pthread_mutex_lock: %s", strerror(rc);
+	if ((rc = pthread_mutex_lock(&mutex)) != 0) {
+		warn0("pthread_mutex_lock: %s", strerror(rc));
 		goto err1;
 	}
 #endif
@@ -72,7 +75,7 @@ posix_close(int fd, int flags)
 	while (dup2(s[1], fd) == -1) {
 		if (errno != EINTR) {
 			warnp("dup2");
-			goto err1;
+			goto err2;
 		}
 	}
 
@@ -80,7 +83,7 @@ posix_close(int fd, int flags)
 	while (close(fd)) {
 		if (errno != EINTR) {
 			warnp("close");
-			goto err1;
+			goto err2;
 		}
 
 		/* Try to read the cookie. */
@@ -88,7 +91,7 @@ posix_close(int fd, int flags)
 		    == -1) {
 			if (errno != EINTR) {
 				warnp("recv");
-				goto err1;
+				goto err2;
 			}
 		}
 
@@ -102,8 +105,8 @@ posix_close(int fd, int flags)
 
 	/* In a multithreaded environment, unlock the mutex here. */
 #if USE_PTHREAD
-	if ((rc = pthread_mutex_unlock(mutex)) != 0) {
-		warn0("pthread_mutex_unlock: %s", strerror(rc);
+	if ((rc = pthread_mutex_unlock(&mutex)) != 0) {
+		warn0("pthread_mutex_unlock: %s", strerror(rc));
 		goto err1;
 	}
 #endif
@@ -117,6 +120,13 @@ posix_close(int fd, int flags)
 	/* Success! */
 	return (0);
 
+err2:
+#if USE_PTHREAD
+	if ((rc = pthread_mutex_unlock(&mutex)) != 0) {
+		warn0("pthread_mutex_unlock: %s", strerror(rc));
+		goto err1;
+	}
+#endif
 err1:
 	/* Attempt to close s[0] and s[1] using the normal close(). */
 	if (close(s[0]))
