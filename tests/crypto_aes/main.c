@@ -178,8 +178,9 @@ perftest(void)
 	delta_s = timeval_diff(begin, end);
 
 	/* Print results. */
-	printf("... in %zu blocks of size 16:\t%.06f s\t%.01f MB/s\n",
-	    num_blocks, delta_s, (double)bytes_to_encrypt / 1e6 / delta_s);
+	printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
+	    num_blocks, (size_t)16, delta_s,
+	    (double)bytes_to_encrypt / 1e6 / delta_s);
 
 	/* Clean up. */
 	crypto_aes_key_free(key_exp);
