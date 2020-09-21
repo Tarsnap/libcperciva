@@ -21,7 +21,6 @@ perftest(void)
 	double delta_s;
 	SHA1_CTX ctx;
 	uint8_t hbuf[20];
-	char hbuf_hex[41];
 	uint8_t * buf;
 	size_t i;
 
@@ -34,8 +33,7 @@ perftest(void)
 		buf[i] = (uint8_t)(i & 0xff);
 
 	/* Report what we're doing. */
-	printf("SHA1 time trial. Digesting %d %d-byte blocks ...",
-	    BLOCKCOUNT, BLOCKLEN);
+	printf("SHA1 time trial.\n");
 	fflush(stdout);
 
         /* Start timer */
@@ -57,15 +55,12 @@ perftest(void)
 	}
 
 	/* Prepare output. */
-	hexify(hbuf, hbuf_hex, 20);
 	delta_s = timeval_diff(begin, end);
 
 	/* Print results. */
-	printf(" done\n");
-	printf("Digest = %s\n", hbuf_hex);
-	printf("Time = %f seconds\n", delta_s);
-	printf("Speed = %f bytes/second\n",
-	    (double)BLOCKLEN * (double)BLOCKCOUNT / delta_s);
+	printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
+	    (size_t)BLOCKCOUNT, (size_t)BLOCKLEN, delta_s,
+	    (double)(BLOCKCOUNT * BLOCKLEN) / 1e6 / delta_s);
 
 	/* Free allocated buffer. */
 	free(buf);
