@@ -299,7 +299,7 @@ perftest(void)
 		delta_s = timeval_diff(begin, end);
 
 		/* Print results. */
-		printf("... in %zu blocks of size %zu:\t%.06f s\t%.01f MB/s\n",
+		printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
 		    num_blocks, bufsize, delta_s,
 		    (double)bytes_to_encrypt / 1e6 / delta_s);
 		fflush(stdout);

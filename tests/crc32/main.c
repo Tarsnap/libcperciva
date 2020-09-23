@@ -64,7 +64,6 @@ perftest(void)
 	uint8_t cbuf[4];
 	struct timeval begin, end;
 	double delta_s;
-	double delta_s_overall;
 	size_t i, j;
 	size_t num_hashes;
 
@@ -79,9 +78,6 @@ perftest(void)
 	print_hardware("CRC32C time trial");
 	printf("Hashing %zu bytes.\n", bytes_to_hash);
 	fflush(stdout);
-
-	/* Initialize overall stats. */
-	delta_s_overall = 0;
 
 	/* Warm up. */
 	for (j = 0; j < 8000; j++) {
@@ -117,19 +113,11 @@ perftest(void)
 		delta_s = timeval_diff(begin, end);
 
 		/* Print results. */
-		printf("... in %zu blocks of size %zu:\t%.02f s\t%.01f MB/s\n",
+		printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
 		    num_hashes, perfsizes[i], delta_s,
 		    (double)bytes_to_hash / 1e6 / delta_s);
 		fflush(stdout);
-
-		/* Update overall stats. */
-		delta_s_overall += delta_s;
 	}
-
-	/* Print overall stats. */
-	printf("Overall time and speed:\t%.02f s\t%.01f MB/s\n",
-	    delta_s_overall,
-	    (double)bytes_to_hash / 1e6 * num_perf / delta_s_overall);
 
 	/* Clean up. */
 	free(largebuf);
