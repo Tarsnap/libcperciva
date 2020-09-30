@@ -37,4 +37,7 @@ cflags-sha256_shani.o:
 test:	all
 	./test_sha256 -x
 
+perftest:	all
+	./test_sha256 -t
+
 .include <bsd.prog.mk>

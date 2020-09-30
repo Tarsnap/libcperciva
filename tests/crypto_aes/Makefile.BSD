@@ -39,4 +39,7 @@ cflags-crypto_aes_aesni.o:
 test:	all
 	./test_crypto_aes -x
 
+perftest:	all
+	./test_crypto_aes -t
+
 .include <bsd.prog.mk>

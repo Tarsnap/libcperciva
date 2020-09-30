@@ -34,4 +34,7 @@ cflags-crc32c_sse42.o:
 test:	all
 	./test_crc32 -x
 
+perftest:	all
+	./test_crc32 -t
+
 .include <bsd.prog.mk>

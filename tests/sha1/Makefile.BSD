@@ -27,4 +27,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 test:	all
 	./test_sha1 -x
 
+perftest:	all
+	./test_sha1 -t
+
 .include <bsd.prog.mk>
