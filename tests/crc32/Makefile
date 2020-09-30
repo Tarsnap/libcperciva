@@ -38,3 +38,6 @@ warnp.o: ../../util/warnp.c ../../util/warnp.h
 
 test:	all
 	./test_crc32 -x
+
+perftest:	all
+	./test_crc32 -t

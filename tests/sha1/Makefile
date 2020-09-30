@@ -38,3 +38,6 @@ warnp.o: ../../util/warnp.c ../../util/warnp.h
 
 test:	all
 	./test_sha1 -x
+
+perftest:	all
+	./test_sha1 -t
