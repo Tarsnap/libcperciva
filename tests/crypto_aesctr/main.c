@@ -306,6 +306,7 @@ perftest(void)
 	}
 
 	/* Clean up. */
+	crypto_aes_key_free(key_exp);
 	free(largebuf);
 
 	/* Success! */
