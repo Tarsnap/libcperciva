@@ -33,6 +33,9 @@ tests/readpass_file/test_readpass_file
 tests/valgrind/potential-memleaks
 tests/warnp/test_warnp
 # Test output directories and generated files.
+perftest-num.tmp
+perftest-*.raw
+perftest-*.txt
 tests/events/test-events.log
 tests/getopt/test_getopt.log
 tests-output/
