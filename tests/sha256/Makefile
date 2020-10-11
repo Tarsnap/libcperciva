@@ -44,3 +44,6 @@ warnp.o: ../../util/warnp.c ../../util/warnp.h
 
 test:	all
 	./test_sha256 -x
+
+perftest:	all
+	./test_sha256 -t

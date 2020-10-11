@@ -43,3 +43,6 @@ warnp.o: ../../util/warnp.c ../../util/warnp.h
 
 test:	all
 	./test_crypto_aes -x
+
+perftest:	all
+	./test_crypto_aes -t

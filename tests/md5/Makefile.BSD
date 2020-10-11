@@ -27,4 +27,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 test:	all
 	./test_md5 -x
 
+perftest:	all
+	./test_md5 -t
+
 .include <bsd.prog.mk>
