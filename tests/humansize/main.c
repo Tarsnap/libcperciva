@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 #include "humansize.h"
+#include "warnp.h"
 
 static struct testcase {
 	const char * s;
@@ -28,8 +29,8 @@ main(int argc, char * argv[])
 	uint64_t size;
 	int failures = 0;
 
+	WARNP_INIT;
 	(void)argc; /* UNUSED */
-	(void)argv; /* UNUSED */
 
 	for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
 		printf("Parsing \"%s\" as a number of bytes", tests[i].s);
