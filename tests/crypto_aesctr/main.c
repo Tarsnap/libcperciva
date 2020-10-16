@@ -237,6 +237,33 @@ err0:
 }
 
 static int
+perftest_init(void * cookie, uint8_t * buf, size_t buflen)
+{
+
+	(void)cookie;	/* UNUSED */
+
+	/* Clear buffer. */
+	memset(buf, 0, buflen);
+
+	/* Success! */
+	return (0);
+}
+
+static int
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
+{
+	struct crypto_aes_key * key_exp = cookie;
+	size_t i;
+
+	/* Do the encryption. */
+	for (i = 0; i < num_buffers; i++)
+		crypto_aesctr_buf(key_exp, i, buf, buf, buflen);
+
+	/* Success! */
+	return (0);
+}
+
+static int
 perftest(void)
 {
 	struct crypto_aes_key * key_exp;
@@ -244,7 +271,7 @@ perftest(void)
 	uint8_t * largebuf;
 	struct timeval begin, end;
 	double delta_s;
-	size_t i, j;
+	size_t i;
 	size_t num_blocks;
 	size_t bufsize;
 	size_t maxbufsize = perfsizes[num_perf - 1];
@@ -258,7 +285,6 @@ perftest(void)
 		warnp("malloc");
 		goto err0;
 	}
-	memset(largebuf, 0, maxbufsize);
 
 	/* Prepare the key.  We're only performance-testing 256-bit keys. */
 	for (i = 0; i < 32; i++)
@@ -267,16 +293,19 @@ perftest(void)
 		goto err1;
 
 	/* Warm up. */
-	for (j = 0; j < 100000; j++)
-		crypto_aesctr_buf(key_exp, j, largebuf, largebuf, perfsizes[0]);
-
-	/* Reset plaintext input. */
-	memset(largebuf, 0, maxbufsize);
+	if (perftest_init(NULL, largebuf, perfsizes[0]))
+		goto err2;
+	if (perftest_func(key_exp, largebuf, perfsizes[0], 100000))
+		goto err2;
 
 	/* Run operations. */
 	for (i = 0; i < num_perf; i++) {
 		bufsize = perfsizes[i];
 		num_blocks = bytes_to_encrypt / bufsize;
+
+		/* Set up. */
+		if (perftest_init(NULL, largebuf, bufsize))
+			goto err2;
 
 		/* Get beginning time. */
 		if (monoclock_get_cputime(&begin)) {
@@ -285,9 +314,8 @@ perftest(void)
 		}
 
 		/* Encrypt all the bytes. */
-		for (j = 0; j < num_blocks; j++)
-			crypto_aesctr_buf(key_exp, j, largebuf, largebuf,
-			    bufsize);
+		if (perftest_func(key_exp, largebuf, bufsize, num_blocks))
+			goto err2;
 
 		/* Get ending time. */
 		if (monoclock_get_cputime(&end)) {
