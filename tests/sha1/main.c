@@ -15,26 +15,59 @@
 #define BLOCKCOUNT 100000
 
 static int
+perftest_init(void * cookie, uint8_t * buf, size_t buflen)
+{
+	size_t i;
+
+	(void)cookie;	/* UNUSED */
+
+	/* Set the input. */
+	for (i = 0; i < buflen; i++)
+		buf[i] = (uint8_t)(i & 0xff);
+
+	/* Success! */
+	return (0);
+}
+
+static int
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
+{
+	SHA1_CTX ctx;
+	uint8_t hbuf[20];
+	size_t i;
+
+	(void)cookie; /* UNUSED */
+
+	/* Do the hashing. */
+	SHA1_Init(&ctx);
+	for (i = 0; i < num_buffers; i++)
+		SHA1_Update(&ctx, buf, buflen);
+	SHA1_Final(hbuf, &ctx);
+
+	/* Success! */
+	return (0);
+}
+
+static int
 perftest(void)
 {
 	struct timeval begin, end;
 	double delta_s;
-	SHA1_CTX ctx;
-	uint8_t hbuf[20];
 	uint8_t * buf;
-	size_t i;
 
-	/* Allocate and initialize input per FreeBSD md5(1) utility. */
+	/* Allocate buffer. */
 	if ((buf = malloc(BLOCKLEN)) == NULL) {
 		warnp("malloc");
 		goto err0;
 	}
-	for (i = 0; i < BLOCKLEN; i++)
-		buf[i] = (uint8_t)(i & 0xff);
 
 	/* Report what we're doing. */
 	printf("SHA1 time trial.\n");
 	fflush(stdout);
+
+	/* Set up. */
+	if (perftest_init(NULL, buf, BLOCKLEN))
+		goto err1;
 
         /* Start timer */
 	if (monoclock_get_cputime(&begin)) {
@@ -43,10 +76,8 @@ perftest(void)
 	}
 
 	/* Perform the computation. */
-	SHA1_Init(&ctx);
-	for (i = 0; i < BLOCKCOUNT; i++)
-		SHA1_Update(&ctx, buf, BLOCKLEN);
-	SHA1_Final(hbuf, &ctx);
+	if (perftest_func(NULL, buf, BLOCKLEN, BLOCKCOUNT))
+		goto err1;
 
 	/* End timer. */
 	if (monoclock_get_cputime(&end)) {

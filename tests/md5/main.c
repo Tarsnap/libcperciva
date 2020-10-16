@@ -15,38 +15,69 @@
 #define BLOCKCOUNT 100000
 
 static int
+perftest_init(void * cookie, uint8_t * buf, size_t buflen)
+{
+	size_t i;
+
+	(void)cookie;	/* UNUSED */
+
+	/* Set the input. */
+	for (i = 0; i < buflen; i++)
+		buf[i] = (uint8_t)(i & 0xff);
+
+	/* Success! */
+	return (0);
+}
+
+static int
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
+{
+	MD5_CTX ctx;
+	uint8_t hbuf[16];
+	size_t i;
+
+	(void)cookie; /* UNUSED */
+
+	/* Do the hashing. */
+	MD5_Init(&ctx);
+	for (i = 0; i < num_buffers; i++)
+		MD5_Update(&ctx, buf, buflen);
+	MD5_Final(hbuf, &ctx);
+
+	/* Success! */
+	return (0);
+}
+
+static int
 perftest(void)
 {
 	struct timeval begin, end;
 	double delta_s;
-	MD5_CTX ctx;
-	uint8_t hbuf[16];
 	uint8_t * buf;
-	size_t i;
 
-	/* Allocate and initialize input per FreeBSD md5(1) utility. */
+	/* Allocate buffer. */
 	if ((buf = malloc(BLOCKLEN)) == NULL) {
 		warnp("malloc");
 		goto err0;
 	}
-	for (i = 0; i < BLOCKLEN; i++)
-		buf[i] = (uint8_t)(i & 0xff);
 
 	/* Report what we're doing. */
 	printf("MD5 time trial.\n");
 	fflush(stdout);
 
-        /* Start timer */
+	/* Set up. */
+	if (perftest_init(NULL, buf, BLOCKLEN))
+		goto err1;
+
+	/* Start timer */
 	if (monoclock_get_cputime(&begin)) {
 		warnp("monoclock_get_cputime()");
 		goto err1;
 	}
 
 	/* Perform the computation. */
-	MD5_Init(&ctx);
-	for (i = 0; i < BLOCKCOUNT; i++)
-		MD5_Update(&ctx, buf, BLOCKLEN);
-	MD5_Final(hbuf, &ctx);
+	if (perftest_func(NULL, buf, BLOCKLEN, BLOCKCOUNT))
+		goto err1;
 
 	/* End timer. */
 	if (monoclock_get_cputime(&end)) {

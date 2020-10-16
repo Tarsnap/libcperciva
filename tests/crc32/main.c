@@ -57,14 +57,45 @@ print_hardware(const char * str)
 }
 
 static int
-perftest(void)
+perftest_init(void * cookie, uint8_t * buf, size_t buflen)
+{
+
+	(void)cookie;	/* UNUSED */
+
+	/* Clear buffer. */
+	memset(buf, 0, buflen);
+
+	/* Success! */
+	return (0);
+}
+
+static int
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
 {
 	CRC32C_CTX ctx;
-	uint8_t * largebuf;
 	uint8_t cbuf[4];
+	size_t i;
+
+	(void)cookie; /* UNUSED */
+
+	/* Do the hashing. */
+	for (i = 0; i < num_buffers; i++) {
+		CRC32C_Init(&ctx);
+		CRC32C_Update(&ctx, buf, buflen);
+		CRC32C_Final(cbuf, &ctx);
+	}
+
+	/* Success! */
+	return (0);
+}
+
+static int
+perftest(void)
+{
+	uint8_t * largebuf;
 	struct timeval begin, end;
 	double delta_s;
-	size_t i, j;
+	size_t i;
 	size_t num_hashes;
 
 	/* Allocate buffer to hold largest message. */
@@ -72,7 +103,6 @@ perftest(void)
 		warnp("malloc");
 		goto err0;
 	}
-	memset(largebuf, 0, perfsizes[0]);
 
 	/* Inform user. */
 	print_hardware("CRC32C time trial");
@@ -80,15 +110,18 @@ perftest(void)
 	fflush(stdout);
 
 	/* Warm up. */
-	for (j = 0; j < 8000; j++) {
-		CRC32C_Init(&ctx);
-		CRC32C_Update(&ctx, largebuf, perfsizes[0]);
-		CRC32C_Final(cbuf, &ctx);
-	}
+	if (perftest_init(NULL, largebuf, perfsizes[0]))
+		goto err1;
+	if (perftest_func(NULL, largebuf, perfsizes[0], 8000))
+		goto err1;
 
 	/* Run operations. */
 	for (i = 0; i < num_perf; i++) {
 		num_hashes = bytes_to_hash / perfsizes[i];
+
+		/* Set up. */
+		if (perftest_init(NULL, largebuf, perfsizes[i]))
+			goto err1;
 
 		/* Get beginning time. */
 		if (monoclock_get_cputime(&begin)) {
@@ -97,11 +130,8 @@ perftest(void)
 		}
 
 		/* Hash all the bytes. */
-		for (j = 0; j < num_hashes; j++) {
-			CRC32C_Init(&ctx);
-			CRC32C_Update(&ctx, largebuf, perfsizes[i]);
-			CRC32C_Final(cbuf, &ctx);
-		}
+		if (perftest_func(NULL, largebuf, perfsizes[i], num_hashes))
+			goto err1;
 
 		/* Get ending time. */
 		if (monoclock_get_cputime(&end)) {
