@@ -126,17 +126,52 @@ err0:
 	return (1);
 }
 
+struct perftest_cookie_aes {
+	struct crypto_aes_key * key_exp;
+	uint8_t plaintext_arr[16];
+};
+
+static int
+perftest_init(void * cookie, uint8_t * buf, size_t buflen)
+{
+	struct perftest_cookie_aes * pca = cookie;
+
+	/* AES only operates on a block of 16 bytes. */
+	assert(buflen == 16);
+
+	/* Set the plaintext input. */
+	memcpy(buf, pca->plaintext_arr, buflen);
+
+	/* Success! */
+	return (0);
+}
+
+static int
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
+{
+	struct perftest_cookie_aes * pca = cookie;
+	size_t i;
+
+	(void)buflen; /* UNUSED */
+
+	/* Do the encryption. */
+	for (i = 0; i < num_buffers; i++)
+		crypto_aes_encrypt_block(buf, buf, pca->key_exp);
+
+	/* Success! */
+	return (0);
+}
+
 static int
 perftest(void)
 {
-	struct crypto_aes_key * key_exp;
-	uint8_t plaintext_arr[16];
+	struct perftest_cookie_aes pca_actual;
+	struct perftest_cookie_aes * pca = &pca_actual;
 	uint8_t ciphertext_arr[16];
 	uint8_t cbuf[16];
 	size_t keylen;
 	struct timeval begin, end;
 	double delta_s;
-	size_t i;
 	size_t num_blocks = bytes_to_encrypt / 16;
 
 	/* Inform user about the hardware optimization status. */
@@ -144,19 +179,21 @@ perftest(void)
 	fflush(stdout);
 
 	/* Prepare arrays. */
-	if (parse_testcase(perftestcase, &key_exp, &keylen, plaintext_arr,
-	    ciphertext_arr)) {
+	if (parse_testcase(perftestcase, &pca->key_exp, &keylen,
+	    pca->plaintext_arr, ciphertext_arr)) {
 		warn0("parse_testcase");
 		goto err0;
 	}
-	memcpy(cbuf, plaintext_arr, 16);
 
 	/* Warm up. */
-	for (i = 0; i < 10000000; i++)
-		crypto_aes_encrypt_block(cbuf, cbuf, key_exp);
+	if (perftest_init(pca, cbuf, 16))
+		goto err1;
+	if (perftest_func(pca, cbuf, 16, 10000000))
+		goto err1;
 
-	/* Reset plaintext input. */
-	memcpy(cbuf, plaintext_arr, 16);
+	/* Reset. */
+	if (perftest_init(pca, cbuf, 16))
+		goto err1;
 
 	/* Get beginning time. */
 	if (monoclock_get_cputime(&begin)) {
@@ -165,8 +202,8 @@ perftest(void)
 	}
 
 	/* Encrypt all the bytes. */
-	for (i = 0; i < num_blocks; i++)
-		crypto_aes_encrypt_block(cbuf, cbuf, key_exp);
+	if (perftest_func(pca, cbuf, 16, num_blocks))
+		goto err1;
 
 	/* Get ending time. */
 	if (monoclock_get_cputime(&end)) {
@@ -183,13 +220,13 @@ perftest(void)
 	    (double)bytes_to_encrypt / 1e6 / delta_s);
 
 	/* Clean up. */
-	crypto_aes_key_free(key_exp);
+	crypto_aes_key_free(pca->key_exp);
 
 	/* Success! */
 	return (0);
 
 err1:
-	crypto_aes_key_free(key_exp);
+	crypto_aes_key_free(pca->key_exp);
 err0:
 	/* Failure! */
 	return (1);
