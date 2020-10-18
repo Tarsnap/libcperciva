@@ -217,22 +217,23 @@ string_extract_user_group(const char * combined, char ** username_p,
 	pos = strcspn(combined, ":");
 	len = strlen(combined);
 
-	/* Reject silly strings. */
-	if (pos == len - 1) {
-		warn0("Empty group name: %s", combined);
-		goto err0;
-	}
-
-	/* String ok, proceed. */
-	if (pos == 0) {
+	/* Handle string. */
+	if ((len >= 1) && (pos == len)) {
+		/* Username only; duplicate string. */
+		if ((*username_p = strdup(combined)) == NULL) {
+			warnp("strdup()");
+			goto err0;
+		}
+		*groupname_p = NULL;
+	} else if ((len >= 2) && (pos == 0)) {
 		/* Groupname only; duplicate string. */
 		if ((*groupname_p = strdup(&combined[1])) == NULL) {
 			warnp("strdup()");
 			goto err0;
 		}
 		*username_p = NULL;
-	} else if (pos != len) {
-		/* Extract username. */
+	} else if ((len >= 3) && (pos >= 1) && (pos <= len - 2)) {
+		/* Username:groupname.  Extract username first. */
 		if ((*username_p = malloc(pos + 1)) == NULL) {
 			warnp("Failed to allocate memory");
 			goto err0;
@@ -245,13 +246,10 @@ string_extract_user_group(const char * combined, char ** username_p,
 			warnp("strdup()");
 			goto err1;
 		}
+
 	} else {
-		/* Duplicate string. */
-		if ((*username_p = strdup(combined)) == NULL) {
-			warnp("strdup()");
-			goto err0;
-		}
-		*groupname_p = NULL;
+		warn0("Invalid user:group string: \"%s\"", combined);
+		goto err0;
 	}
 
 	/* Success! */
