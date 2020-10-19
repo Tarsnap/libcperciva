@@ -12,6 +12,7 @@ SRCS	=	main.c
 
 # Utility functions
 .PATH.c	:	${LIBCPERCIVA_DIR}/util
+SRCS	+=	setgroups_none.c
 SRCS	+=	setuidgid.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
