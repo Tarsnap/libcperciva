@@ -71,6 +71,10 @@ scenario_cmd() {
 	test_setuidgid_username_groupname 0 1 "$(id -u nobody)"
 	test_setuidgid_username_groupname 0 1 "$(id -u nobody):$(id -g nobody)"
 
+	# These should fail.
+	test_setuidgid_username_groupname 1 0 ""
+	test_setuidgid_username_groupname 1 0 ":"
+
 	# These should all fail.  (Hopefully nobody actually has
 	# "fake_username" or "fake_groupname" on their systems!)
 	test_setuidgid_username_groupname 1 0 "nobody:"
