@@ -293,9 +293,9 @@ perftest(void)
 		goto err1;
 
 	/* Warm up. */
-	if (perftest_init(NULL, largebuf, perfsizes[0]))
+	if (perftest_init(NULL, largebuf, maxbufsize))
 		goto err2;
-	if (perftest_func(key_exp, largebuf, perfsizes[0], 100000))
+	if (perftest_func(key_exp, largebuf, maxbufsize, 10000))
 		goto err2;
 
 	/* Run operations. */
