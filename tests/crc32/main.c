@@ -8,7 +8,7 @@
 
 #include "cpusupport.h"
 #include "getopt.h"
-#include "monoclock.h"
+#include "perftest.h"
 #include "warnp.h"
 
 #include "crc32c.h"
@@ -31,7 +31,7 @@ static struct testcase {
 	    {0x1b, 0xc4, 0xb4, 0x28}}
 };
 
-/* Largest buffer must be first. */
+/* Performance tests. */
 static const size_t perfsizes[] = {16384, 8192, 4096, 2048, 1024, 512, 256,
     128, 64, 32, 16};
 static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
@@ -93,72 +93,22 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 static int
 perftest(void)
 {
-	uint8_t * largebuf;
-	struct timeval begin, end;
-	double delta_s;
-	size_t i;
-	size_t num_hashes;
-
-	/* Allocate buffer to hold largest message. */
-	if ((largebuf = malloc(perfsizes[0])) == NULL) {
-		warnp("malloc");
-		goto err0;
-	}
 
 	/* Inform user. */
 	print_hardware("CRC32C time trial");
 	printf("Hashing %zu bytes.\n", nbytes_perftest);
 	fflush(stdout);
 
-	/* Warm up. */
-	if (perftest_init(NULL, largebuf, perfsizes[0]))
-		goto err1;
-	if (perftest_func(NULL, largebuf, perfsizes[0],
-	    nbytes_warmup / perfsizes[0]))
-		goto err1;
-
-	/* Run operations. */
-	for (i = 0; i < num_perf; i++) {
-		num_hashes = nbytes_perftest / perfsizes[i];
-
-		/* Set up. */
-		if (perftest_init(NULL, largebuf, perfsizes[i]))
-			goto err1;
-
-		/* Get beginning time. */
-		if (monoclock_get_cputime(&begin)) {
-			warnp("monoclock_get_cputime()");
-			goto err1;
-		}
-
-		/* Hash all the bytes. */
-		if (perftest_func(NULL, largebuf, perfsizes[i], num_hashes))
-			goto err1;
-
-		/* Get ending time. */
-		if (monoclock_get_cputime(&end)) {
-			warnp("monoclock_get_cputime()");
-			goto err1;
-		}
-
-		/* Prepare output. */
-		delta_s = timeval_diff(begin, end);
-
-		/* Print results. */
-		printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
-		    num_hashes, perfsizes[i], delta_s,
-		    (double)nbytes_perftest / 1e6 / delta_s);
-		fflush(stdout);
+	/* Time the function. */
+	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
+	    nbytes_warmup, perftest_init, perftest_func, NULL)) {
+		warn0("perftest_buffers");
+		goto err0;
 	}
-
-	/* Clean up. */
-	free(largebuf);
 
 	/* Success! */
 	return (0);
 
-err1:
-	free(largebuf);
 err0:
 	/* Failure! */
 	return (1);
