@@ -35,7 +35,8 @@ static struct testcase {
 static const size_t perfsizes[] = {16384, 8192, 4096, 2048, 1024, 512, 256,
     128, 64, 32, 16};
 static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
-static const size_t bytes_to_hash = 1 << 29;	/* approx 500 MB */
+static const size_t nbytes_perftest = 1 << 29;		/* approx 500 MB */
+static const size_t nbytes_warmup = 16384 * 8000;	/* approx 131 MB */
 
 /* Print a string, then whether or not we're using hardware instructions. */
 static void
@@ -106,18 +107,19 @@ perftest(void)
 
 	/* Inform user. */
 	print_hardware("CRC32C time trial");
-	printf("Hashing %zu bytes.\n", bytes_to_hash);
+	printf("Hashing %zu bytes.\n", nbytes_perftest);
 	fflush(stdout);
 
 	/* Warm up. */
 	if (perftest_init(NULL, largebuf, perfsizes[0]))
 		goto err1;
-	if (perftest_func(NULL, largebuf, perfsizes[0], 8000))
+	if (perftest_func(NULL, largebuf, perfsizes[0],
+	    nbytes_warmup / perfsizes[0]))
 		goto err1;
 
 	/* Run operations. */
 	for (i = 0; i < num_perf; i++) {
-		num_hashes = bytes_to_hash / perfsizes[i];
+		num_hashes = nbytes_perftest / perfsizes[i];
 
 		/* Set up. */
 		if (perftest_init(NULL, largebuf, perfsizes[i]))
@@ -145,7 +147,7 @@ perftest(void)
 		/* Print results. */
 		printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
 		    num_hashes, perfsizes[i], delta_s,
-		    (double)bytes_to_hash / 1e6 / delta_s);
+		    (double)nbytes_perftest / 1e6 / delta_s);
 		fflush(stdout);
 	}
 

@@ -157,7 +157,8 @@ static const struct testcase tests_256_nonce[] = {
 /* Largest buffer must be last. */
 static const size_t perfsizes[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
 static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
-static const size_t bytes_to_encrypt = 1 << 25;	/* approx 34 MB */
+static const size_t nbytes_perftest = 1 << 25;		/* approx 34 MB */
+static const size_t nbytes_warmup = 1024 * 10000;	/* approx 10 MB */
 
 /* Print a name, then an array in hex. */
 static void
@@ -295,13 +296,14 @@ perftest(void)
 	/* Warm up. */
 	if (perftest_init(NULL, largebuf, maxbufsize))
 		goto err2;
-	if (perftest_func(key_exp, largebuf, maxbufsize, 10000))
+	if (perftest_func(key_exp, largebuf, maxbufsize,
+	    nbytes_warmup / maxbufsize))
 		goto err2;
 
 	/* Run operations. */
 	for (i = 0; i < num_perf; i++) {
 		bufsize = perfsizes[i];
-		num_blocks = bytes_to_encrypt / bufsize;
+		num_blocks = nbytes_perftest / bufsize;
 
 		/* Set up. */
 		if (perftest_init(NULL, largebuf, bufsize))
@@ -329,7 +331,7 @@ perftest(void)
 		/* Print results. */
 		printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
 		    num_blocks, bufsize, delta_s,
-		    (double)bytes_to_encrypt / 1e6 / delta_s);
+		    (double)nbytes_perftest / 1e6 / delta_s);
 		fflush(stdout);
 	}
 
