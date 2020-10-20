@@ -147,7 +147,7 @@ perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 }
 
 static int
-perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
 	struct perftest_cookie_aes * pca = cookie;
 	size_t i;
@@ -155,7 +155,7 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
 	(void)buflen; /* UNUSED */
 
 	/* Do the encryption. */
-	for (i = 0; i < num_buffers; i++)
+	for (i = 0; i < nreps; i++)
 		crypto_aes_encrypt_block(buf, buf, pca->key_exp);
 
 	/* Success! */

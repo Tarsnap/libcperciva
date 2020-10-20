@@ -30,7 +30,7 @@ perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 }
 
 static int
-perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
 	MD5_CTX ctx;
 	uint8_t hbuf[16];
@@ -40,7 +40,7 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
 
 	/* Do the hashing. */
 	MD5_Init(&ctx);
-	for (i = 0; i < num_buffers; i++)
+	for (i = 0; i < nreps; i++)
 		MD5_Update(&ctx, buf, buflen);
 	MD5_Final(hbuf, &ctx);
 

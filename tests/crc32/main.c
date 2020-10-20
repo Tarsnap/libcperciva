@@ -70,7 +70,7 @@ perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 }
 
 static int
-perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
 	CRC32C_CTX ctx;
 	uint8_t cbuf[4];
@@ -79,7 +79,7 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
 	(void)cookie; /* UNUSED */
 
 	/* Do the hashing. */
-	for (i = 0; i < num_buffers; i++) {
+	for (i = 0; i < nreps; i++) {
 		CRC32C_Init(&ctx);
 		CRC32C_Update(&ctx, buf, buflen);
 		CRC32C_Final(cbuf, &ctx);
