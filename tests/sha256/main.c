@@ -50,7 +50,7 @@ perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 }
 
 static int
-perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
 	SHA256_CTX ctx;
 	uint8_t hbuf[32];
@@ -64,7 +64,7 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
 
 	/* Do the hashing. */
 	SHA256_Init(&ctx);
-	for (i = 0; i < num_buffers; i++)
+	for (i = 0; i < nreps; i++)
 		SHA256_Update(&ctx, buf, buflen);
 	SHA256_Final(hbuf, &ctx);
 

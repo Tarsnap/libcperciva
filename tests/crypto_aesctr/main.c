@@ -157,7 +157,8 @@ static const struct testcase tests_256_nonce[] = {
 /* Largest buffer must be last. */
 static const size_t perfsizes[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
 static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
-static const size_t bytes_to_encrypt = 1 << 25;	/* approx 34 MB */
+static const size_t nbytes_perftest = 1 << 25;		/* approx 34 MB */
+static const size_t nbytes_warmup = 1024 * 10000;	/* approx 10 MB */
 
 /* Print a name, then an array in hex. */
 static void
@@ -250,13 +251,13 @@ perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 }
 
 static int
-perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t num_buffers)
+perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
 	struct crypto_aes_key * key_exp = cookie;
 	size_t i;
 
 	/* Do the encryption. */
-	for (i = 0; i < num_buffers; i++)
+	for (i = 0; i < nreps; i++)
 		crypto_aesctr_buf(key_exp, i, buf, buf, buflen);
 
 	/* Success! */
@@ -293,15 +294,16 @@ perftest(void)
 		goto err1;
 
 	/* Warm up. */
-	if (perftest_init(NULL, largebuf, perfsizes[0]))
+	if (perftest_init(NULL, largebuf, maxbufsize))
 		goto err2;
-	if (perftest_func(key_exp, largebuf, perfsizes[0], 100000))
+	if (perftest_func(key_exp, largebuf, maxbufsize,
+	    nbytes_warmup / maxbufsize))
 		goto err2;
 
 	/* Run operations. */
 	for (i = 0; i < num_perf; i++) {
 		bufsize = perfsizes[i];
-		num_blocks = bytes_to_encrypt / bufsize;
+		num_blocks = nbytes_perftest / bufsize;
 
 		/* Set up. */
 		if (perftest_init(NULL, largebuf, bufsize))
@@ -329,7 +331,7 @@ perftest(void)
 		/* Print results. */
 		printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
 		    num_blocks, bufsize, delta_s,
-		    (double)bytes_to_encrypt / 1e6 / delta_s);
+		    (double)nbytes_perftest / 1e6 / delta_s);
 		fflush(stdout);
 	}
 
