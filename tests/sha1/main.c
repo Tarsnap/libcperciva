@@ -15,7 +15,8 @@
 /* Performance tests. */
 static const size_t perfsizes[] = {10000};
 static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
-static const size_t perftest_bytes = 1000000000;	/* 1 GB */
+static const size_t nbytes_perftest = 1000000000;	/* 1 GB */
+static const size_t nbytes_warmup = 100000000;		/* approx 100 MB */
 
 static int
 perftest_init(void * cookie, uint8_t * buf, size_t buflen)
@@ -56,8 +57,8 @@ perftest(void)
 {
 
 	/* Time the function. */
-	if (perftest_buffers(perftest_bytes, perfsizes, num_perf, 0,
-	    perftest_init, perftest_func, NULL)) {
+	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
+	    nbytes_warmup, perftest_init, perftest_func, NULL)) {
 		warn0("perftest_buffers");
  		goto err0;
  	}
