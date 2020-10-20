@@ -14,6 +14,7 @@
 #include "hexify.h"
 #include "insecure_memzero.h"
 #include "monoclock.h"
+#include "perftest.h"
 #include "warnp.h"
 
 #define MAX_PLAINTEXT_LENGTH 32
@@ -154,7 +155,7 @@ static const struct testcase tests_256_nonce[] = {
 	    "f1ee4345e4551c1e030d88771ff0398d47ec375ec22307091796f213f6a60e00"}
 };
 
-/* Largest buffer must be last. */
+/* Performance tests. */
 static const size_t perfsizes[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
 static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
 static const size_t nbytes_perftest = 1 << 25;		/* approx 34 MB */
@@ -269,83 +270,33 @@ perftest(void)
 {
 	struct crypto_aes_key * key_exp;
 	uint8_t key[32];
-	uint8_t * largebuf;
-	struct timeval begin, end;
-	double delta_s;
 	size_t i;
-	size_t num_blocks;
-	size_t bufsize;
-	size_t maxbufsize = perfsizes[num_perf - 1];
 
 	/* Inform user about the hardware optimization status. */
 	print_hardware("Performance test of AES-CTR");
 	fflush(stdout);
 
-	/* Allocate buffer to hold largest message. */
-	if ((largebuf = malloc(maxbufsize)) == NULL) {
-		warnp("malloc");
-		goto err0;
-	}
-
 	/* Prepare the key.  We're only performance-testing 256-bit keys. */
 	for (i = 0; i < 32; i++)
 		key[i] = (uint8_t)i;
 	if ((key_exp = crypto_aes_key_expand(key, 32)) == NULL)
+		goto err0;
+
+	/* Time the function. */
+	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
+	    nbytes_warmup, perftest_init, perftest_func, key_exp)) {
+		warn0("perftest_buffers");
 		goto err1;
-
-	/* Warm up. */
-	if (perftest_init(NULL, largebuf, maxbufsize))
-		goto err2;
-	if (perftest_func(key_exp, largebuf, maxbufsize,
-	    nbytes_warmup / maxbufsize))
-		goto err2;
-
-	/* Run operations. */
-	for (i = 0; i < num_perf; i++) {
-		bufsize = perfsizes[i];
-		num_blocks = nbytes_perftest / bufsize;
-
-		/* Set up. */
-		if (perftest_init(NULL, largebuf, bufsize))
-			goto err2;
-
-		/* Get beginning time. */
-		if (monoclock_get_cputime(&begin)) {
-			warnp("monoclock_get_cputime()");
-			goto err2;
-		}
-
-		/* Encrypt all the bytes. */
-		if (perftest_func(key_exp, largebuf, bufsize, num_blocks))
-			goto err2;
-
-		/* Get ending time. */
-		if (monoclock_get_cputime(&end)) {
-			warnp("monoclock_get_cputime()");
-			goto err2;
-		}
-
-		/* Prepare output. */
-		delta_s = timeval_diff(begin, end);
-
-		/* Print results. */
-		printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
-		    num_blocks, bufsize, delta_s,
-		    (double)nbytes_perftest / 1e6 / delta_s);
-		fflush(stdout);
 	}
 
 	/* Clean up. */
 	crypto_aes_key_free(key_exp);
-	free(largebuf);
 
 	/* Success! */
 	return (0);
 
-err2:
-	crypto_aes_key_free(key_exp);
 err1:
-	free(largebuf);
+	crypto_aes_key_free(key_exp);
 err0:
 	/* Failure! */
 	return (1);

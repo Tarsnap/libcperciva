@@ -12,7 +12,7 @@
 #include "getopt.h"
 #include "hexify.h"
 #include "insecure_memzero.h"
-#include "monoclock.h"
+#include "perftest.h"
 #include "warnp.h"
 
 #define MAX_PLAINTEXT_LENGTH 16
@@ -44,6 +44,8 @@ static const struct testcase perftestcase = {
 	    "00112233445566778899aabbccddeeff",
 	    "a7cbdceb16a2b37924794d01fa4a5796"
 };
+static const size_t perfsizes[] = {16};
+static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
 static const size_t nbytes_perftest = 1 << 30;		/* approx 1 GB */
 static const size_t nbytes_warmup = 16 * 10000000;	/* approx 160 MB */
 
@@ -169,11 +171,7 @@ perftest(void)
 	struct perftest_cookie_aes pca_actual;
 	struct perftest_cookie_aes * pca = &pca_actual;
 	uint8_t ciphertext_arr[16];
-	uint8_t cbuf[16];
 	size_t keylen;
-	struct timeval begin, end;
-	double delta_s;
-	size_t num_blocks = nbytes_perftest / 16;
 
 	/* Inform user about the hardware optimization status. */
 	print_hardware("Performance test of AES");
@@ -186,39 +184,12 @@ perftest(void)
 		goto err0;
 	}
 
-	/* Warm up. */
-	if (perftest_init(pca, cbuf, 16))
-		goto err1;
-	if (perftest_func(pca, cbuf, 16, nbytes_warmup / 16))
-		goto err1;
-
-	/* Reset. */
-	if (perftest_init(pca, cbuf, 16))
-		goto err1;
-
-	/* Get beginning time. */
-	if (monoclock_get_cputime(&begin)) {
-		warnp("monoclock_get_cputime()");
+	/* Time the function. */
+	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
+	    nbytes_warmup, perftest_init, perftest_func, pca)) {
+		warn0("perftest_buffers");
 		goto err1;
 	}
-
-	/* Encrypt all the bytes. */
-	if (perftest_func(pca, cbuf, 16, num_blocks))
-		goto err1;
-
-	/* Get ending time. */
-	if (monoclock_get_cputime(&end)) {
-		warnp("monoclock_get_cputime()");
-		goto err1;
-	}
-
-	/* Prepare output. */
-	delta_s = timeval_diff(begin, end);
-
-	/* Print results. */
-	printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
-	    num_blocks, (size_t)16, delta_s,
-	    (double)nbytes_perftest / 1e6 / delta_s);
 
 	/* Clean up. */
 	crypto_aes_key_free(pca->key_exp);

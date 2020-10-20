@@ -8,11 +8,14 @@
 #include "getopt.h"
 #include "hexify.h"
 #include "monoclock.h"
+#include "perftest.h"
 #include "sha1.h"
 #include "warnp.h"
 
-#define BLOCKLEN 10000
-#define BLOCKCOUNT 100000
+/* Performance tests. */
+static const size_t perfsizes[] = {10000};
+static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
+static const size_t perftest_bytes = 1000000000;	/* 1 GB */
 
 static int
 perftest_init(void * cookie, uint8_t * buf, size_t buflen)
@@ -51,56 +54,17 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 static int
 perftest(void)
 {
-	struct timeval begin, end;
-	double delta_s;
-	uint8_t * buf;
 
-	/* Allocate buffer. */
-	if ((buf = malloc(BLOCKLEN)) == NULL) {
-		warnp("malloc");
-		goto err0;
-	}
-
-	/* Report what we're doing. */
-	printf("SHA1 time trial.\n");
-	fflush(stdout);
-
-	/* Set up. */
-	if (perftest_init(NULL, buf, BLOCKLEN))
-		goto err1;
-
-        /* Start timer */
-	if (monoclock_get_cputime(&begin)) {
-		warnp("monoclock_get_cputime()");
-		goto err1;
-	}
-
-	/* Perform the computation. */
-	if (perftest_func(NULL, buf, BLOCKLEN, BLOCKCOUNT))
-		goto err1;
-
-	/* End timer. */
-	if (monoclock_get_cputime(&end)) {
-		warnp("monoclock_get_cputime()");
-		goto err1;
-	}
-
-	/* Prepare output. */
-	delta_s = timeval_diff(begin, end);
-
-	/* Print results. */
-	printf("%zu blocks of size %zu\t%.06f s, %.01f MB/s\n",
-	    (size_t)BLOCKCOUNT, (size_t)BLOCKLEN, delta_s,
-	    (double)(BLOCKCOUNT * BLOCKLEN) / 1e6 / delta_s);
-
-	/* Free allocated buffer. */
-	free(buf);
+	/* Time the function. */
+	if (perftest_buffers(perftest_bytes, perfsizes, num_perf, 0,
+	    perftest_init, perftest_func, NULL)) {
+		warn0("perftest_buffers");
+ 		goto err0;
+ 	}
 
 	/* Success! */
 	return (0);
 
-err1:
-	free(buf);
 err0:
 	/* Failure! */
 	return (1);

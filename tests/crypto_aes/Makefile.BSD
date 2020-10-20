@@ -30,6 +30,7 @@ SRCS	+=	getopt.c
 SRCS	+=	hexify.c
 SRCS	+=	insecure_memzero.c
 SRCS	+=	monoclock.c
+SRCS	+=	perftest.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
