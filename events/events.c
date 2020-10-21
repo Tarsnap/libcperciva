@@ -9,6 +9,8 @@
 #include "events.h"
 #include "events_internal.h"
 
+#define MAX_EVENTS_RUN 100
+
 /* Event structure. */
 struct eventrec {
 	int (*func)(void *);
@@ -94,6 +96,7 @@ _events_run(void)
 	struct eventrec * r;
 	struct timeval * tv;
 	struct timeval tv2;
+	size_t nrun;
 	int rc = 0;
 
 	/* If we have any immediate events, process them and return. */
@@ -128,9 +131,10 @@ _events_run(void)
 	/*
 	 * Check for available immediate events, network events, and timer
 	 * events, in that order of priority; exit only when no more events
-	 * are available or when interrupted.
+	 * are available, when interrupted, or if we have looped
+	 * MAX_EVENTS_RUN times.
 	 */
-	do {
+	for (nrun = 0; nrun < MAX_EVENTS_RUN; nrun++ ) {
 		/* Interrupt loop if requested. */
 		if (interrupt_requested)
 			goto done;
@@ -170,7 +174,7 @@ _events_run(void)
 
 		/* No events available. */
 		break;
-	} while (1);
+	}
 
 done:
 	/* Success! */
