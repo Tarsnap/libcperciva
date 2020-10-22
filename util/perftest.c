@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,8 +41,9 @@ perftest_buffers(size_t nbytes, const size_t * sizes, size_t nsizes,
 	/* Find the maximum buffer size. */
 	for (i = 0; i < nsizes; i++) {
 		if (max_buflen < sizes[i])
-		max_buflen = sizes[i];
+			max_buflen = sizes[i];
 	}
+	assert(max_buflen > 0);
 
 	/* Allocate buffers. */
 	if ((buf = malloc(max_buflen)) == NULL) {
@@ -64,6 +66,7 @@ perftest_buffers(size_t nbytes, const size_t * sizes, size_t nsizes,
 	for (i = 0; i < nsizes; i++) {
 		/* Configure and sanity checks. */
 		buflen = sizes[i];
+		assert(buflen > 0);
 		num_buffers = nbytes / buflen;
 
 		/* Set up. */
