@@ -34,6 +34,11 @@ if ! ./a.out ; then
 	if ./a.out ; then
 		[ ${FIRST} = "NO" ] && printf " "; FIRST=NO
 		printf %s "-std=c99"
+	else
+		# If strtod() can't handle hex values, then there's likely to
+		# be other subtle runtime deviations (e.g., logb, freopen).
+		echo "Error: cannot handle runtime deviations from C99" 1>&2
+		exit 1
 	fi
 fi
 
