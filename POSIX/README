@@ -37,3 +37,5 @@ compiler.
   - lrt lxnet: c99 is required to understand these options, and ignore them if
     the routines for which they specify linkage are already in the standard C
     library
+  - std=c99: ${CC} does not support hex in strtod() by default, but accepts it
+    when given this flag.
