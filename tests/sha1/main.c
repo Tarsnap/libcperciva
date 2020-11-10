@@ -23,7 +23,7 @@ perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 {
 	size_t i;
 
-	(void)cookie;	/* UNUSED */
+	(void)cookie; /* UNUSED */
 
 	/* Set the input. */
 	for (i = 0; i < buflen; i++)
@@ -60,8 +60,8 @@ perftest(void)
 	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
 	    nbytes_warmup, perftest_init, perftest_func, NULL)) {
 		warn0("perftest_buffers");
- 		goto err0;
- 	}
+		goto err0;
+	}
 
 	/* Success! */
 	return (0);

@@ -22,7 +22,7 @@ interrupt(int sig)
 }
 
 /**
- * events_interrupter_init():
+ * events_interrupter_init(void):
  * Set up a signal handler to run events_interrupt() upon receiving SIGUSR1.
  */
 int

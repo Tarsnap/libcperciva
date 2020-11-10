@@ -208,8 +208,8 @@ int
 main(int argc, char * argv[])
 {
 
-	(void)argc;	/* UNUSED */
-	(void)argv;	/* UNUSED */
+	(void)argc; /* UNUSED */
+	(void)argv; /* UNUSED */
 
 	/* Elasticarray with simple integers. */
 	if (test_intlist())

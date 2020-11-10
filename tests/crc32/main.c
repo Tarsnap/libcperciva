@@ -61,7 +61,7 @@ static int
 perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 {
 
-	(void)cookie;	/* UNUSED */
+	(void)cookie; /* UNUSED */
 
 	/* Clear buffer. */
 	memset(buf, 0, buflen);

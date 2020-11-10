@@ -2,7 +2,7 @@
 #define _EVENTS_INTERRUPTER_H_
 
 /**
- * events_interrupter_init():
+ * events_interrupter_init(void):
  * Set up a signal handler to run events_interrupt() upon receiving SIGUSR1.
  */
 int events_interrupter_init(void);
