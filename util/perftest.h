@@ -17,6 +17,6 @@
  */
 int perftest_buffers(size_t, const size_t *, size_t, size_t,
     int (*)(void *, uint8_t *, size_t),
-    int (*)(void *, uint8_t *, size_t, size_t), void * cookie);
+    int (*)(void *, uint8_t *, size_t, size_t), void *);
 
 #endif /* !_PERFTESTS_H_ */
