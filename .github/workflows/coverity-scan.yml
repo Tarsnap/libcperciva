@@ -10,13 +10,13 @@ on:
 # requires us to fake a TRAVIS_BRANCH environment variable.
 jobs:
   coverity-scan:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Coverity scan
         env:
-          COVERITY_SCAN_PROJECT_NAME: Tarsnap/libcperciva
+          COVERITY_SCAN_PROJECT_NAME: ${{ github.repository }}
           COVERITY_SCAN_BRANCH_PATTERN: coverity-scan
           COVERITY_SCAN_NOTIFICATION_EMAIL: cperciva@tarsnap.com
           COVERITY_SCAN_BUILD_COMMAND: make all
