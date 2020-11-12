@@ -186,7 +186,7 @@ perftest(void)
 
 	/* Time the function. */
 	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
-	    nbytes_warmup, perftest_init, perftest_func, pca)) {
+	    nbytes_warmup, 1, perftest_init, perftest_func, pca)) {
 		warn0("perftest_buffers");
 		goto err1;
 	}
