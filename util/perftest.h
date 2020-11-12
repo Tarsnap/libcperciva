@@ -5,9 +5,11 @@
 #include <stdint.h>
 
 /**
- * perftest_buffers(nbytes, sizes, nsizes, nbytes_warmup, init_func, func,
- *     cookie):
+ * perftest_buffers(nbytes, sizes, nsizes, nbytes_warmup, cputime,
+ *     init_func, func, cookie):
  * Time using ${func} to process ${nbytes} bytes in blocks of ${sizes}.
+ * If ${cputime} is non-zero, attempt to time the function's cpu usage; if
+ * that is not available or if ${cputime} is zero, use the wall-clock time.
  * Before timing any block sizes, process ${nbytes_warmup} bytes with the
  * maximum size in ${sizes}.  Invoke callback functions as:
  *     init_func(cookie, buffer, buflen)
@@ -15,7 +17,7 @@
  * where ${buffer} is large enough to hold the maximum buffer size.  Print
  * the time and speed of processing each buffer size.
  */
-int perftest_buffers(size_t, const size_t *, size_t, size_t,
+int perftest_buffers(size_t, const size_t *, size_t, size_t, int,
     int (*)(void *, uint8_t *, size_t),
     int (*)(void *, uint8_t *, size_t, size_t), void * cookie);
 
