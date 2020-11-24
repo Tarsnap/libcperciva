@@ -41,5 +41,9 @@ warnp.o: ../../util/warnp.c ../../util/warnp.h
 test:	all
 	./test_md5 -x
 
-perftest:	all
-	./test_md5 -t
+perftest:
+	@${MAKE} all > /dev/null
+	@printf "# nblks\tbsize\ttime\tspeed\n"
+	@./test_md5 -t |						\
+	    grep "blocks" |						\
+	    awk '{ printf "%i\t%i\t%.6f\t%.1f\n", $$1, $$5, $$6, $$8}'

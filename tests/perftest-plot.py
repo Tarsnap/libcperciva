@@ -10,7 +10,8 @@ import matplotlib.pylab
 import numpy
 
 # Constants for libcperciva's perftests
-_COLUMN_NAMES = ["blocksizes", "speed MB/s"]
+_DEFAULT_COLUMN_INDICES = [1, 3]
+_DEFAULT_COLUMN_NAMES = ["blocksizes", "speed MB/s"]
 
 
 def get_left_right(num_dots_bundle, num, num_bundles, width):
@@ -70,6 +71,10 @@ def plot(args, data, num, fig, key):
         The calling function is responsible for initializing 'fig',
         and calling .show() or .savefig().
     """
+    # Directory-specific display info.
+    column_names = _DEFAULT_COLUMN_NAMES
+
+    # Number of items to display.
     sizes = sorted(data.keys())
     total = len(args.filenames)
 
@@ -96,20 +101,24 @@ def plot(args, data, num, fig, key):
 
     matplotlib.pylab.xticks(band_centers, sizes)
 
-    matplotlib.pylab.xlabel(_COLUMN_NAMES[0])
-    matplotlib.pylab.ylabel(_COLUMN_NAMES[1])
+    matplotlib.pylab.xlabel(column_names[0])
+    matplotlib.pylab.ylabel(column_names[1])
     return patch
 
 
 def load_file(filename):
     """ Load data from a file. """
+    # Directory-specific display info.
+    column_indices = _DEFAULT_COLUMN_INDICES
+
+    # Load the file.
     full = numpy.loadtxt(filename, ndmin=2)
 
     # Extract the columns, and consolidate data
     data_set = {}
     for row in full:
-        key = int(row[0])
-        value = row[1]
+        key = int(row[column_indices[0]])
+        value = row[column_indices[1]]
         if key not in data_set:
             data_set[key] = []
         data_set[key].append(value)

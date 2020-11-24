@@ -10,13 +10,6 @@ set -e -o nounset
 # Constant (potentially) influenced by the environment.
 NUM_REPS=${NUM_REPS:-3}
 
-# Constants for libcperciva's perftests.
-mustcontain="blocks"
-xname="buffer size"
-xcol=5
-yname="speed MB/s"
-ycol=8
-
 # Parse command line.
 dirname=""
 tag=""
@@ -105,14 +98,6 @@ make clean all >> "${rawdata}" 2>&1
 i=0
 while [ $i -lt "${NUM_REPS}" ]; do
 	printf "### ${i} make perftest\n"
-	make perftest
+	make perftest | tee -a ${data}
 	i=$((i + 1))
 done >> "${rawdata}" 2>&1
-
-# Write a header.
-printf "# ${xname}\t${yname}\n" > "${data}"
-
-# Extract relevant data.
-grep "${mustcontain}" "${rawdata}" |				\
-    awk -v x="${xcol}" -v y="${ycol}" '{ print $x "\t" $y}'	\
-    >> "${data}"
