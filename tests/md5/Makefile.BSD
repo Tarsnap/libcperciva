@@ -28,7 +28,12 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 test:	all
 	./test_md5 -x
 
-perftest:	all
-	./test_md5 -t
+# This depends on "all", but we don't want to see any output from that.
+perftest:
+	@${MAKE} all > /dev/null
+	@printf "# nblks\tbsize\ttime\tspeed\n"
+	@./test_md5 -t |						\
+	    grep "blocks" |						\
+	    awk '{ printf "%i\t%i\t%.6f\t%.1f\n", $$1, $$5, $$6, $$8}'
 
 .include <bsd.prog.mk>

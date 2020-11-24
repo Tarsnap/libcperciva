@@ -40,7 +40,12 @@ cflags-crypto_aes_aesni.o:
 test:	all
 	./test_crypto_aes -x
 
-perftest:	all
-	./test_crypto_aes -t
+# This depends on "all", but we don't want to see any output from that.
+perftest:
+	@${MAKE} all > /dev/null
+	@printf "# nblks\tbsize\ttime\tspeed\n"
+	@./test_crypto_aes -t |						\
+	    grep "blocks" |						\
+	    awk '{ printf "%i\t%i\t%.6f\t%.1f\n", $$1, $$5, $$6, $$8}'
 
 .include <bsd.prog.mk>
