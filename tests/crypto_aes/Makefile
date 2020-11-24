@@ -46,5 +46,9 @@ warnp.o: ../../util/warnp.c ../../util/warnp.h
 test:	all
 	./test_crypto_aes -x
 
-perftest:	all
-	./test_crypto_aes -t
+perftest:
+	@${MAKE} all > /dev/null
+	@printf "# nblks\tbsize\ttime\tspeed\n"
+	@./test_crypto_aes -t |						\
+	    grep "blocks" |						\
+	    awk '{ printf "%i\t%i\t%.6f\t%.1f\n", $$1, $$5, $$6, $$8}'
