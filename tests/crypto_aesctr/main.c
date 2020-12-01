@@ -238,28 +238,41 @@ err0:
 	return (1);
 }
 
+struct aesctr_cookie {
+	struct crypto_aes_key * key_exp;
+	struct crypto_aesctr * aesctr;
+};
+
 static int
 perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 {
-
-	(void)cookie; /* UNUSED */
+	struct aesctr_cookie * ac = cookie;
 
 	/* Clear buffer. */
 	memset(buf, 0, buflen);
 
+	/* (Re-)Initialize the context. */
+	crypto_aesctr_free(ac->aesctr);
+	if ((ac->aesctr = crypto_aesctr_init(ac->key_exp, 0)) == NULL)
+		goto err0;
+
 	/* Success! */
 	return (0);
+
+err0:
+	/* Failure! */
+	return (-1);
 }
 
 static int
 perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
-	struct crypto_aes_key * key_exp = cookie;
+	struct aesctr_cookie * ac = cookie;
 	size_t i;
 
 	/* Do the encryption. */
 	for (i = 0; i < nreps; i++)
-		crypto_aesctr_buf(key_exp, i, buf, buf, buflen);
+		crypto_aesctr_stream(ac->aesctr, buf, buf, buflen);
 
 	/* Success! */
 	return (0);
@@ -268,7 +281,8 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 static int
 perftest(void)
 {
-	struct crypto_aes_key * key_exp;
+	struct aesctr_cookie ac_actual = {NULL, NULL};
+	struct aesctr_cookie * ac = &ac_actual;
 	uint8_t key[32];
 	size_t i;
 
@@ -279,24 +293,25 @@ perftest(void)
 	/* Prepare the key.  We're only performance-testing 256-bit keys. */
 	for (i = 0; i < 32; i++)
 		key[i] = (uint8_t)i;
-	if ((key_exp = crypto_aes_key_expand(key, 32)) == NULL)
+	if ((ac->key_exp = crypto_aes_key_expand(key, 32)) == NULL)
 		goto err0;
 
 	/* Time the function. */
 	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
-	    nbytes_warmup, perftest_init, perftest_func, key_exp)) {
+	    nbytes_warmup, perftest_init, perftest_func, ac)) {
 		warn0("perftest_buffers");
 		goto err1;
 	}
 
 	/* Clean up. */
-	crypto_aes_key_free(key_exp);
+	crypto_aesctr_free(ac->aesctr);
+	crypto_aes_key_free(ac->key_exp);
 
 	/* Success! */
 	return (0);
 
 err1:
-	crypto_aes_key_free(key_exp);
+	crypto_aes_key_free(ac->key_exp);
 err0:
 	/* Failure! */
 	return (1);
