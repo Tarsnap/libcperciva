@@ -52,4 +52,4 @@ perftest:
 	@printf "# nblks\tbsize\ttime\tspeed\n"
 	@./test_sha256 -t |						\
 	    grep "blocks" |						\
-	    awk '{ printf "%i\t%i\t%.6f\t%.1f\n", $$1, $$5, $$6, $$8}'
+	    awk '{ printf "%i\t%i\t%.6f\t%.6f\n", $$1, $$5, $$6, $$8}'
