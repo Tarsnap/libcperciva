@@ -13,11 +13,18 @@ pl_freebsd_link_lrt(void)
 
 /* Problem with FreeBSD 11.0 and printf(). */
 static void
-pl_freebsd_printf(void)
+pl_freebsd_printf_space(void)
 {
-	const char * printme = "";
 
-	printf("%s", printme);
+	printf(" ");
+}
+
+/* Problem with FreeBSD 12.0 and printf(). */
+static void
+pl_freebsd_printf_space_newline(void)
+{
+
+	printf(" \n");
 }
 
 /* Problem with FreeBSD 11.0 and getdelim(). */
@@ -73,7 +80,8 @@ static const struct memleaktest {
 	void (* const volatile func)(void);
 } tests[] = {
 	MEMLEAKTEST(pl_freebsd_link_lrt),
-	MEMLEAKTEST(pl_freebsd_printf),
+	MEMLEAKTEST(pl_freebsd_printf_space),
+	MEMLEAKTEST(pl_freebsd_printf_space_newline),
 	MEMLEAKTEST(pl_freebsd_getdelim),
 	MEMLEAKTEST(pl_freebsd_strlen),
 	MEMLEAKTEST(pl_nss_getgrnam),
