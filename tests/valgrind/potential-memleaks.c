@@ -27,6 +27,15 @@ pl_freebsd_printf_space_newline(void)
 	printf(" \n");
 }
 
+/* Problem with FreeBSD 12.0 and strerror(). */
+static void
+pl_freebsd_strerror(void)
+{
+	char * str = strerror(0);
+
+	(void)str; /* UNUSED */
+}
+
 /* Problem with FreeBSD 11.0 and getdelim(). */
 static void
 pl_freebsd_getdelim(void)
@@ -82,6 +91,7 @@ static const struct memleaktest {
 	MEMLEAKTEST(pl_freebsd_link_lrt),
 	MEMLEAKTEST(pl_freebsd_printf_space),
 	MEMLEAKTEST(pl_freebsd_printf_space_newline),
+	MEMLEAKTEST(pl_freebsd_strerror),
 	MEMLEAKTEST(pl_freebsd_getdelim),
 	MEMLEAKTEST(pl_freebsd_strlen),
 	MEMLEAKTEST(pl_nss_getgrnam),
