@@ -1,4 +1,5 @@
 #include <grp.h>
+#include <pthread.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -66,6 +67,27 @@ pl_freebsd_strlen(void)
 	(void)len;
 }
 
+/* Problem with FreeBSD and pthread. */
+static void *
+pl_workthread_nothing(void * cookie)
+{
+
+	(void)cookie; /* UNUSED */
+	return (NULL);
+}
+
+static void
+pl_freebsd_pthread_nothing(void)
+{
+	pthread_t thr;
+	int rc;
+
+	if ((rc = pthread_create(&thr, NULL, pl_workthread_nothing, NULL)))
+		fprintf(stderr, "pthread_create: %s", strerror(rc));
+	if ((rc = pthread_join(thr, NULL)))
+		fprintf(stderr, "pthread_join: %s", strerror(rc));
+}
+
 /* Problem with NSS and getgrnam on Ubuntu 18.04 and FreeBSD 11.0. */
 static void
 pl_nss_getgrnam(void)
@@ -94,6 +116,7 @@ static const struct memleaktest {
 	MEMLEAKTEST(pl_freebsd_strerror),
 	MEMLEAKTEST(pl_freebsd_getdelim),
 	MEMLEAKTEST(pl_freebsd_strlen),
+	MEMLEAKTEST(pl_freebsd_pthread_nothing),
 	MEMLEAKTEST(pl_nss_getgrnam),
 	MEMLEAKTEST(pl_nss_getpwnam)
 };
