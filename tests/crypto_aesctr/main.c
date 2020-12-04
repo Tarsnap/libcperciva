@@ -241,11 +241,13 @@ err0:
 static int
 perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 {
-
-	(void)cookie; /* UNUSED */
+	struct crypto_aesctr * aesctr = cookie;
 
 	/* Clear buffer. */
 	memset(buf, 0, buflen);
+
+	/* Reset object. */
+	crypto_aesctr_init2(aesctr, NULL, 0);
 
 	/* Success! */
 	return (0);
@@ -254,12 +256,12 @@ perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 static int
 perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
-	struct crypto_aes_key * key_exp = cookie;
+	struct crypto_aesctr * aesctr = cookie;
 	size_t i;
 
 	/* Do the encryption. */
 	for (i = 0; i < nreps; i++)
-		crypto_aesctr_buf(key_exp, i, buf, buf, buflen);
+		crypto_aesctr_stream(aesctr, buf, buf, buflen);
 
 	/* Success! */
 	return (0);
@@ -268,6 +270,7 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 static int
 perftest(void)
 {
+	struct crypto_aesctr * aesctr;
 	struct crypto_aes_key * key_exp;
 	uint8_t key[32];
 	size_t i;
@@ -282,19 +285,27 @@ perftest(void)
 	if ((key_exp = crypto_aes_key_expand(key, 32)) == NULL)
 		goto err0;
 
+	/* Prepare the aesctr object. */
+	if ((aesctr = crypto_aesctr_alloc()) == NULL)
+		goto err1;
+	crypto_aesctr_init2(aesctr, key_exp, 0);
+
 	/* Time the function. */
 	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
-	    nbytes_warmup, perftest_init, perftest_func, key_exp)) {
+	    nbytes_warmup, perftest_init, perftest_func, aesctr)) {
 		warn0("perftest_buffers");
-		goto err1;
+		goto err2;
 	}
 
 	/* Clean up. */
+	crypto_aesctr_free(aesctr);
 	crypto_aes_key_free(key_exp);
 
 	/* Success! */
 	return (0);
 
+err2:
+	crypto_aesctr_free(aesctr);
 err1:
 	crypto_aes_key_free(key_exp);
 err0:
