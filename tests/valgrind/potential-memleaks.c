@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 /* Problem with FreeBSD 11.0 merely linking with -lrt. */
 static void
@@ -88,6 +89,36 @@ pl_freebsd_pthread_nothing(void)
 		fprintf(stderr, "pthread_join: %s", strerror(rc));
 }
 
+/* Problem with FreeBSD and pthread with strerror and localtime_r. */
+static void *
+pl_workthread_strerror_localtime(void * cookie)
+{
+	char * str = strerror(1);
+	time_t now;
+	struct tm tm;
+
+	(void)cookie; /* UNUSED */
+	(void)str; /* UNUSED */
+
+	time(&now);
+	localtime_r(&now, &tm);
+
+	return (NULL);
+}
+
+static void
+pl_freebsd_pthread_strerror_localtime(void)
+{
+	pthread_t thr;
+	int rc;
+
+	if ((rc = pthread_create(&thr, NULL,
+	    pl_workthread_strerror_localtime, NULL)))
+		fprintf(stderr, "pthread_create: %s", strerror(rc));
+	if ((rc = pthread_join(thr, NULL)))
+		fprintf(stderr, "pthread_join: %s", strerror(rc));
+}
+
 /* Problem with NSS and getgrnam on Ubuntu 18.04 and FreeBSD 11.0. */
 static void
 pl_nss_getgrnam(void)
@@ -117,6 +148,7 @@ static const struct memleaktest {
 	MEMLEAKTEST(pl_freebsd_getdelim),
 	MEMLEAKTEST(pl_freebsd_strlen),
 	MEMLEAKTEST(pl_freebsd_pthread_nothing),
+	MEMLEAKTEST(pl_freebsd_pthread_strerror_localtime),
 	MEMLEAKTEST(pl_nss_getgrnam),
 	MEMLEAKTEST(pl_nss_getpwnam)
 };
