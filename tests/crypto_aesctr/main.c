@@ -241,11 +241,13 @@ err0:
 static int
 perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 {
-
-	(void)cookie; /* UNUSED */
+	struct crypto_aesctr * aesctr = cookie;
 
 	/* Clear buffer. */
 	memset(buf, 0, buflen);
+
+	/* Reset object. */
+	crypto_aesctr_init2(aesctr, NULL, 0);
 
 	/* Success! */
 	return (0);
@@ -254,12 +256,12 @@ perftest_init(void * cookie, uint8_t * buf, size_t buflen)
 static int
 perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
-	struct crypto_aes_key * key_exp = cookie;
+	struct crypto_aesctr * aesctr = cookie;
 	size_t i;
 
 	/* Do the encryption. */
 	for (i = 0; i < nreps; i++)
-		crypto_aesctr_buf(key_exp, i, buf, buf, buflen);
+		crypto_aesctr_stream(aesctr, buf, buf, buflen);
 
 	/* Success! */
 	return (0);
@@ -268,6 +270,7 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 static int
 perftest(void)
 {
+	struct crypto_aesctr * aesctr;
 	struct crypto_aes_key * key_exp;
 	uint8_t key[32];
 	size_t i;
@@ -282,19 +285,27 @@ perftest(void)
 	if ((key_exp = crypto_aes_key_expand(key, 32)) == NULL)
 		goto err0;
 
+	/* Prepare the aesctr object. */
+	if ((aesctr = crypto_aesctr_alloc()) == NULL)
+		goto err1;
+	crypto_aesctr_init2(aesctr, key_exp, 0);
+
 	/* Time the function. */
 	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
-	    nbytes_warmup, perftest_init, perftest_func, key_exp)) {
+	    nbytes_warmup, perftest_init, perftest_func, aesctr)) {
 		warn0("perftest_buffers");
-		goto err1;
+		goto err2;
 	}
 
 	/* Clean up. */
+	crypto_aesctr_free(aesctr);
 	crypto_aes_key_free(key_exp);
 
 	/* Success! */
 	return (0);
 
+err2:
+	crypto_aesctr_free(aesctr);
 err1:
 	crypto_aes_key_free(key_exp);
 err0:
@@ -440,6 +451,91 @@ err0:
 	return (1);
 }
 
+static size_t
+selftest_cases_singleobj(const struct testcase * tests, size_t num_tests,
+    uint64_t nonce)
+{
+	struct crypto_aesctr * aesctr;
+	struct crypto_aes_key * key_orig;
+	struct crypto_aes_key * key_exp;
+	uint8_t plaintext_arr[MAX_PLAINTEXT_LENGTH];
+	uint8_t ciphertext_arr[MAX_PLAINTEXT_LENGTH];
+	uint8_t cbuf[MAX_PLAINTEXT_LENGTH];
+	size_t keylen;
+	size_t i;
+	size_t len;
+	size_t failures = 0;
+
+	/* Inform user about the hardware optimization status. */
+	print_hardware("Checking test vectors of AES reusing the same object");
+
+	/* Get the first test case. */
+	if (parse_testcase(tests[0], &key_orig, &keylen, plaintext_arr,
+	    ciphertext_arr)) {
+		warn0("parse_testcase");
+		goto err0;
+	}
+
+	/* Create the AES-CTR object. */
+	if ((aesctr = crypto_aesctr_alloc()) == NULL)
+		goto err0;
+	crypto_aesctr_init2(aesctr, key_orig, 0);
+
+	/* Run regular test cases. */
+	for (i = 0; i < num_tests; i++) {
+		/*
+		 * Sanity check: the current design of this function
+		 * assumes that all keys are the same.  If we change the
+		 * test cases to have different keys, we'll need to
+		 * revisit the organization of this test.
+		 */
+		if (strcmp(tests[i].keytext_hex, tests[0].keytext_hex))
+			assert(0);
+
+		/* Prepare for the test case. */
+		if (parse_testcase(tests[i], &key_exp, &keylen,
+		    plaintext_arr, ciphertext_arr)) {
+			warn0("parse_testcase");
+			goto err1;
+		}
+		printf("Computing %zu-bit AES-CTR of \"%s\"...",
+		    keylen * 8, tests[i].plaintext_str);
+
+		/* We don't need this key. */
+		crypto_aes_key_free(key_exp);
+
+		/* Plaintext length. */
+		len = strlen(tests[i].plaintext_str);
+
+		/* Encrypt with AES-CTR, re-using the same object. */
+		crypto_aesctr_init2(aesctr, NULL, nonce);
+		crypto_aesctr_stream(aesctr, plaintext_arr, cbuf, len);
+
+		/* Check result. */
+		if (memcmp(cbuf, ciphertext_arr, len)) {
+			printf(" FAILED!\n");
+			print_arr("Computed AES:\t", cbuf, len);
+			print_arr("Correct AES:\t", ciphertext_arr, len);
+			failures++;
+		} else {
+			printf(" PASSED!\n");
+		}
+	}
+
+	/* Clean up. */
+	crypto_aesctr_free(aesctr);
+	crypto_aes_key_free(key_orig);
+
+	return (failures);
+
+err1:
+	crypto_aesctr_free(aesctr);
+	crypto_aes_key_free(key_orig);
+err0:
+	/* Failure! */
+	return (1);
+}
+
 static int
 selftest(void)
 {
@@ -462,6 +558,23 @@ selftest(void)
 		failures++;
 	num_tests = sizeof(tests_256_nonce) / sizeof(tests_256_nonce[0]);
 	if (selftest_cases(tests_256_nonce, num_tests, nonce))
+		failures++;
+
+	/* Test with nonce = 0, re-using the same object. */
+	num_tests = sizeof(tests_128) / sizeof(tests_128[0]);
+	if (selftest_cases_singleobj(tests_128, num_tests, 0))
+		failures++;
+	num_tests = sizeof(tests_256) / sizeof(tests_256[0]);
+	if (selftest_cases_singleobj(tests_256, num_tests, 0))
+		failures++;
+
+	/* Test with nonce = 0xfedcba9876543210. */
+	nonce = 0xfedcba9876543210;
+	num_tests = sizeof(tests_128_nonce) / sizeof(tests_128_nonce[0]);
+	if (selftest_cases_singleobj(tests_128_nonce, num_tests, nonce))
+		failures++;
+	num_tests = sizeof(tests_256_nonce) / sizeof(tests_256_nonce[0]);
+	if (selftest_cases_singleobj(tests_256_nonce, num_tests, nonce))
 		failures++;
 
 	/* Test unaligned access. */
