@@ -1,8 +1,10 @@
 #include <grp.h>
+#include <pthread.h>
 #include <pwd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 /* Problem with FreeBSD 11.0 merely linking with -lrt. */
 static void
@@ -13,11 +15,27 @@ pl_freebsd_link_lrt(void)
 
 /* Problem with FreeBSD 11.0 and printf(). */
 static void
-pl_freebsd_printf(void)
+pl_freebsd_printf_space(void)
 {
-	const char * printme = "";
 
-	printf("%s", printme);
+	printf(" ");
+}
+
+/* Problem with FreeBSD 12.0 and printf(). */
+static void
+pl_freebsd_printf_space_newline(void)
+{
+
+	printf(" \n");
+}
+
+/* Problem with FreeBSD 12.0 and strerror(). */
+static void
+pl_freebsd_strerror(void)
+{
+	char * str = strerror(0);
+
+	(void)str; /* UNUSED */
 }
 
 /* Problem with FreeBSD 11.0 and getdelim(). */
@@ -50,6 +68,57 @@ pl_freebsd_strlen(void)
 	(void)len;
 }
 
+/* Problem with FreeBSD and pthread. */
+static void *
+pl_workthread_nothing(void * cookie)
+{
+
+	(void)cookie; /* UNUSED */
+	return (NULL);
+}
+
+static void
+pl_freebsd_pthread_nothing(void)
+{
+	pthread_t thr;
+	int rc;
+
+	if ((rc = pthread_create(&thr, NULL, pl_workthread_nothing, NULL)))
+		fprintf(stderr, "pthread_create: %s", strerror(rc));
+	if ((rc = pthread_join(thr, NULL)))
+		fprintf(stderr, "pthread_join: %s", strerror(rc));
+}
+
+/* Problem with FreeBSD and pthread with strerror and localtime_r. */
+static void *
+pl_workthread_strerror_localtime(void * cookie)
+{
+	char * str = strerror(1);
+	time_t now;
+	struct tm tm;
+
+	(void)cookie; /* UNUSED */
+	(void)str; /* UNUSED */
+
+	time(&now);
+	localtime_r(&now, &tm);
+
+	return (NULL);
+}
+
+static void
+pl_freebsd_pthread_strerror_localtime(void)
+{
+	pthread_t thr;
+	int rc;
+
+	if ((rc = pthread_create(&thr, NULL,
+	    pl_workthread_strerror_localtime, NULL)))
+		fprintf(stderr, "pthread_create: %s", strerror(rc));
+	if ((rc = pthread_join(thr, NULL)))
+		fprintf(stderr, "pthread_join: %s", strerror(rc));
+}
+
 /* Problem with NSS and getgrnam on Ubuntu 18.04 and FreeBSD 11.0. */
 static void
 pl_nss_getgrnam(void)
@@ -73,9 +142,13 @@ static const struct memleaktest {
 	void (* const volatile func)(void);
 } tests[] = {
 	MEMLEAKTEST(pl_freebsd_link_lrt),
-	MEMLEAKTEST(pl_freebsd_printf),
+	MEMLEAKTEST(pl_freebsd_printf_space),
+	MEMLEAKTEST(pl_freebsd_printf_space_newline),
+	MEMLEAKTEST(pl_freebsd_strerror),
 	MEMLEAKTEST(pl_freebsd_getdelim),
 	MEMLEAKTEST(pl_freebsd_strlen),
+	MEMLEAKTEST(pl_freebsd_pthread_nothing),
+	MEMLEAKTEST(pl_freebsd_pthread_strerror_localtime),
 	MEMLEAKTEST(pl_nss_getgrnam),
 	MEMLEAKTEST(pl_nss_getpwnam)
 };

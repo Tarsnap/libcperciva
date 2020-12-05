@@ -4,6 +4,9 @@ PROG	=	potential-memleaks
 # Don't install it.
 NOINST	=	1
 
+# Library code required
+LDADD_REQ	=	-lpthread
+
 # Main test code
 SRCS	=	potential-memleaks.c
 
