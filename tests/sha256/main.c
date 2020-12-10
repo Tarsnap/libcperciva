@@ -62,10 +62,6 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 
 	(void)cookie; /* UNUSED */
 
-	/* Set the input. */
-	for (i = 0; i < buflen; i++)
-		buf[i] = (uint8_t)(i & 0xff);
-
 	/* Do the hashing. */
 	SHA256_Init(&ctx);
 	for (i = 0; i < nreps; i++)
