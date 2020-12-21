@@ -44,8 +44,11 @@ print_hardware(const char * str)
 {
 	int use_hardware = 0;
 
-#ifdef CPUSUPPORT_X86_CRC32_64
+#if defined(CPUSUPPORT_X86_CRC32_64)
 	if (cpusupport_x86_crc32_64())
+		use_hardware = 1;
+#elif defined(CPUSUPPORT_ARM_CRC32_64)
+	if (cpusupport_arm_crc32_64())
 		use_hardware = 1;
 #endif
 
