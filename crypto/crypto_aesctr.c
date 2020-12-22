@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "align_ptr.h"
 #include "crypto_aes.h"
 #include "insecure_memzero.h"
 #include "sysendian.h"
@@ -11,7 +12,7 @@
 struct crypto_aesctr {
 	const struct crypto_aes_key * key;
 	uint64_t bytectr;
-	uint8_t buf[16];
+	ALIGN_PTR_DECL(uint8_t, buf, 16, 16);
 	uint8_t pblk[16];
 };
 
@@ -25,9 +26,10 @@ crypto_aesctr_alloc(void)
 {
 	struct crypto_aesctr * stream;
 
-	/* Allocate memory. */
+	/* Allocate and align memory. */
 	if ((stream = malloc(sizeof(struct crypto_aesctr))) == NULL)
 		goto err0;
+	ALIGN_PTR_INIT(stream->buf, 16);
 
 	/* Success! */
 	return (stream);
@@ -219,6 +221,9 @@ crypto_aesctr_buf(const struct crypto_aes_key * key, uint64_t nonce,
 
 	/* Sanity check. */
 	assert(key != NULL);
+
+	/* Align pointer. */
+	ALIGN_PTR_INIT(stream->buf, 16);
 
 	/* Initialize values. */
 	crypto_aesctr_init2(stream, key, nonce);
