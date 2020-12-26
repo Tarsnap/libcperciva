@@ -173,6 +173,16 @@ perftest(void)
 	uint8_t ciphertext_arr[16];
 	size_t keylen;
 
+	/* Sanity check. */
+#ifdef CPUSUPPORT_X86_AESNI
+	if (cpusupport_x86_aesni()) {
+		if (crypto_aes_use_x86_aesni() == 0) {
+			warn0("Unexpected error with AESNI");
+			goto err0;
+		}
+	}
+#endif
+
 	/* Inform user about the hardware optimization status. */
 	print_hardware("Performance test of AES");
 	fflush(stdout);
@@ -215,6 +225,16 @@ selftest(void)
 	size_t i;
 	size_t failures = 0;
 	size_t num_tests = sizeof(tests) / sizeof(tests[0]);
+
+	/* Sanity check. */
+#ifdef CPUSUPPORT_X86_AESNI
+	if (cpusupport_x86_aesni()) {
+		if (crypto_aes_use_x86_aesni() == 0) {
+			warn0("Unexpected error with AESNI");
+			goto err0;
+		}
+	}
+#endif
 
 	/* Inform user about the hardware optimization status. */
 	print_hardware("Checking test vectors of AES");
