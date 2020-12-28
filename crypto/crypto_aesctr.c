@@ -12,7 +12,7 @@
 struct crypto_aesctr {
 	const struct crypto_aes_key * key;
 	uint64_t bytectr;
-	ALIGN_PTR_DECL(uint8_t, buf, 32, 32);
+	ALIGN_PTR_DECL(uint8_t, buf, 32, 16);
 	uint8_t * pblk;
 };
 
@@ -29,7 +29,7 @@ crypto_aesctr_alloc(void)
 	/* Allocate and align memory. */
 	if ((stream = malloc(sizeof(struct crypto_aesctr))) == NULL)
 		goto err0;
-	ALIGN_PTR_INIT(stream->buf, 32);
+	ALIGN_PTR_INIT(stream->buf, 16);
 	stream->pblk = stream->buf + 16;
 
 	/* Success! */
@@ -225,7 +225,7 @@ crypto_aesctr_buf(const struct crypto_aes_key * key, uint64_t nonce,
 	assert(key != NULL);
 
 	/* Align pointer. */
-	ALIGN_PTR_INIT(stream->buf, 32);
+	ALIGN_PTR_INIT(stream->buf, 16);
 	stream->pblk = stream->buf + 16;
 
 	/* Initialize values. */
