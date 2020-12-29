@@ -1,7 +1,8 @@
 .POSIX:
 
 HEADERS=\
-	crc32c.h crc32c_sse42.h md5.h sha1.h sha256.h \
+	crc32c.h crc32c_arm.h crc32c_sse42.h md5.h sha1.h sha256.h \
+		sha256_shani.h \
 	aws_readkeys.h aws_sign.h \
 	cpusupport.h \
 	crypto_aes.h crypto_aes_aesni.h crypto_aesctr.h crypto_dh.h \
@@ -11,10 +12,11 @@ HEADERS=\
 		timerqueue.h \
 	events.h events_internal.h \
 	network.h \
-	asprintf.h b64encode.h ctassert.h daemonize.h entropy.h getopt.h \
-		hexify.h humansize.h imalloc.h insecure_memzero.h json.h \
-		monoclock.h noeintr.h parsenum.h readpass.h setuidgid.h \
-		sock.h sock_internal.h sock_util.h sysendian.h ttyfd.h warnp.h
+	align_ptr.h asprintf.h b64encode.h ctassert.h daemonize.h entropy.h \
+		getopt.h hexify.h humansize.h imalloc.h insecure_memzero.h \
+		json.h monoclock.h noeintr.h parsenum.h perftest.h readpass.h \
+		setgroups_none.h setuidgid.h sock.h sock_internal.h \
+		sock_util.h sysendian.h ttyfd.h warnp.h
 
 buildsingles: Makefile.tmp
 	${MAKE} -f Makefile.tmp CFLAGS="${CFLAGS}"	\
