@@ -5,8 +5,9 @@ HEADERS=\
 		sha256_shani.h \
 	aws_readkeys.h aws_sign.h \
 	cpusupport.h \
-	crypto_aes.h crypto_aes_aesni.h crypto_aesctr.h crypto_dh.h \
-		crypto_dh_group14.h crypto_entropy.h crypto_entropy_rdrand.h \
+	crypto_aes.h crypto_aes_aesni.h crypto_aesctr.h crypto_aesctr_aesni.h \
+		crypto_aesctr_internal.h crypto_dh.h crypto_dh_group14.h \
+		crypto_entropy.h crypto_entropy_rdrand.h \
 		crypto_verify_bytes.h \
 	elasticarray.h elasticqueue.h mpool.h ptrheap.h seqptrmap.h \
 		timerqueue.h \
