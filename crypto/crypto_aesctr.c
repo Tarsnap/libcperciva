@@ -7,13 +7,7 @@
 #include "sysendian.h"
 
 #include "crypto_aesctr.h"
-
-struct crypto_aesctr {
-	const struct crypto_aes_key * key;
-	uint64_t bytectr;
-	uint8_t buf[16];
-	uint8_t pblk[16];
-};
+#include "crypto_aesctr_internal.h"
 
 /**
  * crypto_aesctr_alloc(void):
