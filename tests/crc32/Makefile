@@ -25,9 +25,9 @@ main.o: main.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../uti
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c main.c -o main.o
 crc32c.o: ../../alg/crc32c.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/crc32c_arm.h ../../alg/crc32c_sse42.h ../../util/warnp.h ../../alg/crc32c.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/crc32c.c -o crc32c.o
-crc32c_arm.o: ../../alg/crc32c_arm.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
+crc32c_arm.o: ../../alg/crc32c_arm.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/crc32c_arm.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_ARM_CRC32_64} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/crc32c_arm.c -o crc32c_arm.o
-crc32c_sse42.o: ../../alg/crc32c_sse42.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
+crc32c_sse42.o: ../../alg/crc32c_sse42.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/crc32c_sse42.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_CRC32_64} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/crc32c_sse42.c -o crc32c_sse42.o
 cpusupport_arm_crc32_64.o: ../../cpusupport/cpusupport_arm_crc32_64.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../cpusupport/cpusupport_arm_crc32_64.c -o cpusupport_arm_crc32_64.o

@@ -25,7 +25,7 @@ main.o: main.c ../../util/warnp.h ../../aws/aws_readkeys.h ../../aws/aws_sign.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c main.c -o main.o
 sha256.o: ../../alg/sha256.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../util/insecure_memzero.h ../../alg/sha256_shani.h ../../util/sysendian.h ../../util/warnp.h ../../alg/sha256.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/sha256.c -o sha256.o
-sha256_shani.o: ../../alg/sha256_shani.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
+sha256_shani.o: ../../alg/sha256_shani.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/sha256_shani.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_SHANI} ${CFLAGS_X86_SSSE3} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/sha256_shani.c -o sha256_shani.o
 aws_readkeys.o: ../../aws/aws_readkeys.c ../../util/insecure_memzero.h ../../util/warnp.h ../../aws/aws_readkeys.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../aws/aws_readkeys.c -o aws_readkeys.o
