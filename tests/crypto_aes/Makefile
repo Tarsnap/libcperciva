@@ -28,7 +28,7 @@ cpusupport_x86_aesni.o: ../../cpusupport/cpusupport_x86_aesni.c ../../cpusupport
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../cpusupport/cpusupport_x86_aesni.c -o cpusupport_x86_aesni.o
 crypto_aes.o: ../../crypto/crypto_aes.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_aes_aesni.h ../../util/insecure_memzero.h ../../util/warnp.h ../../crypto/crypto_aes.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../crypto/crypto_aes.c -o crypto_aes.o
-crypto_aes_aesni.o: ../../crypto/crypto_aes_aesni.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
+crypto_aes_aesni.o: ../../crypto/crypto_aes_aesni.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../util/align_ptr.h ../../util/insecure_memzero.h ../../util/warnp.h ../../crypto/crypto_aes_aesni.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_AESNI} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../crypto/crypto_aes_aesni.c -o crypto_aes_aesni.o
 getopt.o: ../../util/getopt.c ../../util/getopt.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../util/getopt.c -o getopt.o
