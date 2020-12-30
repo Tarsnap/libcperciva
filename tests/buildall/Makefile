@@ -26,9 +26,9 @@ main.o: main.c
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c main.c -o main.o
 crc32c.o: ../../alg/crc32c.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/crc32c_arm.h ../../alg/crc32c_sse42.h ../../util/warnp.h ../../alg/crc32c.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/crc32c.c -o crc32c.o
-crc32c_arm.o: ../../alg/crc32c_arm.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
+crc32c_arm.o: ../../alg/crc32c_arm.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/crc32c_arm.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_ARM_CRC32_64} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/crc32c_arm.c -o crc32c_arm.o
-crc32c_sse42.o: ../../alg/crc32c_sse42.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
+crc32c_sse42.o: ../../alg/crc32c_sse42.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/crc32c_sse42.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_CRC32_64} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/crc32c_sse42.c -o crc32c_sse42.o
 md5.o: ../../alg/md5.c ../../util/insecure_memzero.h ../../util/sysendian.h ../../alg/md5.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/md5.c -o md5.o
@@ -36,7 +36,7 @@ sha1.o: ../../alg/sha1.c ../../util/insecure_memzero.h ../../util/sysendian.h ..
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/sha1.c -o sha1.o
 sha256.o: ../../alg/sha256.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../util/insecure_memzero.h ../../alg/sha256_shani.h ../../util/sysendian.h ../../util/warnp.h ../../alg/sha256.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/sha256.c -o sha256.o
-sha256_shani.o: ../../alg/sha256_shani.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
+sha256_shani.o: ../../alg/sha256_shani.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/sha256_shani.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_SHANI} ${CFLAGS_X86_SSSE3} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/sha256_shani.c -o sha256_shani.o
 aws_readkeys.o: ../../aws/aws_readkeys.c ../../util/insecure_memzero.h ../../util/warnp.h ../../aws/aws_readkeys.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../aws/aws_readkeys.c -o aws_readkeys.o
@@ -56,7 +56,7 @@ cpusupport_x86_ssse3.o: ../../cpusupport/cpusupport_x86_ssse3.c ../../cpusupport
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../cpusupport/cpusupport_x86_ssse3.c -o cpusupport_x86_ssse3.o
 crypto_aes.o: ../../crypto/crypto_aes.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_aes_aesni.h ../../util/insecure_memzero.h ../../util/warnp.h ../../crypto/crypto_aes.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../crypto/crypto_aes.c -o crypto_aes.o
-crypto_aes_aesni.o: ../../crypto/crypto_aes_aesni.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
+crypto_aes_aesni.o: ../../crypto/crypto_aes_aesni.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../util/align_ptr.h ../../util/insecure_memzero.h ../../util/warnp.h ../../crypto/crypto_aes_aesni.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_AESNI} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../crypto/crypto_aes_aesni.c -o crypto_aes_aesni.o
 crypto_aesctr.o: ../../crypto/crypto_aesctr.c ../../crypto/crypto_aes.h ../../util/insecure_memzero.h ../../util/sysendian.h ../../crypto/crypto_aesctr.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../crypto/crypto_aesctr.c -o crypto_aesctr.o
@@ -66,7 +66,7 @@ crypto_dh_group14.o: ../../crypto/crypto_dh_group14.c ../../crypto/crypto_dh_gro
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../crypto/crypto_dh_group14.c -o crypto_dh_group14.o
 crypto_entropy.o: ../../crypto/crypto_entropy.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_entropy_rdrand.h ../../util/entropy.h ../../util/insecure_memzero.h ../../alg/sha256.h ../../crypto/crypto_entropy.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../crypto/crypto_entropy.c -o crypto_entropy.o
-crypto_entropy_rdrand.o: ../../crypto/crypto_entropy_rdrand.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
+crypto_entropy_rdrand.o: ../../crypto/crypto_entropy_rdrand.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_entropy_rdrand.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_RDRAND} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../crypto/crypto_entropy_rdrand.c -o crypto_entropy_rdrand.o
 crypto_verify_bytes.o: ../../crypto/crypto_verify_bytes.c ../../crypto/crypto_verify_bytes.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../crypto/crypto_verify_bytes.c -o crypto_verify_bytes.o
