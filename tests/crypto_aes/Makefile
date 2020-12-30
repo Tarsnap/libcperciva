@@ -23,7 +23,7 @@ ${PROG}:${SRCS:.c=.o}
 	${CC} -o ${PROG} ${SRCS:.c=.o} ${LDFLAGS} ${LDADD_EXTRA} ${LDADD_REQ} ${LDADD_POSIX}
 
 main.o: main.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_aes.h ../../util/getopt.h ../../util/hexify.h ../../util/insecure_memzero.h ../../util/perftest.h ../../util/warnp.h
-	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c main.c -o main.o
+	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_SSE2} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c main.c -o main.o
 cpusupport_x86_aesni.o: ../../cpusupport/cpusupport_x86_aesni.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../cpusupport/cpusupport_x86_aesni.c -o cpusupport_x86_aesni.o
 crypto_aes.o: ../../crypto/crypto_aes.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_aes_aesni.h ../../util/insecure_memzero.h ../../util/warnp.h ../../crypto/crypto_aes.h
