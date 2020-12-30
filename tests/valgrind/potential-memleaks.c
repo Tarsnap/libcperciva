@@ -100,7 +100,8 @@ pl_workthread_strerror_localtime(void * cookie)
 	(void)cookie; /* UNUSED */
 	(void)str; /* UNUSED */
 
-	time(&now);
+	if (time(&now) == (time_t)(-1))
+		fprintf(stderr, "time");
 	localtime_r(&now, &tm);
 
 	return (NULL);
