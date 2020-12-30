@@ -24,9 +24,26 @@ fi
 cd ${D}
 SUBDIR_DEPTH=$(${MAKEBSD} -V SUBDIR_DEPTH)
 
-# Set up *-config.h so that we don't have missing headers
+# Fake a cpusupport-config.h that enables all options.  Keep this in sync
+# with cpusupport/Build/cpusupport.sh.
 rm -f ${SUBDIR_DEPTH}/cpusupport-config.h
-touch ${SUBDIR_DEPTH}/cpusupport-config.h
+{
+	# HWCAP
+	for name in GETAUXVAL
+	do
+		printf "#define CPUSUPPORT_HWCAP_${name} 1\n"
+	done
+	# X86
+	for name in CPUID CPUID_COUNT AESNI CRC32_64 RDRAND SHANI SSE2 SSSE3
+	do
+		printf "#define CPUSUPPORT_X86_${name} 1\n"
+	done
+	# ARM
+	for name in CRC32_64
+	do
+		printf "#define CPUSUPPORT_ARM_${name} 1\n"
+	done
+} > ${SUBDIR_DEPTH}/cpusupport-config.h
 
 copyvar() {
 	var=$1
