@@ -159,7 +159,7 @@ crypto_aesctr_stream(struct crypto_aesctr * stream, const uint8_t * inbuf,
 	size_t bytemod;
 
 #if defined(CPUSUPPORT_X86_AESNI)
-	if (use_aesni == 1) {
+	if ((use_aesni == 1) && (buflen >= 16)) {
 		crypto_aesctr_aesni_stream(stream, inbuf, outbuf, buflen);
 		return;
 	}
