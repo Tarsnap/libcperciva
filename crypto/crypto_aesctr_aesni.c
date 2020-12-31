@@ -59,23 +59,9 @@ void
 crypto_aesctr_aesni_stream(struct crypto_aesctr * stream, const uint8_t * inbuf,
     uint8_t * outbuf, size_t buflen)
 {
-	size_t bytemod;
 
-	/* Do we have any bytes left in the current cipherblock? */
-	bytemod = stream->bytectr % 16;
-	if (bytemod != 0) {
-		/* Do we have enough to complete the request? */
-		if (bytemod + buflen <= 16) {
-			/* Process only buflen bytes, then return. */
-			crypto_aesctr_stream_cipherblock_use(stream,
-			    &inbuf, &outbuf, &buflen, buflen, bytemod);
-			return;
-		}
-
-		/* Encrypt the byte(s) and update the positions. */
-		crypto_aesctr_stream_cipherblock_use(stream, &inbuf,
-		    &outbuf, &buflen, 16 - bytemod, bytemod);
-	}
+	if (crypto_aesctr_stream_preblock(stream, &inbuf, &outbuf, &buflen))
+		return;
 
 	/* Process blocks of 16 bytes; we need a new cipherblock. */
 	while (buflen >= 16) {
@@ -84,15 +70,7 @@ crypto_aesctr_aesni_stream(struct crypto_aesctr * stream, const uint8_t * inbuf,
 		    &outbuf, &buflen);
 	}
 
-	/* Process any final bytes; we need a new cipherblock. */
-	if (buflen > 0) {
-		/* Generate a block of cipherstream. */
-		crypto_aesctr_stream_cipherblock_generate(stream);
-
-		/* Encrypt the byte(s) and update the positions. */
-		crypto_aesctr_stream_cipherblock_use(stream, &inbuf,
-		    &outbuf, &buflen, buflen, 0);
-	}
+	crypto_aesctr_stream_postblock(stream, &inbuf, &outbuf, &buflen);
 }
 
 #endif /* CPUSUPPORT_X86_AESNI */
