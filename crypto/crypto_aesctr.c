@@ -146,13 +146,6 @@ crypto_aesctr_stream(struct crypto_aesctr * stream, const uint8_t * inbuf,
 {
 	size_t bytemod;
 
-#if defined(CPUSUPPORT_X86_AESNI)
-	if ((buflen >= 16) && crypto_aes_use_x86_aesni()) {
-		crypto_aesctr_aesni_stream(stream, inbuf, outbuf, buflen);
-		return;
-	}
-#endif
-
 	/* Do we have any bytes left in the current cipherblock? */
 	bytemod = stream->bytectr % 16;
 	if (bytemod != 0) {
@@ -168,6 +161,18 @@ crypto_aesctr_stream(struct crypto_aesctr * stream, const uint8_t * inbuf,
 		crypto_aesctr_stream_cipherblock_use(stream, &inbuf, &outbuf,
 		    &buflen, 16 - bytemod, bytemod);
 	}
+
+#if defined(CPUSUPPORT_X86_AESNI)
+	if (buflen >= 16) {
+		if (crypto_aes_use_x86_aesni()) {
+			crypto_aesctr_aesni_stream_blocks(stream,
+			    inbuf, outbuf, buflen / 16);
+			inbuf += (buflen / 16) * 16;
+			outbuf += (buflen / 16) * 16;
+			buflen -= (buflen / 16) * 16;
+		}
+	}
+#endif
 
 	/* Process blocks of 16 bytes; we need a new cipherblock. */
 	while (buflen >= 16) {
