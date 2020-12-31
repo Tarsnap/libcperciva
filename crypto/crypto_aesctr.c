@@ -11,8 +11,6 @@
 #include "crypto_aesctr.h"
 #include "crypto_aesctr_internal.h"
 
-static int use_aesni = -1;
-
 /**
  * crypto_aesctr_alloc(void):
  * Allocate an object for performing AES in CTR code.  This must be followed
@@ -22,16 +20,6 @@ struct crypto_aesctr *
 crypto_aesctr_alloc(void)
 {
 	struct crypto_aesctr * stream;
-
-#if defined(CPUSUPPORT_X86_AESNI)
-	/* Can we use AESNI? */
-	if (use_aesni == -1) {
-		if (crypto_aes_use_x86_aesni())
-			use_aesni = 1;
-		else
-			use_aesni = 0;
-	}
-#endif
 
 	/* Allocate memory. */
 	if ((stream = malloc(sizeof(struct crypto_aesctr))) == NULL)
@@ -159,7 +147,7 @@ crypto_aesctr_stream(struct crypto_aesctr * stream, const uint8_t * inbuf,
 	size_t bytemod;
 
 #if defined(CPUSUPPORT_X86_AESNI)
-	if ((use_aesni == 1) && (buflen >= 16)) {
+	if ((buflen >= 16) && crypto_aes_use_x86_aesni()) {
 		crypto_aesctr_aesni_stream(stream, inbuf, outbuf, buflen);
 		return;
 	}
@@ -234,16 +222,6 @@ crypto_aesctr_buf(const struct crypto_aes_key * key, uint64_t nonce,
 
 	/* Sanity check. */
 	assert(key != NULL);
-
-#if defined(CPUSUPPORT_X86_AESNI)
-	/* Can we use AESNI? */
-	if (use_aesni == -1) {
-		if (crypto_aes_use_x86_aesni())
-			use_aesni = 1;
-		else
-			use_aesni = 0;
-	}
-#endif
 
 	/* Initialize values. */
 	crypto_aesctr_init2(stream, key, nonce);
