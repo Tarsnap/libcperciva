@@ -15,6 +15,13 @@
 #include "perftest.h"
 #include "warnp.h"
 
+/* Must come after cpusupport.h. */
+#ifdef CPUSUPPORT_X86_AESNI
+#include <emmintrin.h>
+
+#include "crypto_aes_aesni_m128i.h"
+#endif
+
 #define MAX_PLAINTEXT_LENGTH 16
 
 /* Forward declaration. */
@@ -154,10 +161,27 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
 	struct perftest_cookie_aes * pca = cookie;
 	size_t i;
+#ifdef CPUSUPPORT_X86_AESNI
+	__m128i bufsse;
+#endif
 
 	(void)buflen; /* UNUSED */
 
 	/* Do the encryption. */
+#ifdef CPUSUPPORT_X86_AESNI
+	if (crypto_aes_use_x86_aesni()) {
+		/* Load the plaintext. */
+		bufsse = _mm_loadu_si128((const __m128i *)buf);
+
+		/* Use the __m128i bufsse, instead of the normal buf. */
+		for (i = 0; i < nreps; i++)
+			bufsse = crypto_aes_encrypt_block_aesni_m128i(bufsse,
+			    pca->key_exp);
+
+		/* Store the output. */
+		_mm_storeu_si128((__m128i *)buf, bufsse);
+	} else
+#endif
 	for (i = 0; i < nreps; i++)
 		crypto_aes_encrypt_block(buf, buf, pca->key_exp);
 
@@ -225,6 +249,9 @@ selftest(void)
 	size_t i;
 	size_t failures = 0;
 	size_t num_tests = sizeof(tests) / sizeof(tests[0]);
+#ifdef CPUSUPPORT_X86_AESNI
+	__m128i bufsse;
+#endif
 
 	/* Sanity check. */
 #ifdef CPUSUPPORT_X86_AESNI
@@ -251,6 +278,15 @@ selftest(void)
 		    keylen * 8, tests[i].plaintext_hex);
 
 		/* Run AES. */
+#ifdef CPUSUPPORT_X86_AESNI
+		if (crypto_aes_use_x86_aesni()) {
+			bufsse = _mm_loadu_si128(
+			    (const __m128i *)plaintext_arr);
+			bufsse = crypto_aes_encrypt_block_aesni_m128i(bufsse,
+			    key_exp);
+			_mm_storeu_si128((__m128i *)cbuf, bufsse);
+		} else
+#endif
 		crypto_aes_encrypt_block(plaintext_arr, cbuf, key_exp);
 
 		/* Check result. */
