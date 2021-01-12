@@ -16,8 +16,8 @@
 /* Performance tests. */
 static const size_t perfsizes[] = {256, 1024, 10000};
 static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
-static const size_t nbytes_perftest = 1000000000;	/* 1 GB */
-static const size_t nbytes_warmup = 100000000;		/* approx 100 MB */
+static const size_t nbytes_perftest = 100000000;	/* 100 MB */
+static const size_t nbytes_warmup = 10000000;		/* 10 MB */
 
 /* Print a string, then whether or not we're using hardware instructions. */
 static void
