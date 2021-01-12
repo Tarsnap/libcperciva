@@ -198,7 +198,7 @@ SHA256_Transform(uint32_t state[static restrict 8],
 
 #if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3)
 	/* Use SHANI if we can. */
-	if (usehw()) {
+	if (usehw() == 1) {
 		SHA256_Transform_shani(state, block);
 		return;
 	}
