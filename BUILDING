@@ -1,0 +1,49 @@
+Platform-specific notes
+-----------------------
+
+- ARM support with GCC and clang isn't as mature as x86, so there's a few
+  "gotchas".  In particular, we're talking about which CPU features and API
+  the compiler supports.  For gcc and clang, we can examine these with:
+
+      $CC -dM -E - < /dev/null | grep "__ARM" | sort
+
+  Ideally, a perfect compiler would allow us to do:
+
+      $CC -march=native -dM -E - < /dev/null | grep "__ARM" | sort
+
+  and see all of the desired flags.  This project currently uses:
+
+      __ARM_ACLE
+      __ARM_FEATURE_CRC32
+
+  Unfortunately, as of gcc-10 and clang-11, there is no perfect compiler.
+
+  - gcc 10.2 does not define __ARM_ACLE.  It is documented that gcc 10.2 does
+    "not support ACLE 2.0 fully" [1], but that "both back ends [arm32 and
+    aarch64] support CRC32 intrinsics".
+
+    Empirically, it seems safe to define __ARM_ACLE manually:
+
+        CFLAGS="-march=native -D__ARM_ACLE=200"
+
+    We have taken this approach in cpusupport/Build/cpusupport.sh.
+
+    [1] https://gcc.gnu.org/onlinedocs/gcc-10.2.0/gcc/ARM-C-Language-Extensions-_0028ACLE_0029.html
+
+  - clang only supports -march=native on certain CPUs, and some of the -march
+    values do not enable all features which should be available.  In addition,
+    it does not enable CRC32 on some CPUs which contain the intrinsics [2].
+
+    We can enable this by adding +crc to the -march argument, as was done in
+    cpusupport/Build/cpusupport.sh.
+
+    Some examples of appropriate -march arguments:
+
+    - on Neoverse-N1 (the chip used by AWS EC2 t4g), use
+        CFLAGS="-march=armv8.2-a+crc"
+
+    - on raspberry pi 4, use either:
+        CFLAGS="-march=native"
+        CFLAGS="-march=armv8-a+crc"
+
+    [2] https://bugs.llvm.org/show_bug.cgi?id=33480
