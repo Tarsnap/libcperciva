@@ -157,7 +157,7 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 
 	if (buflen == 32) {
 		for (nreps_i = 0; nreps_i < nreps; nreps_i++)
-			PERFTEST_FULL(tests, 64);
+			PERFTEST_FULL(tests, 32);
 	} else if (buflen == 64) {
 		for (nreps_i = 0; nreps_i < nreps; nreps_i++)
 			PERFTEST_FULL(tests, 64);
