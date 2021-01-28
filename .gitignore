@@ -30,6 +30,7 @@ tests/sha1/test_sha1
 tests/sha256/test_sha256
 tests/parsenum/test_parsenum
 tests/readpass_file/test_readpass_file
+tests/sysendian/test_sysendian
 tests/valgrind/potential-memleaks
 tests/warnp/test_warnp
 # Test output directories and generated files.
