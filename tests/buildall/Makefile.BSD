@@ -32,6 +32,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/aws
 
 # CPU features detection
 .PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
+SRCS	+=	cpusupport_arm_crc32_64.c
 SRCS	+=	cpusupport_x86_aesni.c
 SRCS	+=	cpusupport_x86_crc32_64.c
 SRCS	+=	cpusupport_x86_rdrand.c
