@@ -29,11 +29,18 @@ print_hardware(const char * str)
 	if (cpusupport_x86_shani() && cpusupport_x86_ssse3())
 		use_hardware = 1;
 #endif
+#if defined(CPUSUPPORT_X86_SSE2)
+	/* If we're not using SHANI, check if we can use SSE2. */
+	if ((use_hardware == 0) && cpusupport_x86_sse2())
+		use_hardware = 2;
+#endif
 
 	/* Inform the user. */
 	printf("%s", str);
-	if (use_hardware)
+	if (use_hardware == 1)
 		printf(" using hardware SHANI.\n");
+	else if (use_hardware == 2)
+		printf(" using hardware SSE2.\n");
 	else
 		printf(" using software SHA.\n");
 }
