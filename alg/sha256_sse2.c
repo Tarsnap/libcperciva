@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include <immintrin.h>
+
 #include "sysendian.h"
 
 #include "sha256_sse2.h"
@@ -49,12 +51,9 @@ static const uint32_t Krnd[64] = {
 /* Elementary functions used by SHA256 */
 #define Ch(x, y, z)	((x & (y ^ z)) ^ z)
 #define Maj(x, y, z)	((x & (y | z)) | (y & z))
-#define SHR(x, n)	(x >> n)
 #define ROTR(x, n)	((x >> n) | (x << (32 - n)))
 #define S0(x)		(ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22))
 #define S1(x)		(ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25))
-#define s0(x)		(ROTR(x, 7) ^ ROTR(x, 18) ^ SHR(x, 3))
-#define s1(x)		(ROTR(x, 17) ^ ROTR(x, 19) ^ SHR(x, 10))
 
 /* SHA256 round function */
 #define RND(a, b, c, d, e, f, g, h, k)			\
@@ -71,8 +70,103 @@ static const uint32_t Krnd[64] = {
 	    W[i + ii] + Krnd[i + ii])
 
 /* Message schedule computation */
-#define MSCH(W, ii, i)				\
-	W[i + ii + 16] = s1(W[i + ii + 14]) + W[i + ii + 9] + s0(W[i + ii + 1]) + W[i + ii]
+#define SHR32(x, n) (_mm_srli_epi32(x, n))
+#define ROTR32(x, n) (_mm_or_si128(SHR32(x, n), _mm_slli_epi32(x, (32-n))))
+#define s0_128(x) _mm_xor_si128(_mm_xor_si128(			\
+	ROTR32(x, 7), ROTR32(x, 18)), SHR32(x, 3))
+
+static inline __m128i
+s1_128_high(__m128i a)
+{
+	__m128i b;
+	__m128i c;
+
+	/* ROTR, loading data as {B, B, A, A}; lanes 1 & 3 will be junk. */
+	b = _mm_shuffle_epi32(a, _MM_SHUFFLE(1, 1, 0, 0));
+	c = _mm_xor_si128(_mm_srli_epi64(b, 17), _mm_srli_epi64(b, 19));
+
+	/* Shift and XOR with rotated data; lanes 1 & 3 will be junk. */
+	c = _mm_xor_si128(c, _mm_srli_epi32(b, 10));
+
+	/* Shuffle good data back and zero unwanted lanes. */
+	c = _mm_shuffle_epi32(c, _MM_SHUFFLE(2, 0, 2, 0));
+	c = _mm_slli_si128(c, 8);
+
+	return (c);
+}
+
+static inline __m128i
+s1_128_low(__m128i a)
+{
+	__m128i b;
+	__m128i c;
+
+	/* ROTR, loading data as {B, B, A, A}; lanes 1 & 3 will be junk. */
+	b = _mm_shuffle_epi32(a, _MM_SHUFFLE(3, 3, 2, 2));
+	c = _mm_xor_si128(_mm_srli_epi64(b, 17), _mm_srli_epi64(b, 19));
+
+	/* Shift and XOR with rotated data; lanes 1 & 3 will be junk. */
+	c = _mm_xor_si128(c, _mm_srli_epi32(b, 10));
+
+	/* Shuffle good data back and zero unwanted lanes. */
+	c = _mm_shuffle_epi32(c, _MM_SHUFFLE(2, 0, 2, 0));
+	c = _mm_srli_si128(c, 8);
+
+	return (c);
+}
+
+/**
+ * SPAN_ONE_THREE(a, b):
+ * Combine the lowest word of ${a} with the upper three words of ${b}.  This
+ * could also be thought of returning bits [159:32] of the 256-bit value
+ * consisting of (a[127:0] b[127:0]).  In other words, set:
+ *     dst[31:0] := b[63:32]
+ *     dst[63:32] := b[95:64]
+ *     dst[95:64] := b[127:96]
+ *     dst[127:96] := a[31:0]
+ */
+#define SPAN_ONE_THREE(a, b) (_mm_shuffle_epi32(_mm_castps_si128(	\
+	_mm_move_ss(_mm_castsi128_ps(a), _mm_castsi128_ps(b))),		\
+	_MM_SHUFFLE(0, 3, 2, 1)))
+
+static inline void
+MSG4(uint32_t W[64], int ii, int i)
+{
+	__m128i X0, X1, X2, X3;
+	__m128i X4;
+	__m128i Xj_minus_seven, Xj_minus_fifteen;
+	int j;
+
+	/*
+	 * Most algorithms express "the next unknown value of the message
+	 * schedule" as ${W[i]}, and write other indices relative to ${i}.
+	 * Unfortunately, our main loop uses ${i} to indicate 0, 16, 32, or
+	 * 48.  To avoid confusion, this implementation of the message
+	 * scheduling will use ${W[j]} to indicate "the next unknown value".
+	 */
+	j = i + ii + 16;
+
+	/* Set up variables with various portions of W. */
+	X0 = _mm_loadu_si128((const __m128i *)&W[j - 16]);
+	X1 = _mm_loadu_si128((const __m128i *)&W[j - 12]);
+	X2 = _mm_loadu_si128((const __m128i *)&W[j - 8]);
+	X3 = _mm_loadu_si128((const __m128i *)&W[j - 4]);
+	Xj_minus_seven = SPAN_ONE_THREE(X2, X3);
+	Xj_minus_fifteen = SPAN_ONE_THREE(X0, X1); 
+
+	/* Begin computing X4. */
+	X4 = _mm_add_epi32(X0, Xj_minus_seven);
+	X4 = _mm_add_epi32(X4, s0_128(Xj_minus_fifteen));
+
+	/* First half of s1. */
+	X4 = _mm_add_epi32(X4, s1_128_low(X3));
+
+	/* Second half of s1; this depends on the above value of X4. */
+	X4 = _mm_add_epi32(X4, s1_128_high(X4));
+
+	/* Update W. */
+	_mm_storeu_si128((__m128i *)&W[j], X4);
+}
 
 /**
  * SHA256_Transform_sse2(state, block):
@@ -122,22 +216,10 @@ SHA256_Transform_sse2(uint32_t state[static restrict 8],
 
 		if (i == 48)
 			break;
-		MSCH(W, 0, i);
-		MSCH(W, 1, i);
-		MSCH(W, 2, i);
-		MSCH(W, 3, i);
-		MSCH(W, 4, i);
-		MSCH(W, 5, i);
-		MSCH(W, 6, i);
-		MSCH(W, 7, i);
-		MSCH(W, 8, i);
-		MSCH(W, 9, i);
-		MSCH(W, 10, i);
-		MSCH(W, 11, i);
-		MSCH(W, 12, i);
-		MSCH(W, 13, i);
-		MSCH(W, 14, i);
-		MSCH(W, 15, i);
+		MSG4(W, 0, i);
+		MSG4(W, 4, i);
+		MSG4(W, 8, i);
+		MSG4(W, 12, i);
 	}
 
 	/* 4. Mix local working variables into global state. */
