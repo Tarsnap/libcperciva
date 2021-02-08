@@ -31,12 +31,6 @@ SRCS	+=	perftest.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-cflags-crc32c_arm.o:
-	@echo '$${CFLAGS_ARM_CRC32_64}'
-
-cflags-crc32c_sse42.o:
-	@echo '$${CFLAGS_X86_CRC32_64}'
-
 test:	all
 	./test_crc32 -x
 
