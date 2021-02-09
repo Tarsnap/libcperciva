@@ -17,6 +17,10 @@
 
 /* Must come after cpusupport.h. */
 #ifdef CPUSUPPORT_X86_AESNI
+/**
+ * CPUSUPPORT CFLAGS: X86_SSE2
+ * - We only need SSE2 (not AESNI) instructions in this file.
+ */
 #include <emmintrin.h>
 
 #include "crypto_aes_aesni_m128i.h"

@@ -36,12 +36,6 @@ SRCS	+=	perftest.c
 SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-cflags-crypto_aes_aesni.o:
-	@echo '$${CFLAGS_X86_AESNI}'
-
-cflags-crypto_aesctr_aesni.o:
-	@echo '$${CFLAGS_X86_AESNI}'
-
 test:	all
 	./test_crypto_aesctr -x
 
