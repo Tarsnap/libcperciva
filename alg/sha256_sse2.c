@@ -154,7 +154,7 @@ MSG4(uint32_t W[64], int ii, int i)
 	X2 = _mm_loadu_si128((const __m128i *)&W[j - 8]);
 	X3 = _mm_loadu_si128((const __m128i *)&W[j - 4]);
 	Xj_minus_seven = SPAN_ONE_THREE(X2, X3);
-	Xj_minus_fifteen = SPAN_ONE_THREE(X0, X1); 
+	Xj_minus_fifteen = SPAN_ONE_THREE(X0, X1);
 
 	/* Begin computing X4. */
 	X4 = _mm_add_epi32(X0, Xj_minus_seven);
