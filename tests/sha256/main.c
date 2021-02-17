@@ -34,6 +34,10 @@ print_hardware(const char * str)
 	if ((use_hardware == 0) && cpusupport_x86_sse2())
 		use_hardware = 2;
 #endif
+#if defined(CPUSUPPORT_ARM_SHA256)
+	if ((use_hardware == 0) && cpusupport_arm_sha256())
+		use_hardware = 3;
+#endif
 
 	/* Inform the user. */
 	printf("%s", str);
@@ -41,6 +45,8 @@ print_hardware(const char * str)
 		printf(" using hardware SHANI.\n");
 	else if (use_hardware == 2)
 		printf(" using hardware SSE2.\n");
+	else if (use_hardware == 3)
+		printf(" using hardware ARM SHA256.\n");
 	else
 		printf(" using software SHA.\n");
 }
