@@ -11,6 +11,13 @@
 
 #if defined(CPUSUPPORT_X86_CRC32_64) || defined(CPUSUPPORT_ARM_CRC32_64)
 #define HWACCEL
+
+enum {
+	HW_UNSET,
+	HW_X86_CRC32,
+	HW_ARM_CRC32,
+	HW_SOFTWARE
+};
 #endif
 
 /**
@@ -99,18 +106,13 @@ static struct crc32_test {
  * Test whether hardware extensions and software code produce the same results.
  */
 static int
-hwtest(void)
+hwtest(uint32_t (func)(uint32_t, const uint8_t *, size_t))
 {
 	uint32_t state = T_0_0x80;
 
 	/* Test hardware transform function. */
-#if defined(CPUSUPPORT_X86_CRC32_64)
-	state = CRC32C_Update_SSE42(state, (const uint8_t *)testcase.buf,
+	state = func(state, (const uint8_t *)testcase.buf,
 	    strlen(testcase.buf));
-#elif defined(CPUSUPPORT_ARM_CRC32_64)
-	state = CRC32C_Update_ARM(state, (const uint8_t *)testcase.buf,
-	    strlen(testcase.buf));
-#endif
 
 	/* Is the output correct? */
 	return (memcmp(&state, testcase.crc, 4));
@@ -118,36 +120,28 @@ hwtest(void)
 
 /* Should we use CRC? */
 static int
-usecrc(void)
+usehw(void)
 {
-	static int crcgood = -1;
+	static int hwgood = HW_UNSET;
 
 	/* If we haven't decided which code to use yet, decide now. */
-	while (crcgood == -1) {
+	while (hwgood == HW_UNSET) {
 		/* Default to software. */
-		crcgood = 0;
+		hwgood = HW_SOFTWARE;
 
 #if defined(CPUSUPPORT_X86_CRC32_64)
-		/* If the CPU doesn't claim to support SSE4.2, stop here. */
-		if (!cpusupport_x86_crc32_64())
-			break;
-#elif defined(CPUSUPPORT_ARM_CRC32_64)
-		/* If the CPU doesn't claim to support ARM CRC32, stop here. */
-		if (!cpusupport_arm_crc32_64())
+		CPUSUPPORT_CHECK_USE(HW_X86_CRC32, cpusupport_x86_crc32_64(),
+		    hwtest(CRC32C_Update_SSE42));
+#endif
+#if defined(CPUSUPPORT_ARM_CRC32_64)
+		CPUSUPPORT_CHECK_USE(HW_ARM_CRC32, cpusupport_arm_crc32_64(),
+		    hwtest(CRC32C_Update_ARM));
 			break;
 #endif
-
-		/* Calculate with hardware and compare against a test vector. */
-		if (hwtest()) {
-			warn0("Disabling hardware CRC due to failed self-test");
-			break;
-		}
-
-		/* CRC works; use it. */
-		crcgood = 1;
 	}
 
-	return (crcgood);
+done:
+	return (hwgood);
 }
 #endif /* HWACCEL */
 
@@ -180,12 +174,12 @@ CRC32C_Update(CRC32C_CTX * ctx, const uint8_t * buf, size_t len)
 {
 
 #if defined(CPUSUPPORT_X86_CRC32_64)
-	if (usecrc() && (len >= 8)) {
+	if (usehw() && (len >= 8)) {
 		ctx->state = CRC32C_Update_SSE42(ctx->state, buf, len);
 		return;
 	}
 #elif defined(CPUSUPPORT_ARM_CRC32_64)
-	if (usecrc() && (len >= 8)) {
+	if (usehw() && (len >= 8)) {
 		ctx->state = CRC32C_Update_ARM(ctx->state, buf, len);
 		return;
 	}

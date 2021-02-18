@@ -7,8 +7,19 @@
 #include "crypto_aesctr_aesni.h"
 #include "insecure_memzero.h"
 #include "sysendian.h"
+#include "warnp.h"
 
 #include "crypto_aesctr.h"
+
+#if defined(CPUSUPPORT_X86_AESNI)
+#define HWACCEL
+
+enum {
+	HW_UNSET,
+	HW_X86_AESNI,
+	HW_SOFTWARE
+};
+#endif
 
 /**
  * In order to optimize AES-CTR, it is desirable to separate out the handling
@@ -24,25 +35,28 @@
  */
 #include "crypto_aesctr_shared.c"
 
-#if defined(CPUSUPPORT_X86_AESNI)
-/**
- * crypto_aes_use_x86_aesni(void):
- * Return non-zero if AESNI operations are available.
- */
+#ifdef HWACCEL
+/* Which type of hardware acceleration should we use, if any? */
 static int
-crypto_aesctr_use_x86_aesni(void)
+usehw(void)
 {
-	static int aesnigood = -1;
+	static int hwgood = HW_UNSET;
 
-	/* Can we use AESNI? */
-	if (aesnigood == -1) {
-		if (crypto_aes_use_x86_aesni())
-			aesnigood = 1;
-		else
-			aesnigood = 0;
+	while (hwgood == HW_UNSET) {
+		hwgood = HW_SOFTWARE;
+
+#if defined(CPUSUPPORT_X86_AESNI)
+		/*
+		 * We want the "check function" to evaluate to 0 if it passes,
+		 * so we need to negate (crypto_aes_use_x86_aesni() == 1).
+		 */
+		CPUSUPPORT_CHECK_USE(HW_X86_AESNI, cpusupport_x86_aesni(), 
+		    !(crypto_aes_use_x86_aesni() == 1));
+#endif
 	}
 
-	return (aesnigood);
+done:
+	return (hwgood);
 }
 #endif
 
@@ -137,10 +151,23 @@ crypto_aesctr_stream(struct crypto_aesctr * stream, const uint8_t * inbuf,
     uint8_t * outbuf, size_t buflen)
 {
 
+#ifdef HWACCEL
+	switch(usehw()) {
 #if defined(CPUSUPPORT_X86_AESNI)
-	if ((buflen >= 16) && crypto_aesctr_use_x86_aesni()) {
-		crypto_aesctr_aesni_stream(stream, inbuf, outbuf, buflen);
-		return;
+	case HW_X86_AESNI:
+		if (buflen >= 16) {
+			crypto_aesctr_aesni_stream(stream, inbuf, outbuf,
+			    buflen);
+			return;
+		}
+		break;
+#endif
+	case HW_SOFTWARE:
+		break;
+	default:
+		/* UNREACHABLE */
+		warn0("Programmer error: unreachable usehw value.");
+		assert(0);
 	}
 #endif
 
