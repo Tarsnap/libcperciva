@@ -21,6 +21,7 @@ SRCS	+=	crc32c_sse42.c
 SRCS	+=	md5.c
 SRCS	+=	sha1.c
 SRCS	+=	sha256.c
+SRCS	+=	sha256_arm.c
 SRCS	+=	sha256_shani.c
 SRCS	+=	sha256_sse2.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
@@ -34,6 +35,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/aws
 # CPU features detection
 .PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
 SRCS	+=	cpusupport_arm_crc32_64.c
+SRCS	+=	cpusupport_arm_sha256.c
 SRCS	+=	cpusupport_x86_aesni.c
 SRCS	+=	cpusupport_x86_crc32_64.c
 SRCS	+=	cpusupport_x86_rdrand.c
