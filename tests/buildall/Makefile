@@ -36,7 +36,7 @@ sha1.o: ../../alg/sha1.c ../../util/insecure_memzero.h ../../util/sysendian.h ..
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/sha1.c -o sha1.o
 sha256.o: ../../alg/sha256.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../util/insecure_memzero.h ../../alg/sha256_arm.h ../../alg/sha256_shani.h ../../alg/sha256_sse2.h ../../util/sysendian.h ../../util/warnp.h ../../alg/sha256.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/sha256.c -o sha256.o
-sha256_arm.o: ../../alg/sha256_arm.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../util/sysendian.h ../../alg/sha256_arm.h
+sha256_arm.o: ../../alg/sha256_arm.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/sha256_arm.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_ARM_SHA256} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/sha256_arm.c -o sha256_arm.o
 sha256_shani.o: ../../alg/sha256_shani.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../alg/sha256_shani.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_SHANI} ${CFLAGS_X86_SSSE3} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../../alg/sha256_shani.c -o sha256_shani.o
