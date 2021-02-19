@@ -171,7 +171,7 @@ usehw(void)
 #if defined(CPUSUPPORT_ARM_SHA256)
 		CPUSUPPORT_CHECK_USE(HW_ARM_SHA256, cpusupport_arm_sha256(),
 		    hwtest(initial_state, block, W, S,
-			SHA256_Transform_arm_with_W_S));
+			SHA256_Transform_arm));
 #endif
 	}
 
