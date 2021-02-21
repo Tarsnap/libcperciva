@@ -37,7 +37,7 @@ enum {
 
 static void (* SHA256_Transform)(uint32_t[static restrict 8],
     const uint8_t[static restrict 64], uint32_t[static restrict 64],
-    uint32_t[static restrict 8]) = SHA256_Transform_generic;
+    uint32_t[static restrict 8]) = NULL;
 #endif
 
 /*
@@ -395,6 +395,39 @@ SHA256_Init(SHA256_CTX * ctx)
 
 	/* Initialize state. */
 	memcpy(ctx->state, initial_state, sizeof(initial_state));
+
+	/* Choose hardware intrinsics (if applicable). */
+	if (SHA256_Transform == NULL) {
+#ifdef HWACCEL
+		switch(usehw()) {
+#if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3)
+		case HW_X86_SHANI:
+			SHA256_Transform = SHA256_Transform_shani_with_W_S;
+			break;
+#endif
+#if defined(CPUSUPPORT_X86_SSE2)
+		case HW_X86_SSE2:
+			SHA256_Transform = SHA256_Transform_sse2;
+			break;
+#endif
+#if defined(CPUSUPPORT_ARM_SHA256)
+		case HW_ARM_SHA256:
+			SHA256_Transform = SHA256_Transform_arm_with_W_S;
+			break;
+#endif
+		case HW_SOFTWARE:
+			SHA256_Transform = SHA256_Transform_generic;
+			break;
+		default:
+			/* UNREACHABLE */
+			warn0("Programmer error: unreachable usehw value.");
+			assert(0);
+		}
+#else
+		/* If there's no hardware acceleration, use software. */
+		SHA256_Transform = SHA256_Transform_generic;
+#endif /* HWACCEL */
+	}
 }
 
 /**
