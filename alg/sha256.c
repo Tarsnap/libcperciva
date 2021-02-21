@@ -103,7 +103,7 @@ static const uint32_t initial_state[8] = {
 #ifdef HWACCEL
 #if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3)
 /* Shim so that we can test SHA256_Transform_shani() in the standard manner. */
-static void
+static inline void
 SHA256_Transform_shani_with_W_S(uint32_t state[static restrict 8],
     const uint8_t block[static restrict 64], uint32_t W[static restrict 64],
     uint32_t S[static restrict 8])
@@ -117,7 +117,7 @@ SHA256_Transform_shani_with_W_S(uint32_t state[static restrict 8],
 #endif
 #if defined(CPUSUPPORT_ARM_SHA256)
 /* Shim so that we can test SHA256_Transform_arm() in the standard manner. */
-static void
+static inline void
 SHA256_Transform_arm_with_W_S(uint32_t state[static restrict 8],
     const uint8_t block[static restrict 64], uint32_t W[static restrict 64],
     uint32_t S[static restrict 8])
