@@ -12,6 +12,16 @@
 
 #include "sha256.h"
 
+#ifdef POSIXFAIL_ABSTRACT_DECLARATOR
+static void SHA256_Transform_generic(uint32_t state[static restrict 8],
+    const uint8_t block[static restrict 64], uint32_t W[static restrict 64],
+    uint32_t S[static restrict 8]);
+#else
+static void SHA256_Transform_generic(uint32_t[static restrict 8],
+    const uint8_t[static restrict 64], uint32_t[static restrict 64],
+    uint32_t[static restrict 8]);
+#endif
+
 #if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3) ||	\
     defined(CPUSUPPORT_X86_SSE2) ||					\
     defined(CPUSUPPORT_ARM_SHA256)
@@ -24,16 +34,10 @@ enum {
 	HW_ARM_SHA256,
 	HW_SOFTWARE
 };
-#endif
 
-#ifdef POSIXFAIL_ABSTRACT_DECLARATOR
-static void SHA256_Transform(uint32_t state[static restrict 8],
-    const uint8_t block[static restrict 64], uint32_t W[static restrict 64],
-    uint32_t S[static restrict 8]);
-#else
-static void SHA256_Transform(uint32_t[static restrict 8],
+static void (* SHA256_Transform)(uint32_t[static restrict 8],
     const uint8_t[static restrict 64], uint32_t[static restrict 64],
-    uint32_t[static restrict 8]);
+    uint32_t[static restrict 8]) = SHA256_Transform_generic;
 #endif
 
 /*
@@ -143,7 +147,7 @@ hwtest(const uint32_t state[static restrict 8],
 
 	/* Software transform. */
 	memcpy(state_sw, state, sizeof(state_sw));
-	SHA256_Transform(state_sw, block, W, S);
+	SHA256_Transform_generic(state_sw, block, W, S);
 
 	/* Hardware transform. */
 	memcpy(state_hw, state, sizeof(state_hw));
@@ -260,7 +264,7 @@ done:
  * filled with sensitive data, and should be sanitized by the callee.
  */
 static void
-SHA256_Transform(uint32_t state[static restrict 8],
+SHA256_Transform_generic(uint32_t state[static restrict 8],
     const uint8_t block[static restrict 64],
     uint32_t W[static restrict 64], uint32_t S[static restrict 8])
 {
