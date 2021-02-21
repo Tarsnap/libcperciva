@@ -270,32 +270,6 @@ SHA256_Transform_generic(uint32_t state[static restrict 8],
 {
 	int i;
 
-#ifdef HWACCEL
-	switch(usehw()) {
-#if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3)
-	case HW_X86_SHANI:
-		SHA256_Transform_shani(state, block);
-		return;
-#endif
-#if defined(CPUSUPPORT_X86_SSE2)
-	case HW_X86_SSE2:
-		SHA256_Transform_sse2(state, block, W, S);
-		return;
-#endif
-#if defined(CPUSUPPORT_ARM_SHA256)
-	case HW_ARM_SHA256:
-		SHA256_Transform_arm(state, block);
-		return;
-#endif
-	case HW_SOFTWARE:
-		break;
-	default:
-		/* UNREACHABLE */
-		warn0("Programmer error: unreachable usehw value.");
-		assert(0);
-	}
-#endif /* HWACCEL */
-
 	/* 1. Prepare the first part of the message schedule W. */
 	be32dec_vect(W, block, 64);
 
