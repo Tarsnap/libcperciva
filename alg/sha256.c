@@ -173,51 +173,19 @@ usehw(void)
 			block[i] = i;
 
 #if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3)
-		/* If the CPU claims to be able to do it... */
-		if (cpusupport_x86_shani() && cpusupport_x86_ssse3()) {
-			/* ... test if it works... */
-			if (hwtest(initial_state, block, W, S,
-			    SHA256_Transform_shani_with_W_S) == 0) {
-				/* ... if it works, use it and bail. */
-				hwgood = HW_X86_SHANI;
-				goto done;
-			} else {
-				/* ... else, print a warning and fallthrough. */
-				warn0("Disabling SHANI due to failed"
-				    " self-test");
-			}
-		}
+		CPUSUPPORT_CHECK_USE(HW_X86_SHANI,
+		    cpusupport_x86_shani() && cpusupport_x86_ssse3(),
+		    hwtest(initial_state, block, W, S,
+			SHA256_Transform_shani_with_W_S));
 #endif
 #if defined(CPUSUPPORT_X86_SSE2)
-		/* If the CPU claims to be able to do it... */
-		if (cpusupport_x86_sse2()) {
-			/* ... test if it works. */
-			if (hwtest(initial_state, block, W, S,
-			    SHA256_Transform_sse2) == 0) {
-				/* ... if it works, use it and bail. */
-				hwgood = HW_X86_SSE2;
-				goto done;
-			} else {
-				/* ... else, print a warning and fallthrough. */
-				warn0("Disabling SSE2 due to failed"
-				    " self-test");
-			}
-		}
+		CPUSUPPORT_CHECK_USE(HW_X86_SSE2, cpusupport_x86_sse2(),
+		    hwtest(initial_state, block, W, S, SHA256_Transform_sse2));
 #endif
 #if defined(CPUSUPPORT_ARM_SHA256)
-		/* If the CPU claims to be able to do it... */
-		if (cpusupport_arm_sha256()) {
-			/* ... test if it works... */
-			if (hwtest(initial_state, block, W, S,
-			    SHA256_Transform_arm_with_W_S)) {
-				warn0("Disabling ARM-SHA256 due to failed"
-				    " self-test");
-			} else
-				hwgood = HW_ARM_SHA256;
-
-			/* ... and bail whether or not we can use it. */
-			goto done;
-		}
+		CPUSUPPORT_CHECK_USE(HW_ARM_SHA256, cpusupport_arm_sha256(),
+		    hwtest(initial_state, block, W, S,
+			SHA256_Transform_arm_with_W_S));
 #endif
 	}
 
