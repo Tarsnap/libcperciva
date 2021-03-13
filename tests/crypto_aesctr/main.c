@@ -173,22 +173,20 @@ print_arr(const char * name, uint8_t * arr, size_t len)
 	printf("\n");
 }
 
-/* Print a string, then whether or not we're using hardware AESNI. */
+/* Print a string, then whether or not we're using hardware acceleration. */
 static void
 print_hardware(const char * str)
 {
-	int use_hardware = 0;
 
+	/* Inform the user of the general topic... */
+	printf("%s", str);
+
+	/* ... and whether we're using hardware acceleration or not. */
 #ifdef CPUSUPPORT_X86_AESNI
 	if (cpusupport_x86_aesni())
-		use_hardware = 1;
-#endif
-
-	/* Inform the user. */
-	printf("%s", str);
-	if (use_hardware)
 		printf(" using hardware AESNI.\n");
 	else
+#endif
 		printf(" using software AES.\n");
 }
 
