@@ -19,35 +19,30 @@ static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
 static const size_t nbytes_perftest = 100000000;	/* 100 MB */
 static const size_t nbytes_warmup = 10000000;		/* 10 MB */
 
-/* Print a string, then whether or not we're using hardware instructions. */
+/* Print a string, then whether or not we're using hardware acceleration. */
 static void
 print_hardware(const char * str)
 {
-	int use_hardware = 0;
 
+	/* Inform the user of the general topic... */
+	printf("%s", str);
+
+	/* ... and whether we're using hardware acceleration or not. */
 #if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3)
 	if (cpusupport_x86_shani() && cpusupport_x86_ssse3())
-		use_hardware = 1;
+		printf(" using hardware SHANI.\n");
+	else
 #endif
 #if defined(CPUSUPPORT_X86_SSE2)
-	/* If we're not using SHANI, check if we can use SSE2. */
-	if ((use_hardware == 0) && cpusupport_x86_sse2())
-		use_hardware = 2;
+	if (cpusupport_x86_sse2())
+		printf(" using hardware SSE2.\n");
+	else
 #endif
 #if defined(CPUSUPPORT_ARM_SHA256)
-	if ((use_hardware == 0) && cpusupport_arm_sha256())
-		use_hardware = 3;
-#endif
-
-	/* Inform the user. */
-	printf("%s", str);
-	if (use_hardware == 1)
-		printf(" using hardware SHANI.\n");
-	else if (use_hardware == 2)
-		printf(" using hardware SSE2.\n");
-	else if (use_hardware == 3)
+	if (cpusupport_arm_sha256())
 		printf(" using hardware ARM SHA256.\n");
 	else
+#endif
 		printf(" using software SHA.\n");
 }
 

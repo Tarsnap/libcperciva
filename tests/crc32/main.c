@@ -38,25 +38,25 @@ static const size_t num_perf = sizeof(perfsizes) / sizeof(perfsizes[0]);
 static const size_t nbytes_perftest = 1 << 29;		/* approx 500 MB */
 static const size_t nbytes_warmup = 16384 * 8000;	/* approx 131 MB */
 
-/* Print a string, then whether or not we're using hardware instructions. */
+/* Print a string, then whether or not we're using hardware acceleration. */
 static void
 print_hardware(const char * str)
 {
-	int use_hardware = 0;
 
+	/* Inform the user of the general topic... */
+	printf("%s", str);
+
+	/* ... and whether we're using hardware acceleration or not. */
 #if defined(CPUSUPPORT_X86_CRC32_64)
 	if (cpusupport_x86_crc32_64())
-		use_hardware = 1;
-#elif defined(CPUSUPPORT_ARM_CRC32_64)
-	if (cpusupport_arm_crc32_64())
-		use_hardware = 1;
-#endif
-
-	/* Inform the user. */
-	printf("%s", str);
-	if (use_hardware)
 		printf(" using hardware CRC32.\n");
 	else
+#endif
+#if defined(CPUSUPPORT_ARM_CRC32_64)
+	if (cpusupport_arm_crc32_64())
+		printf(" using hardware CRC32.\n");
+	else
+#endif
 		printf(" using software CRC32.\n");
 }
 
