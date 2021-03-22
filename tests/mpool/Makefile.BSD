@@ -10,13 +10,8 @@ LIBCPERCIVA_DIR	=	../..
 # Main test code
 SRCS	=	main.c
 
-# Data structures
+# libcperciva includes
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/datastruct
-
-# Utility functions
-.PATH.c :	${LIBCPERCIVA_DIR}/util
-SRCS	+=	monoclock.c
-SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	all

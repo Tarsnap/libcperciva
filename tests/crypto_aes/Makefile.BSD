@@ -13,25 +13,9 @@ LDADD_REQ	= -lcrypto
 # Main test code
 SRCS	=	main.c
 
-# CPU features detection
-.PATH.c	:	${LIBCPERCIVA_DIR}/cpusupport
-SRCS	+=	cpusupport_x86_aesni.c
+# libcperciva includes
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
-
-# Crypto
-.PATH.c	:	${LIBCPERCIVA_DIR}/crypto
-SRCS	+=	crypto_aes.c
-SRCS	+=	crypto_aes_aesni.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/crypto
-
-# Utility functions
-.PATH.c	:	${LIBCPERCIVA_DIR}/util
-SRCS	+=	getopt.c
-SRCS	+=	hexify.c
-SRCS	+=	insecure_memzero.c
-SRCS	+=	monoclock.c
-SRCS	+=	perftest.c
-SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	all

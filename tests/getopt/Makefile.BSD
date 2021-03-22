@@ -10,9 +10,7 @@ LIBCPERCIVA_DIR	=	../..
 # Main test code
 SRCS	=	main.c
 
-# Utility functions
-.PATH.c	:	${LIBCPERCIVA_DIR}/util
-SRCS	+=	getopt.c
+# libcperciva includes
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	all

@@ -10,19 +10,8 @@ LIBCPERCIVA_DIR	=	../..
 # Main test code
 SRCS	=	main.c
 
-# Algorithms
-.PATH.c	:	${LIBCPERCIVA_DIR}/alg
-SRCS	+=	sha1.c
+# libcperciva includes
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/alg
-
-# Utility functions
-.PATH.c :	${LIBCPERCIVA_DIR}/util
-SRCS	+=	getopt.c
-SRCS	+=	hexify.c
-SRCS	+=	insecure_memzero.c
-SRCS	+=	monoclock.c
-SRCS	+=	perftest.c
-SRCS	+=	warnp.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 test:	all
