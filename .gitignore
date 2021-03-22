@@ -5,6 +5,7 @@ cflags-filter.sh
 cpusupport-config.h
 posix-flags.sh
 # Test binaries and compiled files.
+liball/liball.a
 tests/aws/test_aws
 tests/buildall/buildall
 tests/buildsingles/test_buildsingles
