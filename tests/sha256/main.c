@@ -28,6 +28,7 @@ print_hardware(const char * str)
 	printf("%s", str);
 
 	/* ... and whether we're using hardware acceleration or not. */
+#if defined(CPUSUPPORT_CONFIG_FILE)
 #if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3)
 	if (cpusupport_x86_shani() && cpusupport_x86_ssse3())
 		printf(" using hardware SHANI.\n");
@@ -44,6 +45,9 @@ print_hardware(const char * str)
 	else
 #endif
 		printf(" using software SHA.\n");
+#else
+	printf(" with unknown hardware acceleration status.\n");
+#endif /* CPUSUPPORT_CONFIG_FILE */
 }
 
 static int
