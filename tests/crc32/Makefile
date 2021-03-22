@@ -5,6 +5,7 @@ SRCS=main.c crc32c.c crc32c_arm.c crc32c_sse42.c cpusupport_arm_crc32_64.c cpusu
 IDIRS=-I../../alg -I../../cpusupport -I../../util
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/crc32
+LIBALL=../../liball/liball.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
@@ -18,8 +19,8 @@ all:
 clean:
 	rm -f ${PROG} ${SRCS:.c=.o}
 
-${PROG}:${SRCS:.c=.o}
-	${CC} -o ${PROG} ${SRCS:.c=.o} ${LDFLAGS} ${LDADD_EXTRA} ${LDADD_REQ} ${LDADD_POSIX}
+${PROG}:${SRCS:.c=.o} ${LIBALL}
+	${CC} -o ${PROG} ${SRCS:.c=.o} ${LIBALL} ${LDFLAGS} ${LDADD_EXTRA} ${LDADD_REQ} ${LDADD_POSIX}
 
 main.o: main.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../util/getopt.h ../../util/perftest.h ../../util/warnp.h ../../alg/crc32c.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c main.c -o main.o
