@@ -79,6 +79,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/network
 SRCS	+=	asprintf.c
 SRCS	+=	b64encode.c
 SRCS	+=	daemonize.c
+SRCS	+=	detect_pthread.c
 SRCS	+=	entropy.c
 SRCS	+=	getopt.c
 SRCS	+=	hexify.c
