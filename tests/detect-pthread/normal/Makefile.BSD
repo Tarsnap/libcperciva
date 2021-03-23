@@ -1,0 +1,25 @@
+# Program name.
+PROG	=	test_detect_pthread
+
+# Don't install it.
+NOINST	=	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../../..
+
+# Main test code
+SRCS	=	../main.c
+
+# libcperciva includes
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+# Special handling for detect_posix
+LIBFINAL	=	${LIBCPERCIVA_DIR}/libdetect_pthread_final/libdetect_pthread_final.a
+LDADD_REQ	+=	${LIBFINAL}
+
+.include <bsd.prog.mk>
+
+# bsd.libnames.mk "helpfully" enforces that -lpthread (and -lc) are the last
+# two items in the link list.  But in this case, we need ${LIBFINAL} to come
+# after -lpthread, so we move it to the end.
+LDADD:= ${LDADD:N${LIBFINAL}} ${LIBFINAL}
