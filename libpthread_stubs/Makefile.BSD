@@ -1,0 +1,13 @@
+# Program name.
+LIB =	pthread_stubs
+
+# Usefule relative directories
+#LIBCPERCIVA_DIR	=	..
+
+#Main test code
+SRCS	=	pthread_stubs.c
+
+# libcperciva includes
+#IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+.include <bsd.lib.mk>
