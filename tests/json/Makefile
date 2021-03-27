@@ -3,6 +3,7 @@
 PROG=test_json
 SRCS=main.c
 IDIRS=-I ../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/json
 LIBALL=../../liball/liball.a

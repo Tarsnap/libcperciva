@@ -3,6 +3,7 @@
 PROG=test_heap
 SRCS=main.c
 IDIRS=-I../../datastruct -I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/heap
 LIBALL=../../liball/liball.a

@@ -3,6 +3,7 @@
 PROG=test_readpass_file
 SRCS=main.c
 IDIRS=-I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/readpass_file
 LIBALL=../../liball/liball.a

@@ -3,6 +3,7 @@
 PROG=test_crypto_entropy
 SRCS=main.c
 IDIRS=-I../../crypto -I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/crypto_entropy
 LIBALL=../../liball/liball.a

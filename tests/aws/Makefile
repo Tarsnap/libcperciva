@@ -3,6 +3,7 @@
 PROG=test_aws
 SRCS=main.c
 IDIRS=-I../../aws -I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/aws
 LIBALL=../../liball/liball.a

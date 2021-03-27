@@ -3,7 +3,7 @@
 PROG=test_parsenum
 SRCS=main.c
 IDIRS=-I../../util
-LDADD_REQ=-lm
+LDADD_REQ=-lm ../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/parsenum
 LIBALL=../../liball/liball.a

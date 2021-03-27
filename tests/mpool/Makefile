@@ -3,6 +3,7 @@
 PROG=test_mpool
 SRCS=main.c
 IDIRS=-I../../datastruct -I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/mpool
 LIBALL=../../liball/liball.a

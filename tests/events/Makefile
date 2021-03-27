@@ -3,6 +3,7 @@
 PROG=test_events
 SRCS=main.c events_counter.c events_interrupter.c
 IDIRS=-I../../events -I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/events
 LIBALL=../../liball/liball.a

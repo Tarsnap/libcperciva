@@ -3,6 +3,7 @@
 PROG=test_md5
 SRCS=main.c
 IDIRS=-I../../alg -I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/md5
 LIBALL=../../liball/liball.a

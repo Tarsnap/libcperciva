@@ -3,6 +3,7 @@
 PROG=test_sha256
 SRCS=main.c
 IDIRS=-I../../alg -I../../cpusupport -I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/sha256
 LIBALL=../../liball/liball.a
