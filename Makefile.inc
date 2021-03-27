@@ -21,6 +21,11 @@ LDADD	+=	${LIBALL}
 DPADD	+=	${LIBALL}
 .endif
 
+# Add pthread_stubs for all projects which do not include -lpthread.
+.if "${LDADD_REQ:M-lpthread}" == ""
+LDADD_REQ	+=	${LIBCPERCIVA_DIR}/libpthread_stubs/libpthread_stubs.a
+.endif
+
 # Lines below this point are only relevant if running
 #     make -f Makefile.BSD
 # in a subdirectory; they have no influence on the generated Makefiles.
