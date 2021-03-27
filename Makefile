@@ -47,7 +47,7 @@ all:	toplevel
 
 .PHONY:	toplevel
 toplevel:	cflags-filter.sh cpusupport-config.h	\
-		posix-flags.sh liball
+		posix-flags.sh liball libpthread_stubs
 
 # For "loop-back" building of a subdirectory
 buildsubdir: toplevel
@@ -65,6 +65,15 @@ liball: cflags-filter.sh cpusupport-config.h posix-flags.sh
 	. ./cflags-filter.sh;				\
 	export HAVE_BUILD_FLAGS=1;			\
 	( cd liball && make all ) || exit 2;
+
+# For "loop-back" building of the library
+.PHONY: libpthread_stubs
+libpthread_stubs: cflags-filter.sh cpusupport-config.h posix-flags.sh
+	. ./posix-flags.sh;				\
+	. ./cpusupport-config.h;			\
+	. ./cflags-filter.sh;				\
+	export HAVE_BUILD_FLAGS=1;			\
+	( cd libpthread_stubs && make all ) || exit 2;
 
 posix-flags.sh:
 	if [ -d ${LIBCPERCIVA_DIR}/POSIX/ ]; then			\
@@ -111,7 +120,7 @@ install:	all
 
 clean:
 	rm -f cflags-filter.sh cpusupport-config.h posix-flags.sh
-	for D in liball ${PROGS} ${TESTS}; do			\
+	for D in liball libpthread_stubs ${PROGS} ${TESTS}; do	\
 		( cd $${D} && ${MAKE} clean ) || exit 2;	\
 	done
 

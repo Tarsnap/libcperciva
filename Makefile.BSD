@@ -28,7 +28,7 @@ TESTS=	tests/aws							\
 	tests/valgrind							\
 	tests/warnp
 PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX Makefile aws alg cpusupport	\
-	crypto datastruct events liball network tests util
+	crypto datastruct events liball libpthread_stubs network tests util
 
 ### Shared code between Tarsnap projects.
 
@@ -39,14 +39,14 @@ CFLAGS_HARDCODED=	-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CON
 
 # This creates (and deletes) a fake cpusupport-config.h that is
 # blank (and thus does not require any special CFLAGS to compile).
-.for D in liball ${PROGS} ${TESTS}
+.for D in liball libpthread_stubs ${PROGS} ${TESTS}
 ${D}/Makefile::
 	CPP="${CPP}" ./release-tools/metabuild.sh	\
 	    "${D}" "${MAKEBSD}"	"${CFLAGS_HARDCODED}"
 .endfor
 
 Makefiles:
-.for D in liball ${PROGS} ${TESTS}
+.for D in liball libpthread_stubs ${PROGS} ${TESTS}
 	${MAKEBSD} ${D}/Makefile
 .endfor
 
