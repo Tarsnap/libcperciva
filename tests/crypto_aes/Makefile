@@ -3,7 +3,7 @@
 PROG=test_crypto_aes
 SRCS=main.c
 IDIRS=-I../../cpusupport -I../../crypto -I../../util
-LDADD_REQ=-lcrypto
+LDADD_REQ=-lcrypto ../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/crypto_aes
 LIBALL=../../liball/liball.a

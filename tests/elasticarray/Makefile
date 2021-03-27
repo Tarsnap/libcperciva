@@ -3,6 +3,7 @@
 PROG=test_elasticarray
 SRCS=main.c
 IDIRS=-I../../datastruct
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/elasticarray
 LIBALL=../../liball/liball.a

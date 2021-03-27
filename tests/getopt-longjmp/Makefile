@@ -3,6 +3,7 @@
 PROG=test_getopt_longjmp
 SRCS=main.c
 IDIRS=-I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/getopt-longjmp
 LIBALL=../../liball/liball.a

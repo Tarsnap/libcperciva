@@ -3,6 +3,7 @@
 LIB=liball.a
 SRCS=crc32c.c crc32c_arm.c crc32c_sse42.c md5.c sha1.c sha256.c sha256_arm.c sha256_shani.c sha256_sse2.c aws_readkeys.c aws_sign.c cpusupport_arm_crc32_64.c cpusupport_arm_sha256.c cpusupport_x86_aesni.c cpusupport_x86_crc32_64.c cpusupport_x86_rdrand.c cpusupport_x86_shani.c cpusupport_x86_sse2.c cpusupport_x86_ssse3.c crypto_aes.c crypto_aes_aesni.c crypto_aesctr.c crypto_aesctr_aesni.c crypto_dh.c crypto_dh_group14.c crypto_entropy.c crypto_entropy_rdrand.c crypto_verify_bytes.c elasticarray.c elasticqueue.c ptrheap.c seqptrmap.c timerqueue.c events.c events_immediate.c events_network.c events_network_selectstats.c events_timer.c network_accept.c network_connect.c network_read.c network_write.c asprintf.c b64encode.c daemonize.c entropy.c getopt.c hexify.c humansize.c insecure_memzero.c json.c monoclock.c noeintr.c perftest.c readpass.c readpass_file.c setgroups_none.c setuidgid.c sock.c sock_util.c ttyfd.c warnp.c
 IDIRS=-I../alg -I../aws -I../cpusupport -I../crypto -I../datastruct -I../events -I../network -I../util
+LDADD_REQ=../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=..
 RELATIVE_DIR=liball
 

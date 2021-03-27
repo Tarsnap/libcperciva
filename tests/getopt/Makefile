@@ -3,6 +3,7 @@
 PROG=test_getopt
 SRCS=main.c
 IDIRS=-I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/getopt
 LIBALL=../../liball/liball.a

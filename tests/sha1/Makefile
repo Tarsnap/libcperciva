@@ -3,6 +3,7 @@
 PROG=test_sha1
 SRCS=main.c
 IDIRS=-I../../alg -I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/sha1
 LIBALL=../../liball/liball.a

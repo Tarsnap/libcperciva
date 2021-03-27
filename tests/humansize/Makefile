@@ -3,6 +3,7 @@
 PROG=test_humansize
 SRCS=main.c
 IDIRS=-I../../util
+LDADD_REQ=../../libpthread_stubs/libpthread_stubs.a
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/humansize
 LIBALL=../../liball/liball.a
