@@ -17,6 +17,7 @@ env:
                             -Wno-missing-noreturn -Wno-reserved-id-macro
                             -Wno-unused-macros
                             -Wno-documentation-unknown-command
+                            -Wno-thread-safety-analysis
   CFLAGS_GCC_LIBCPERCIVA: -Wall -Wextra -Werror -Wpedantic
                           -pedantic-errors -Wno-clobbered
   # Variables for specific projects / platforms / compilers.
