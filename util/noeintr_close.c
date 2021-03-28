@@ -186,7 +186,7 @@ noeintr_close(int fd)
 	/* See the earlier "Note about threading". */
 	if ((rc = pthread_mutex_lock(&mutex)) != 0) {
 		warn0("pthread_mutex_lock: %s", strerror(rc));
-		goto err1;
+		goto err0;
 	}
 
 	/* If we failed to initialize, don't try again. */
