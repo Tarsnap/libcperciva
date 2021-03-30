@@ -47,6 +47,19 @@ struct crypto_aes_key_arm {
  */
 #define vshlq_n_u128(a, n) vextq_u8(vdupq_n_u8(0), a, 16 - n)
 
+/* Emulate x86 SSE2 instructions. */
+#define _mm_loadu_si128(mem) vld1q_u8((const uint8_t *)mem)
+#define _mm_storeu_si128(mem, var) vst1q_u8((uint8_t *)mem, var)
+
+#define _mm_xor_si128(a, b) veorq_u8(a, b)
+#define _mm_slli_si128(x, n) vshlq_n_u128(x, n)
+
+/* This only implements the values we need for AES key generation. */
+#define _mm_shuffle_epi32(a, shuf) (				\
+	(shuf == 0xff) ? (vdupq_laneq_u32_u8(a, 3))		\
+		: (shuf == 0xaa) ? (vdupq_laneq_u32_u8(a, 2))	\
+		: vdupq_n_u8(0))
+
 /* Compute an AES-128 round key. */
 #define MKRKEY128(rkeys, i, rcon) do {				\
 	uint8x16_t _s = rkeys[i - 1];				\
