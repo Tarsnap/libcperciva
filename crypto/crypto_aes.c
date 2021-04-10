@@ -3,7 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef DISABLE_OPENSSL
 #include <openssl/aes.h>
+#endif
 
 #include "cpusupport.h"
 #include "crypto_aes_aesni.h"
@@ -22,6 +24,11 @@ static enum {
 #endif
 	HW_UNSET
 } hwaccel = HW_UNSET;
+#endif
+
+/* Sanity check. */
+#if defined(DISABLE_OPENSSL) && !defined(HWACCEL)
+#error "Cannot have DISABLE_OPENSSL and no hardware intrinsics."
 #endif
 
 /**
@@ -137,7 +144,9 @@ crypto_aes_use_x86_aesni(void)
 struct crypto_aes_key *
 crypto_aes_key_expand(const uint8_t * key, size_t len)
 {
+#ifndef DISABLE_OPENSSL
 	AES_KEY * kexp;
+#endif
 
 	/* Sanity-check. */
 	assert((len == 16) || (len == 32));
@@ -152,6 +161,7 @@ crypto_aes_key_expand(const uint8_t * key, size_t len)
 #endif
 #endif /* HWACCEL */
 
+#ifndef DISABLE_OPENSSL
 	/* Allocate structure. */
 	if ((kexp = malloc(sizeof(AES_KEY))) == NULL)
 		goto err0;
@@ -165,6 +175,12 @@ crypto_aes_key_expand(const uint8_t * key, size_t len)
 err0:
 	/* Failure! */
 	return (NULL);
+#else
+	warn0("AES hardware intrinsics are required if OpenSSL is disabled");
+
+	/* Failure! */
+	return (NULL);
+#endif
 }
 
 /**
@@ -186,8 +202,10 @@ crypto_aes_encrypt_block(const uint8_t in[16], uint8_t out[16],
 #endif
 #endif /* HWACCEL */
 
+#ifndef DISABLE_OPENSSL
 	/* Get AES to do the work. */
 	AES_encrypt(in, out, (const void *)key);
+#endif
 }
 
 /**
@@ -207,6 +225,7 @@ crypto_aes_key_free(struct crypto_aes_key * key)
 #endif
 #endif /* HWACCEL */
 
+#ifndef DISABLE_OPENSSL
 	/* Behave consistently with free(NULL). */
 	if (key == NULL)
 		return;
@@ -216,4 +235,5 @@ crypto_aes_key_free(struct crypto_aes_key * key)
 
 	/* Free the key. */
 	free(key);
+#endif
 }
