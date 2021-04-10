@@ -19,6 +19,7 @@ TESTS=	tests/aws							\
 	tests/json							\
 	tests/monoclock							\
 	tests/mpool							\
+	tests/optional/crypto_aes_disable_openssl			\
 	tests/parsenum							\
 	tests/readpass_file						\
 	tests/setuidgid							\

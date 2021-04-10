@@ -1,0 +1,41 @@
+# Program name.
+PROG	=	test_crypto_aes_disable_openssl
+
+# Don't install it.
+NOINST	=	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../../..
+
+# Library code required
+LDADD_REQ	= -lcrypto
+
+# Main test code
+SRCS	=	../../crypto_aes/main.c
+
+# libcperciva includes
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/crypto
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+# crypto_aes.c, with an extra -DDISABLE_OPENSSL
+.PATH.c	:	${LIBCPERCIVA_DIR}/crypto
+SRCS	+=	crypto_aes.c
+CFLAGS.crypto_aes.c=	-DDISABLE_OPENSSL
+
+# Include the top-level to catch cpusupport-config.h.  This is normally
+# compiled into liball.a, but we need it here for crypto_aes.c.
+IDIRS	+=	-I${LIBCPERCIVA_DIR}
+
+test:	all
+	./test_crypto_aes -x
+
+# This depends on "all", but we don't want to see any output from that.
+perftest:
+	@${MAKE} all > /dev/null
+	@printf "# nblks\tbsize\ttime\tspeed\n"
+	@./test_crypto_aes -t |						\
+	    grep "blocks" |						\
+	    awk '{ printf "%i\t%i\t%.6f\t%.6f\n", $$1, $$5, $$6, $$8}'
+
+.include <bsd.prog.mk>

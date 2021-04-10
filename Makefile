@@ -1,6 +1,8 @@
 .POSIX:
 
 PROGS=
+# Don't include any subdirectories of tests/optional/ in this list;
+# they are optional and require manual building.
 TESTS=	tests/aws							\
 	tests/buildall							\
 	tests/buildnothing						\
