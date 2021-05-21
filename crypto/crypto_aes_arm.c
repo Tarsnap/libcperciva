@@ -9,9 +9,12 @@
 
 #include <openssl/aes.h>
 
+#include "align_ptr.h"
 #include "insecure_memzero.h"
+#include "warnp.h"
 
 #include "crypto_aes_arm.h"
+#include "crypto_aes_arm_u8.h"
 
 /**
  * crypto_aes_key_expand_arm(key, len):
