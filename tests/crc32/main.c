@@ -48,9 +48,14 @@ print_hardware(const char * str)
 
 	/* ... and whether we're using hardware acceleration or not. */
 #if defined(CPUSUPPORT_CONFIG_FILE)
-#if defined(CPUSUPPORT_X86_CRC32_64)
-	if (cpusupport_x86_crc32_64())
-		printf(" using hardware CRC32.\n");
+#if defined(CPUSUPPORT_X86_SSE42_64)
+	if (cpusupport_x86_sse42())
+		printf(" using hardware CRC32 64-bit.\n");
+	else
+#endif
+#if defined(CPUSUPPORT_X86_SSE42)
+	if (cpusupport_x86_sse42())
+		printf(" using hardware CRC32 32-bit.\n");
 	else
 #endif
 #if defined(CPUSUPPORT_ARM_CRC32_64)
