@@ -175,7 +175,7 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 
 	/* Do the encryption. */
 #ifdef CPUSUPPORT_X86_AESNI
-	if (crypto_aes_use_x86_aesni()) {
+	if (crypto_aes_can_use_intrinsics() == 1) {
 		/* Load the plaintext. */
 		bufsse = _mm_loadu_si128((const __m128i *)buf);
 
@@ -206,7 +206,7 @@ perftest(void)
 	/* Sanity check. */
 #ifdef CPUSUPPORT_X86_AESNI
 	if (cpusupport_x86_aesni()) {
-		if (crypto_aes_use_x86_aesni() == 0) {
+		if (crypto_aes_can_use_intrinsics() != 1) {
 			warn0("Unexpected error with AESNI");
 			goto err0;
 		}
@@ -262,7 +262,7 @@ selftest(void)
 	/* Sanity check. */
 #ifdef CPUSUPPORT_X86_AESNI
 	if (cpusupport_x86_aesni()) {
-		if (crypto_aes_use_x86_aesni() == 0) {
+		if (crypto_aes_can_use_intrinsics() != 1) {
 			warn0("Unexpected error with AESNI");
 			goto err0;
 		}
@@ -285,7 +285,7 @@ selftest(void)
 
 		/* Run AES. */
 #ifdef CPUSUPPORT_X86_AESNI
-		if (crypto_aes_use_x86_aesni()) {
+		if (crypto_aes_can_use_intrinsics() == 1) {
 			bufsse = _mm_loadu_si128(
 			    (const __m128i *)plaintext_arr);
 			bufsse = crypto_aes_encrypt_block_aesni_m128i(bufsse,
