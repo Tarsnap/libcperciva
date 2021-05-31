@@ -26,6 +26,14 @@
 #include "crypto_aes_aesni_m128i.h"
 #endif
 
+#ifdef CPUSUPPORT_ARM_AES
+#ifdef __ARM_NEON
+#include <arm_neon.h>
+#endif
+
+#include "crypto_aes_arm_u8.h"
+#endif
+
 #define MAX_PLAINTEXT_LENGTH 16
 
 /* Forward declaration. */
@@ -85,6 +93,11 @@ print_hardware(const char * str)
 #ifdef CPUSUPPORT_X86_AESNI
 	if (cpusupport_x86_aesni())
 		printf(" using hardware AESNI.\n");
+	else
+#endif
+#ifdef CPUSUPPORT_ARM_AES
+	if (cpusupport_arm_aes())
+		printf(" using hardware ARM-AES.\n");
 	else
 #endif
 		printf(" using software AES.\n");
@@ -170,6 +183,9 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 #ifdef CPUSUPPORT_X86_AESNI
 	__m128i bufsse;
 #endif
+#ifdef CPUSUPPORT_ARM_AES
+	uint8x16_t bufarm;
+#endif
 
 	(void)buflen; /* UNUSED */
 
@@ -186,6 +202,20 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 
 		/* Store the output. */
 		_mm_storeu_si128((__m128i *)buf, bufsse);
+	} else
+#endif
+#ifdef CPUSUPPORT_ARM_AES
+	if (crypto_aes_can_use_intrinsics() == 2) {
+		/* Load the plaintext. */
+		bufarm = vld1q_u8(buf);
+
+		/* Use the _u8 bufarm, instead of the normal buf. */
+		for (i = 0; i < nreps; i++)
+			bufarm = crypto_aes_encrypt_block_arm_u8(bufarm,
+			    pca->key_exp);
+
+		/* Store the output. */
+		vst1q_u8(buf, bufarm);
 	} else
 #endif
 	for (i = 0; i < nreps; i++)
@@ -258,6 +288,9 @@ selftest(void)
 #ifdef CPUSUPPORT_X86_AESNI
 	__m128i bufsse;
 #endif
+#ifdef CPUSUPPORT_ARM_AES
+	uint8x16_t bufarm;
+#endif
 
 	/* Sanity check. */
 #ifdef CPUSUPPORT_X86_AESNI
@@ -291,6 +324,14 @@ selftest(void)
 			bufsse = crypto_aes_encrypt_block_aesni_m128i(bufsse,
 			    key_exp);
 			_mm_storeu_si128((__m128i *)cbuf, bufsse);
+		} else
+#endif
+#ifdef CPUSUPPORT_ARM_AES
+		if (crypto_aes_can_use_intrinsics() == 2) {
+			bufarm = vld1q_u8(plaintext_arr);
+			bufarm = crypto_aes_encrypt_block_arm_u8(bufarm,
+			    key_exp);
+			vst1q_u8(cbuf, bufarm);
 		} else
 #endif
 		crypto_aes_encrypt_block(plaintext_arr, cbuf, key_exp);
