@@ -23,7 +23,7 @@ clean:
 ${PROG}:${SRCS:.c=.o} ${LIBALL}
 	${CC} -o ${PROG} ${SRCS:.c=.o} ${LIBALL} ${LDFLAGS} ${LDADD_EXTRA} ${LDADD_REQ} ${LDADD_POSIX}
 
-main.o: main.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_aes.h ../../util/getopt.h ../../util/hexify.h ../../util/insecure_memzero.h ../../util/perftest.h ../../util/warnp.h ../../crypto/crypto_aes_aesni_m128i.h
+main.o: main.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_aes.h ../../util/getopt.h ../../util/hexify.h ../../util/insecure_memzero.h ../../util/perftest.h ../../util/warnp.h ../../crypto/crypto_aes_aesni_m128i.h ../../crypto/crypto_aes_arm_u8.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" ${CFLAGS_X86_SSE2} -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c main.c -o main.o
 
 test:	all
