@@ -65,9 +65,9 @@ static struct aes_test {
 	}
 };
 
-/* Test hardware intrinsics against test vectors. */
+/* Test a function against test vectors. */
 static int
-hwtest(int(* func)(const uint8_t *, size_t, const uint8_t[16], uint8_t[16]))
+functest(int(* func)(const uint8_t *, size_t, const uint8_t[16], uint8_t[16]))
 {
 	struct aes_test * knowngood;
 	uint8_t ctext[16];
@@ -140,6 +140,30 @@ err0:
 }
 #endif
 
+static int
+openssl_oneshot(const uint8_t * key, size_t len, const uint8_t ptext[16],
+    uint8_t * ctext)
+{
+	void * kexp;
+
+	/* Allocate structure. */
+	if ((kexp = malloc(sizeof(AES_KEY))) == NULL)
+		goto err0;
+
+	/* Expand the key, encrypt, and clean up. */
+	AES_set_encrypt_key(key, (int)(len * 8), kexp);
+	AES_encrypt(ptext, ctext, (const void *)key);
+	insecure_memzero(kexp, sizeof(AES_KEY));
+	free(kexp);
+
+	/* Success! */
+	return (0);
+
+err0:
+	/* Failure! */
+	return (-1);
+}
+
 /* Which type of hardware acceleration should we use, if any? */
 static void
 hwaccel_init(void)
@@ -154,12 +178,21 @@ hwaccel_init(void)
 
 #if defined(CPUSUPPORT_X86_AESNI)
 	CPUSUPPORT_VALIDATE(hwaccel, HW_X86_AESNI, cpusupport_x86_aesni(),
-	    hwtest(x86_aesni_oneshot));
+	    functest(x86_aesni_oneshot));
 #endif
 #if defined(CPUSUPPORT_ARM_AES)
 	CPUSUPPORT_VALIDATE(hwaccel, HW_ARM_AES, cpusupport_arm_aes(),
-	    hwtest(arm_aes_oneshot));
+	    functest(arm_aes_oneshot));
 #endif
+
+	/*
+	 * If we're here, we're not using any intrinsics.  Test OpenSSL; if
+	 * there's an error, print a warning and abort.
+	 */
+	if (functest(openssl_oneshot)) {
+		warn0("OpenSSL gives incorrect AES values.");
+		abort();
+	}
 }
 #endif /* HWACCEL */
 
