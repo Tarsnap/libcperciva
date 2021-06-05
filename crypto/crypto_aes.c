@@ -144,24 +144,14 @@ static int
 openssl_oneshot(const uint8_t * key, size_t len, const uint8_t ptext[16],
     uint8_t * ctext)
 {
-	void * kexp;
-
-	/* Allocate structure. */
-	if ((kexp = malloc(sizeof(AES_KEY))) == NULL)
-		goto err0;
+	AES_KEY kexp;
 
 	/* Expand the key, encrypt, and clean up. */
-	AES_set_encrypt_key(key, (int)(len * 8), kexp);
-	AES_encrypt(ptext, ctext, (const void *)key);
-	insecure_memzero(kexp, sizeof(AES_KEY));
-	free(kexp);
+	AES_set_encrypt_key(key, (int)(len * 8), &kexp);
+	AES_encrypt(ptext, ctext, &kexp);
+	insecure_memzero(&kexp, sizeof(AES_KEY));
 
-	/* Success! */
 	return (0);
-
-err0:
-	/* Failure! */
-	return (-1);
 }
 
 /* Which type of hardware acceleration should we use, if any? */
