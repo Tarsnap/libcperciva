@@ -18,8 +18,6 @@
 #include "crypto_aes_arm.h"
 #include "crypto_aes_arm_u8.h"
 
-typedef uint8x16_t __m128i;
-
 /* Expanded-key structure. */
 struct crypto_aes_key_arm {
 	ALIGN_PTR_DECL(uint8x16_t, rkeys, 15, sizeof(uint8x16_t));
@@ -50,27 +48,55 @@ struct crypto_aes_key_arm {
 #define vshlq_n_u128(a, n) vextq_u8(vdupq_n_u8(0), a, 16 - n)
 
 /**
- * Emulate x86 AESNI instructions, inspired by:
- * https://blog.michaelbrase.com/2018/05/08/emulating-x86-aes-intrinsics-on-armv8-a/
+ * SubWord_duplicate(a):
+ * Perform the AES SubWord operation on the final 32-bit word (bits 96..127)
+ * of ${a}, and return a vector consisting of that value copied to all lanes.
  */
-static inline __m128i
-_mm_aeskeygenassist_si128(__m128i a, const uint32_t rcon)
+static inline uint8x16_t
+SubWord_duplicate(uint8x16_t a)
 {
-	__m128i rcon_1_3 = (__m128i)((uint32x4_t){0, rcon, 0, rcon});
 
-	/* AESE does ShiftRows and SubBytes on ${a}. */
+	/*
+	 * Duplicate the final 32-bit word in all other lanes.  By having four
+	 * copies of the same uint32_t, we cause the ShiftRows in the upcoming
+	 * AESE to have no effect.
+	 */
+	a = vdupq_laneq_u32_u8(a, 3);
+
+	/* AESE does AddRoundKey (nop), ShiftRows (nop), and SubBytes. */
 	a = vaeseq_u8(a, vdupq_n_u8(0));
 
-	/* Undo ShiftRows step from AESE and extract X1 and X3. */
-	__m128i dest = {
-		a[0x4], a[0x1], a[0xE], a[0xB], /* SubBytes(X1) */
-		a[0x1], a[0xE], a[0xB], a[0x4], /* ROT(SubBytes(X1)) */
-		a[0xC], a[0x9], a[0x6], a[0x3], /* SubBytes(X3) */
-		a[0x9], a[0x6], a[0x3], a[0xC], /* ROT(SubBytes(X3)) */
-	};
+	return (a);
+}
 
-	/* XOR the rcon with words 1 and 3. */
-	return (veorq_u8(dest, rcon_1_3));
+/**
+ * SubWord_RotWord_XOR_duplicate(a, rcon):
+ * Perform the AES key schedule operations of SubWord, RotWord, and XOR with
+ * ${rcon}, acting on the final 32-bit word (bits 96..127) of ${a}, and return
+ * a vector consisting of that value copied to all lanes.
+ */
+static inline uint8x16_t
+SubWord_RotWord_XOR_duplicate(uint8x16_t a, const uint32_t rcon)
+{
+	uint32_t x3;
+
+	/* Perform SubWord on the final 32-bit word and copy it to all lanes. */
+	a = SubWord_duplicate(a);
+
+	/* We'll use non-neon for the rest. */
+	x3 = vgetq_lane_u32(vreinterpretq_u32_u8(a), 0);
+
+	/*-
+	 * x3 gets RotWord.  Note that
+	 *     RotWord(SubWord(a)) == SubWord(RotWord(a))
+	 */
+	x3 = (x3 >> 8) | (x3 << (32 - 8));
+
+	/* x3 gets XOR'd with rcon. */
+	x3 = x3 ^ rcon;
+
+	/* Copy x3 to all 128 bits, and convert it to a uint8x16_t. */
+	return (vreinterpretq_u8_u32(vdupq_n_u32(x3)));
 }
 
 /* Compute an AES-128 round key. */
@@ -79,8 +105,7 @@ _mm_aeskeygenassist_si128(__m128i a, const uint32_t rcon)
 	uint8x16_t _t = rkeys[i - 1];				\
 	_s = veorq_u8(_s, vshlq_n_u128(_s, 4));			\
 	_s = veorq_u8(_s, vshlq_n_u128(_s, 8));			\
-	_t = _mm_aeskeygenassist_si128(_t, rcon);		\
-	_t = vdupq_laneq_u32_u8(_t, 3);				\
+	_t = SubWord_RotWord_XOR_duplicate(_t, rcon);		\
 	rkeys[i] = veorq_u8(_s, _t);				\
 } while (0)
 
@@ -101,9 +126,7 @@ crypto_aes_key_expand_128_arm(const uint8_t key[16], uint8x16_t rkeys[11])
 	 * Each of the remaining round keys are computed from the preceding
 	 * round key: rotword+subword+rcon (provided as aeskeygenassist) to
 	 * compute the 'temp' value, then xor with 1, 2, 3, or all 4 of the
-	 * 32-bit words from the preceding round key.  Unfortunately, 'rcon'
-	 * is encoded as an immediate value, so we need to write the loop out
-	 * ourselves rather than allowing the compiler to expand it.
+	 * 32-bit words from the preceding round key.
 	 */
 	MKRKEY128(rkeys, 1, 0x01);
 	MKRKEY128(rkeys, 2, 0x02);
@@ -118,13 +141,14 @@ crypto_aes_key_expand_128_arm(const uint8_t key[16], uint8x16_t rkeys[11])
 }
 
 /* Compute an AES-256 round key. */
-#define MKRKEY256(rkeys, i, lane, rcon)	do {			\
+#define MKRKEY256(rkeys, i, rcon)	do {			\
 	uint8x16_t _s = rkeys[i - 2];				\
 	uint8x16_t _t = rkeys[i - 1];				\
 	_s = veorq_u8(_s, vshlq_n_u128(_s, 4));			\
 	_s = veorq_u8(_s, vshlq_n_u128(_s, 8));			\
-	_t = _mm_aeskeygenassist_si128(_t, rcon);		\
-	_t = vdupq_laneq_u32_u8(_t, lane);			\
+	_t = (i % 2 == 1) ?					\
+	    SubWord_duplicate(_t) :				\
+	    SubWord_RotWord_XOR_duplicate(_t, rcon);		\
 	rkeys[i] = veorq_u8(_s, _t);				\
 } while (0)
 
@@ -145,27 +169,22 @@ crypto_aes_key_expand_256_arm(const uint8_t key[32], uint8x16_t rkeys[15])
 	/*
 	 * Each of the remaining round keys are computed from the preceding
 	 * pair of keys.  Even rounds use rotword+subword+rcon, while odd
-	 * rounds just use subword; the aeskeygenassist instruction computes
-	 * both, and we use 3 or 2 to select the one we need.  The rcon
-	 * value used is irrelevant for odd rounds since we ignore the value
-	 * which it feeds into.  Unfortunately, the 'shuffle' and 'rcon'
-	 * values are encoded into the instructions as immediates, so we need
-	 * to write the loop out ourselves rather than allowing the compiler
-	 * to expand it.
+	 * rounds just use subword.  The rcon value used is irrelevant for odd
+	 * rounds since we ignore the value which it feeds into.
 	 */
-	MKRKEY256(rkeys, 2, 3, 0x01);
-	MKRKEY256(rkeys, 3, 2, 0x00);
-	MKRKEY256(rkeys, 4, 3, 0x02);
-	MKRKEY256(rkeys, 5, 2, 0x00);
-	MKRKEY256(rkeys, 6, 3, 0x04);
-	MKRKEY256(rkeys, 7, 2, 0x00);
-	MKRKEY256(rkeys, 8, 3, 0x08);
-	MKRKEY256(rkeys, 9, 2, 0x00);
-	MKRKEY256(rkeys, 10, 3, 0x10);
-	MKRKEY256(rkeys, 11, 2, 0x00);
-	MKRKEY256(rkeys, 12, 3, 0x20);
-	MKRKEY256(rkeys, 13, 2, 0x00);
-	MKRKEY256(rkeys, 14, 3, 0x40);
+	MKRKEY256(rkeys, 2, 0x01);
+	MKRKEY256(rkeys, 3, 0x00);
+	MKRKEY256(rkeys, 4, 0x02);
+	MKRKEY256(rkeys, 5, 0x00);
+	MKRKEY256(rkeys, 6, 0x04);
+	MKRKEY256(rkeys, 7, 0x00);
+	MKRKEY256(rkeys, 8, 0x08);
+	MKRKEY256(rkeys, 9, 0x00);
+	MKRKEY256(rkeys, 10, 0x10);
+	MKRKEY256(rkeys, 11, 0x00);
+	MKRKEY256(rkeys, 12, 0x20);
+	MKRKEY256(rkeys, 13, 0x00);
+	MKRKEY256(rkeys, 14, 0x40);
 }
 
 /**
