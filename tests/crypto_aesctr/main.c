@@ -188,6 +188,11 @@ print_hardware(const char * str)
 		printf(" using hardware AESNI.\n");
 	else
 #endif
+#ifdef CPUSUPPORT_ARM_AES
+	if (cpusupport_arm_aes())
+		printf(" using hardware ARM-AES.\n");
+	else
+#endif
 		printf(" using software AES.\n");
 #else
 	printf(" with unknown hardware acceleration status.\n");
