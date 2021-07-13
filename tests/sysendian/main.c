@@ -135,18 +135,6 @@ fill_testcases(struct tests * tests)
 	}							\
 } while (0)
 
-/* Required framework for perftests; not needed otherwise. */
-static int
-perftest_init(void * cookie, uint8_t * buf, size_t buflen)
-{
-
-	(void)cookie; /* UNUSED */
-	(void)buf; /* UNUSED */
-	(void)buflen; /* UNUSED */
-
-	return (0);
-}
-
 static int
 perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 {
@@ -177,7 +165,7 @@ perftest(void)
 
 	/* Time the function. */
 	if (perftest_buffers(nbytes_perftest, perfsizes, num_perf,
-	    nbytes_warmup, perftest_init, perftest_func, tests)) {
+	    nbytes_warmup, NULL, perftest_func, NULL, tests)) {
 		warn0("perftest_buffers");
 		goto err0;
 	}
