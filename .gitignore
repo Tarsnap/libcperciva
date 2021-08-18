@@ -8,6 +8,9 @@ cpusupport-config.h
 posix-flags.sh
 # Test binaries and compiled files.
 liball/liball.a
+perftests/http/test_http
+perftests/https/test_https
+perftests/network-ssl/test_network_ssl
 tests/aws/test_aws
 tests/buildall/buildall
 tests/buildsingles/test_buildsingles
@@ -40,6 +43,8 @@ tests/warnp/test_warnp
 perftest-num.tmp
 perftest-*.raw
 perftest-*.txt
+perftests/https/test_https.log
+perftests/network-ssl/test_network_ssl_stderr.log
 tests/events/test-events.log
 tests/getopt/test_getopt.log
 tests-output/

@@ -1,7 +1,10 @@
 .POSIX:
 
 PROGS=
-TESTS=	tests/aws							\
+TESTS=	perftests/http							\
+	perftests/https							\
+	perftests/network-ssl						\
+	tests/aws							\
 	tests/buildall							\
 	tests/buildnothing						\
 	tests/buildsingles						\
