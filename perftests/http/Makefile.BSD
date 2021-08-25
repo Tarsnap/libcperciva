@@ -1,0 +1,17 @@
+PROG=	test_http
+SRCS=	main.c
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# libcperciva imports
+IDIRS	+=	-I ${LIBCPERCIVA_DIR}/events
+IDIRS	+=	-I ${LIBCPERCIVA_DIR}/http
+IDIRS	+=	-I ${LIBCPERCIVA_DIR}/util
+
+CFLAGS	+=	-g
+
+test:	test_http
+	@./test_http.sh
+
+.include <bsd.prog.mk>

@@ -1,0 +1,18 @@
+PROG=	test_https
+SRCS=	main.c
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Library code required
+LDADD_REQ	= -lssl -lcrypto
+
+# libcperciva imports
+IDIRS	+=	-I ${LIBCPERCIVA_DIR}/events
+IDIRS	+=	-I ${LIBCPERCIVA_DIR}/http
+IDIRS	+=	-I ${LIBCPERCIVA_DIR}/util
+
+test:	test_https
+	@./test_https.sh
+
+.include <bsd.prog.mk>

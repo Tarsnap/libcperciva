@@ -69,6 +69,19 @@ SRCS	+=	events_network_selectstats.c
 SRCS	+=	events_timer.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/events
 
+# HTTP client protocol
+.PATH.c	:	${LIBCPERCIVA_DIR}/http
+SRCS	+=	http.c
+SRCS	+=	https.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/http
+
+# Buffered networking
+.PATH.c	:	${LIBCPERCIVA_DIR}/netbuf
+SRCS	+=	netbuf_read.c
+SRCS	+=	netbuf_ssl.c
+SRCS	+=	netbuf_write.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/netbuf
+
 # Event-driven networking
 .PATH.c	:	${LIBCPERCIVA_DIR}/network
 SRCS	+=	network_accept.c
@@ -76,6 +89,12 @@ SRCS	+=	network_connect.c
 SRCS	+=	network_read.c
 SRCS	+=	network_write.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/network
+
+# SSL layer
+.PATH.c	:	${LIBCPERCIVA_DIR}/network_ssl
+SRCS	+=	network_ssl.c
+SRCS	+=	network_ssl_compat.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/network_ssl
 
 # Utility functions
 .PATH.c	:	${LIBCPERCIVA_DIR}/util
