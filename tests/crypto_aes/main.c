@@ -27,6 +27,9 @@
 #endif
 
 #ifdef CPUSUPPORT_ARM_AES
+/**
+ * CPUSUPPORT CFLAGS: ARM_AES
+ */
 #ifdef __ARM_NEON
 #include <arm_neon.h>
 #endif
