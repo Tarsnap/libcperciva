@@ -1,4 +1,10 @@
+#include <sys/types.h>
+#include <sys/socket.h>
+
+#include <netinet/in.h>
+
 #include <grp.h>
+#include <netdb.h>
 #include <pthread.h>
 #include <pwd.h>
 #include <stdio.h>
@@ -120,6 +126,49 @@ pl_freebsd_pthread_strerror_localtime(void)
 		fprintf(stderr, "pthread_join: %s", strerror(rc));
 }
 
+/* Problem with FreeBSD and getaddrinfo. */
+static void
+pl_freebsd_getaddrinfo_name(const char * addr)
+{
+	struct addrinfo hints;
+	struct addrinfo * res;
+	const char * ports = "80";
+	int error;
+
+	/* Create hints structure. */
+	memset(&hints, 0, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+
+	/* Perform DNS lookup. */
+	if ((error = getaddrinfo(addr, ports, &hints, &res)) != 0) {
+		/* Only print an error if we're online. */
+		if (error != EAI_AGAIN) {
+			fprintf(stderr, "Error looking up %s: %s", addr,
+			    gai_strerror(error));
+		}
+		return;
+	}
+
+	/* Clean up. */
+	freeaddrinfo(res);
+}
+
+static void
+pl_freebsd_getaddrinfo_local(void)
+{
+
+	pl_freebsd_getaddrinfo_name("localhost");
+}
+
+static void
+pl_freebsd_getaddrinfo_online(void)
+{
+
+	pl_freebsd_getaddrinfo_name("google.com");
+}
+
 /* Problem with NSS and getgrnam on Ubuntu 18.04 and FreeBSD 11.0. */
 static void
 pl_nss_getgrnam(void)
@@ -150,6 +199,8 @@ static const struct memleaktest {
 	MEMLEAKTEST(pl_freebsd_strlen),
 	MEMLEAKTEST(pl_freebsd_pthread_nothing),
 	MEMLEAKTEST(pl_freebsd_pthread_strerror_localtime),
+	MEMLEAKTEST(pl_freebsd_getaddrinfo_local),
+	MEMLEAKTEST(pl_freebsd_getaddrinfo_online),
 	MEMLEAKTEST(pl_nss_getgrnam),
 	MEMLEAKTEST(pl_nss_getpwnam)
 };
