@@ -126,6 +126,16 @@ pl_freebsd_pthread_strerror_localtime(void)
 		fprintf(stderr, "pthread_join: %s", strerror(rc));
 }
 
+/* Problem with FreeBSD and gai_strerror. */
+static void
+pl_freebsd_gai_strerror(void)
+{
+	volatile const char * msg;
+
+	msg = gai_strerror(EAI_AGAIN);
+	(void)msg; /* UNUSED */
+}
+
 /* Problem with FreeBSD and getaddrinfo. */
 static void
 pl_freebsd_getaddrinfo_name(const char * addr)
@@ -199,6 +209,7 @@ static const struct memleaktest {
 	MEMLEAKTEST(pl_freebsd_strlen),
 	MEMLEAKTEST(pl_freebsd_pthread_nothing),
 	MEMLEAKTEST(pl_freebsd_pthread_strerror_localtime),
+	MEMLEAKTEST(pl_freebsd_gai_strerror),
 	MEMLEAKTEST(pl_freebsd_getaddrinfo_local),
 	MEMLEAKTEST(pl_freebsd_getaddrinfo_online),
 	MEMLEAKTEST(pl_nss_getgrnam),
