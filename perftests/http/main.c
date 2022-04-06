@@ -52,7 +52,7 @@ main(int argc, char * argv[])
 	/* Sanity-check. */
 	if (argc != 3) {
 		warn0("Need two arguments (host, path)");
-		exit(1);
+		goto err0;
 	}
 
 	/* Construct headers. */
@@ -69,12 +69,13 @@ main(int argc, char * argv[])
 
 	/* Resolve target addresses. */
 	if (asprintf(&s, "%s:80", argv[1]) == -1)
-		exit(1);
+		goto err0;
 	if ((sas = sock_resolve(s)) == NULL) {
 		warnp("Cannot resolve %s", s);
-		exit(1);
+		goto err1;
 	}
 	free(s);
+	s = NULL;
 
 	/* Send request. */
 	(void)http_request(sas, &R, 1000000, donereq, &done);
@@ -82,7 +83,7 @@ main(int argc, char * argv[])
 	/* Wait for request to complete. */
 	if (events_spin(&done)) {
 		warnp("Error in event loop");
-		exit(1);
+		goto err2;
 	}
 
 	/* Free address structures. */
@@ -91,5 +92,14 @@ main(int argc, char * argv[])
 	/* Shut down events loop (in case we're checking for memory leaks). */
 	events_shutdown();
 
-	return (0);
+	/* Success! */
+	exit(0);
+
+err2:
+	sock_addr_freelist(sas);
+err1:
+	free(s);
+err0:
+	/* Failure! */
+	exit(1);
 }
