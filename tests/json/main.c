@@ -11,6 +11,7 @@ static struct jsontest {
 	const char * answer;
 } tests[] = {
 	/* Matches. */
+	{ "{\"foo\":\"\"}", "foo", "\"\"}"},
 	{ "{\"foo\":\"bar\"}", "foo", "\"bar\"}"},
 	{ "{\"fo\\to\":\"bar\"}", "fo\to", "\"bar\"}"},
 	{ "{\"fo\\/o\":\"bar\"}", "fo/o", "\"bar\"}"},

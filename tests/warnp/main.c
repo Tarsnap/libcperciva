@@ -142,7 +142,7 @@ main(int argc, char * argv[])
 	}
 
 	/* Run the desired test. */
-	switch(desired_test) {
+	switch (desired_test) {
 	case 1:
 		check_stderr_syslog(extra_message);
 		break;

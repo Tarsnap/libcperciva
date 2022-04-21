@@ -176,7 +176,7 @@ test_assert_failure(const char * argv_1)
 	 * because if we reach an abort() in a normal program then we have
 	 * bigger problems.
 	 */
-	switch(assert_num) {
+	switch (assert_num) {
 	case 1:
 		/* Signed integer without specified bounds. */
 		if (PARSENUM(&i, "1"))
