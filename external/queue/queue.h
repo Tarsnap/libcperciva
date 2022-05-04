@@ -592,6 +592,12 @@ struct {								\
 	(head)->stqh_last = &(head)->stqh_first;				\
 } while (/*CONSTCOND*/0)
 
+/*
+ * After calling STAILQ_INIT, this should never be true.
+ */
+#define STAILQ_INSANE(head)						\
+	((head)->stqh_last == NULL)
+
 #define	STAILQ_INSERT_HEAD(head, elm, field) do {			\
 	if (((elm)->field.stqe_next = (head)->stqh_first) == NULL)	\
 		(head)->stqh_last = &(elm)->field.stqe_next;		\

@@ -259,6 +259,7 @@ netbuf_write_reserve(struct netbuf_write * W, size_t len)
 	WB->datalen = 0;
 
 	/* Add this buffer to the queue. */
+	assert(!STAILQ_INSANE(&W->buffers));
 	STAILQ_INSERT_TAIL(&W->buffers, WB, entries);
 
 	/* Return a pointer to the new buffer. */
