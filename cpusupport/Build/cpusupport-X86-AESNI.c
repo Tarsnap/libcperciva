@@ -23,7 +23,11 @@ main(void)
 	uint8_t a[16];
 
 	x = load_128(a);
-#ifdef BROKEN_MM_LOADU_SI64
+	/**
+	 * The clang analyzer doesn't like its implementation of
+	 * _mm_loadu_si64.
+	 */
+#if defined(BROKEN_MM_LOADU_SI64) || defined(__clang_analyzer__)
 	y = _mm_loadu_si128(a);
 #else
 	y = _mm_loadu_si64(a);
