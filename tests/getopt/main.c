@@ -8,6 +8,7 @@
 
 #define WARNING_UNINITIALIZED_SUPPRESS					\
 _Pragma("clang diagnostic push")					\
+_Pragma("clang diagnostic ignored \"-Wdeclaration-after-statement\"")	\
 _Pragma("clang diagnostic ignored \"-Wconditional-uninitialized\"")
 #define WARNING_UNINITIALIZED_ALLOW					\
 _Pragma("clang diagnostic pop")
