@@ -34,7 +34,7 @@ Makefile.tmp: Makefile-headers
 	for HN in ${HEADERS}; do				\
 		H=$$(ls ../../*/$${HN});			\
 		echo "$${HN%.h}-main: $${H}";			\
-		echo "	${CC} -DHEADER=\"\\\"$${H}\\\"\" ${CFLAGS} -D_POSIX_C_SOURCE=200809L -I../../cpusupport ${CFLAGS_POSIX} -o $${HN%.h}-main main.c ${LDADD_POSIX}";	\
+		echo "	${CC} -DHEADER=\"\\\"$${HN}\\\"\" ${CFLAGS} -D_POSIX_C_SOURCE=200809L -I../../cpusupport ${IDIRS} ${CFLAGS_POSIX} -o $${HN%.h}-main main.c ${LDADD_POSIX}";	\
 		echo;						\
 	done >> Makefile.tmp
 
