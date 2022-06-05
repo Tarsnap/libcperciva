@@ -3,17 +3,20 @@
 # Do not include the following header file(s), as they require CPU-intrinsic
 # types and thus cannot be checked with the 'buildsingles' mechanism:
 # - crypto_aes_aesni_m128i.h
+# - crypto_aes_arm_u8.h
 HEADERS=\
 	crc32c.h crc32c_arm.h crc32c_sse42.h md5.h sha1.h sha256.h \
-		sha256_shani.h \
+		sha256_arm.h sha256_shani.h sha256_sse2.h \
 	aws_readkeys.h aws_sign.h \
 	cpusupport.h \
-	crypto_aes.h crypto_aes_aesni.h crypto_aesctr.h crypto_aesctr_aesni.h \
-		crypto_dh.h crypto_dh_group14.h crypto_entropy.h \
-		crypto_entropy_rdrand.h crypto_verify_bytes.h \
+	crypto_aes.h crypto_aes_aesni.h crypto_aes_arm.h crypto_aesctr.h \
+		crypto_aesctr_aesni.h crypto_aesctr_arm.h crypto_dh.h \
+		crypto_dh_group14.h crypto_entropy.h crypto_entropy_rdrand.h \
+		crypto_verify_bytes.h \
 	elasticarray.h elasticqueue.h mpool.h ptrheap.h seqptrmap.h \
 		timerqueue.h \
 	events.h events_internal.h \
+	netbuf.h netbuf_ssl_internal.h \
 	network.h \
 	align_ptr.h asprintf.h b64encode.h ctassert.h daemonize.h entropy.h \
 		getopt.h hexify.h humansize.h imalloc.h insecure_memzero.h \
