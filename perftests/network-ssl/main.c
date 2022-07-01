@@ -100,10 +100,9 @@ main(int argc, char * argv[])
 
 	/* Wait for reply. */
 	if (events_spin(&conndone))
-		goto err5;
+		goto err4;
 
 	/* Clean up. */
-	events_shutdown();
 	network_ssl_close(ctx);
 	close(socket);
 	sock_addr_freelist(sas_t);
@@ -112,8 +111,6 @@ main(int argc, char * argv[])
 	/* Success! */
 	exit(0);
 
-err5:
-	events_shutdown();
 err4:
 	if (network_ssl_write_cookie != NULL)
 		network_ssl_write_cancel(network_ssl_write_cookie);
