@@ -93,9 +93,9 @@ seqptrmap.o: ../datastruct/seqptrmap.c ../datastruct/elasticqueue.h ../datastruc
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../datastruct/seqptrmap.c -o seqptrmap.o
 timerqueue.o: ../datastruct/timerqueue.c ../datastruct/ptrheap.h ../datastruct/timerqueue.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../datastruct/timerqueue.c -o timerqueue.o
-events.o: ../events/events.c ../datastruct/mpool.h ../events/events.h ../events/events_internal.h
+events.o: ../events/events.c ../datastruct/mpool.h ../util/ctassert.h ../events/events.h ../events/events_internal.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../events/events.c -o events.o
-events_immediate.o: ../events/events_immediate.c ../datastruct/mpool.h ../external/queue/queue.h ../events/events.h ../events/events_internal.h
+events_immediate.o: ../events/events_immediate.c ../datastruct/mpool.h ../util/ctassert.h ../external/queue/queue.h ../events/events.h ../events/events_internal.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../events/events_immediate.c -o events_immediate.o
 events_network.o: ../events/events_network.c ../util/ctassert.h ../datastruct/elasticarray.h ../util/warnp.h ../events/events.h ../events/events_internal.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../events/events_network.c -o events_network.o
@@ -117,9 +117,9 @@ network_accept.o: ../network/network_accept.c ../events/events.h ../network/netw
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_accept.c -o network_accept.o
 network_connect.o: ../network/network_connect.c ../events/events.h ../util/sock.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_connect.c -o network_connect.o
-network_read.o: ../network/network_read.c ../events/events.h ../datastruct/mpool.h ../network/network.h
+network_read.o: ../network/network_read.c ../events/events.h ../datastruct/mpool.h ../util/ctassert.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_read.c -o network_read.o
-network_write.o: ../network/network_write.c ../events/events.h ../datastruct/mpool.h ../util/warnp.h ../network/network.h
+network_write.o: ../network/network_write.c ../events/events.h ../datastruct/mpool.h ../util/ctassert.h ../util/warnp.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_write.c -o network_write.o
 network_ssl.o: ../network_ssl/network_ssl.c ../events/events.h ../util/warnp.h ../network_ssl/network_ssl.h ../network_ssl/network_ssl_compat.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\"  -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network_ssl/network_ssl.c -o network_ssl.o
