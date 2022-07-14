@@ -1,0 +1,19 @@
+# Program name.
+PROG	=	test_sock_util
+
+# Don't install it.
+NOINST	=	1
+
+# Useful relative directories
+LIBCPERCIVA_DIR	=	../..
+
+# Main test code
+SRCS	=	main.c
+
+# libcperciva includes
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+test:	all
+	./test_sock_util
+
+.include <bsd.prog.mk>
