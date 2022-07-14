@@ -34,6 +34,7 @@ tests/mpool/test_mpool
 tests/setuidgid/test_setuidgid
 tests/sha1/test_sha1
 tests/sha256/test_sha256
+tests/sock_util/test_sock_util
 tests/parsenum/test_parsenum
 tests/readpass_file/test_readpass_file
 tests/sysendian/test_sysendian

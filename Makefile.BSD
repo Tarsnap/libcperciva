@@ -27,6 +27,7 @@ TESTS=	perftests/http							\
 	tests/setuidgid							\
 	tests/sha1							\
 	tests/sha256							\
+	tests/sock_util							\
 	tests/sysendian							\
 	tests/valgrind							\
 	tests/warnp
