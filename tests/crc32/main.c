@@ -53,7 +53,7 @@ print_hardware(const char * str)
 		printf(" using hardware CRC32 64-bit.\n");
 	else
 #endif
-#if defined(CPUSUPPORT_X86_SSE42)
+#if defined(CPUSUPPORT_X86_SSE42) && !defined(CPUSUPPORT_X86_SSE42_64)
 	if (cpusupport_x86_sse42())
 		printf(" using hardware CRC32 32-bit.\n");
 	else
