@@ -31,15 +31,15 @@ TESTS=	perftests/http							\
 	tests/sysendian							\
 	tests/valgrind							\
 	tests/warnp
-PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX Makefile aws alg cpusupport	\
-	crypto datastruct events liball network tests util
+PUBLISH= ${PROGS} COPYRIGHT STYLE POSIX Makefile aws alg apisupport	\
+	cpusupport crypto datastruct events liball network tests util
 
 ### Shared code between Tarsnap projects.
 
 # These definitions improve the readability of the below material.
 MAKEBSD:=	${MAKE} -f Makefile.BSD
 RELEASEDATE!=	date "+%B %d, %Y"
-CFLAGS_HARDCODED=	-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\\\"cpusupport-config.h\\\"
+CFLAGS_HARDCODED=	-D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\\\"cpusupport-config.h\\\" -DAPISUPPORT_CONFIG_FILE=\\\"apisupport-config.h\\\"
 
 # This creates (and deletes) a fake cpusupport-config.h that is
 # blank (and thus does not require any special CFLAGS to compile).
