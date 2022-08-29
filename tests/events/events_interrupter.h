@@ -1,5 +1,5 @@
-#ifndef _EVENTS_INTERRUPTER_H_
-#define _EVENTS_INTERRUPTER_H_
+#ifndef EVENTS_INTERRUPTER_H_
+#define EVENTS_INTERRUPTER_H_
 
 /**
  * events_interrupter_init(void):
@@ -19,4 +19,4 @@ int events_interrupter_interrupted(void);
  */
 void events_interrupter_reset(void);
 
-#endif /* !_EVENTS_INTERRUPTER_H_ */
+#endif /* !EVENTS_INTERRUPTER_H_ */
