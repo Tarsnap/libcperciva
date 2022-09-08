@@ -18,7 +18,7 @@ print_long_message(void)
 
 	/* Construct message: "a_________b_________c_" up to "_~_________". */
 	for (i = 0; i < 30; i++) {
-		message[10*i] = 'a' + (char)i;
+		message[10*i] = (char)('a' + i);
 		for (j = 1; j < 10; j++) {
 			message[10*i + j] = '_';
 		}
