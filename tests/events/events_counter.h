@@ -1,5 +1,5 @@
-#ifndef _EVENTS_COUNTER_H_
-#define _EVENTS_COUNTER_H_
+#ifndef EVENTS_COUNTER_H_
+#define EVENTS_COUNTER_H_
 
 /**
  * events_counter_reset(void):
@@ -14,4 +14,4 @@ void events_counter_reset(void);
  */
 void events_counter_ping(void);
 
-#endif /* !_EVENTS_COUNTER_H_ */
+#endif /* !EVENTS_COUNTER_H_ */
