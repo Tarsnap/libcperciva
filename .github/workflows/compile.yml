@@ -18,8 +18,10 @@ env:
                             -Wno-unused-macros
                             -Wno-documentation-unknown-command
                             -Wno-implicit-fallthrough
+                            -Wno-deprecated-declarations
   CFLAGS_GCC_LIBCPERCIVA: -Wall -Wextra -Werror -Wpedantic
                           -pedantic-errors -Wno-clobbered
+                          -Wno-deprecated-declarations
   # Variables for specific projects / platforms / compilers.
   CFLAGS_CLANG_PROJECT:
   CFLAGS_GCC_PROJECT:
@@ -31,7 +33,7 @@ env:
 jobs:
   Ubuntu:
     name: Ubuntu
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Update apt-get
       run: sudo apt-get update
@@ -41,7 +43,7 @@ jobs:
       uses: actions/checkout@v2
     - name: Compile with clang
       env:
-        CC: clang-10
+        CC: clang-12
         CFLAGS: ${{ env.CFLAGS_ALL }}
                 ${{ env.CFLAGS_CLANG_LIBCPERCIVA }}
                 ${{ env.CFLAGS_CLANG_PROJECT }}
