@@ -21,7 +21,7 @@ pass_test() {
 	ret=$?
 
 	if [ "$ret" -ne "0" ]; then
-		printf "Failed on $hostname!\n"
+		printf "Failed on %s!\n" "$hostname"
 		failed=$((failed + 1))
 	fi
 }
@@ -37,7 +37,7 @@ fail_test() {
 	ret=$?
 
 	if [ "$ret" -eq "0" ]; then
-		printf "Failed to fail on $hostname!\n"
+		printf "Failed to fail on %s!\n" "$hostname"
 		failed=$((failed + 1))
 	fi
 }

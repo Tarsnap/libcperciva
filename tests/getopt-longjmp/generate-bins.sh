@@ -34,4 +34,4 @@ done
 make clean
 
 # Notify user of which compiler-flag combinations failed.
-printf -- "\n\nFailed binaries: $failed\n"
+printf -- "\n\nFailed binaries: %s\n" "${failed}"
