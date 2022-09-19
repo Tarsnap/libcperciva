@@ -33,7 +33,7 @@ run_test() {
 
 	# Check the reason for this abort.
 	if ! grep -q "${reason}" ${log} ; then
-		printf "Correct reason not found in ${log}\n"
+		printf "Correct reason not found in %s\n" "${log}"
 		exit 1
 	fi
 }

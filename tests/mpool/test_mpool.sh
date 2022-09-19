@@ -102,7 +102,7 @@ cmp_methods () {
 	ratio=$( echo "scale=2;${malloc}/${mpool}" | bc)
 	ratio_percent=$( echo "100*${malloc}/${mpool}" | bc)
 
-	printf "${SETS}\t${REPS}\t${ratio}\n"
+	printf "%s\t%s\t%s\n" "${SETS}" "${REPS}" "${ratio}"
 	if [ "${ratio_percent}" -lt "${PERCENT_CUTOFF}" ]; then
 		# Don't include \n in this message.
 		printf "mpool was only ${ratio_percent}%%; wanted " 1>&2
