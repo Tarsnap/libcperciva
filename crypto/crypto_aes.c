@@ -254,11 +254,13 @@ crypto_aes_key_expand(const uint8_t * key, size_t len)
 
 	/* Expand the key. */
 	if (AES_set_encrypt_key(key, (int)(len * 8), kexp) != 0)
-		goto err0;
+		goto err1;
 
 	/* Success! */
 	return ((void *)kexp);
 
+err1:
+	free(kexp);
 err0:
 	/* Failure! */
 	return (NULL);
