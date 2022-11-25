@@ -104,7 +104,8 @@ main(int argc, char * argv[])
 
 	/* Clean up. */
 	network_ssl_close(ctx);
-	close(socket);
+	if (close(socket))
+		warnp("close");
 	sock_addr_freelist(sas_t);
 	free(sock_addr);
 
@@ -116,7 +117,8 @@ err4:
 		network_ssl_write_cancel(network_ssl_write_cookie);
 	network_ssl_close(ctx);
 err3:
-	close(socket);
+	if (close(socket))
+		warnp("close");
 err2:
 	sock_addr_freelist(sas_t);
 err1:
