@@ -156,7 +156,8 @@ write_pidfile(const char * filename)
 	return (0);
 
 err1:
-	fclose(fp);
+	if (fclose(fp))
+		warnp("fclose");
 err0:
 	/* Failure! */
 	return (-1);
