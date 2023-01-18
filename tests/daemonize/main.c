@@ -31,7 +31,7 @@ main(int argc, char * argv[])
 	warn0("before daemonize, pid:\t%jd", (intmax_t)getpid());
 
 	/* Launch daemon. */
-	if(daemonize(pidfile))
+	if (daemonize(pidfile))
 		goto err0;
 
 	/* Print current pid. */

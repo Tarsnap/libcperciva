@@ -147,7 +147,7 @@ main(int argc, char * argv[])
 		check_stderr_syslog(extra_message);
 		break;
 	case 2:
-		if(check_multithread())
+		if (check_multithread())
 			goto err0;
 		break;
 	default:
