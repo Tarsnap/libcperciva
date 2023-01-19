@@ -129,23 +129,23 @@ main(int argc, char * argv[])
 	int err = 0;
 
 	/* Run tests; keep on going on failure. */
-	if(getopt_int(argc, argv)) {
+	if (getopt_int(argc, argv)) {
 		fprintf(stderr, "Error in getopt_int\n");
 		err++;
 	}
 	optreset = 1;
-	if(getopt_int_int(argc, argv)) {
+	if (getopt_int_int(argc, argv)) {
 		fprintf(stderr, "Error in getopt_int_int\n");
 		err++;
 	}
 	optreset = 1;
-	if(getopt_int_int_enum(argc, argv)) {
+	if (getopt_int_int_enum(argc, argv)) {
 		fprintf(stderr, "Error in getopt_int_int_enum\n");
 		err++;
 	}
 
 	/* Did we fail anything? */
-	if(err > 0)
+	if (err > 0)
 		goto err0;
 
 	/* Success! */
