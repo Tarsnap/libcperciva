@@ -115,7 +115,7 @@ netbuf_write.o: ../netbuf/netbuf_write.c ../network/network.h ../external/queue/
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../netbuf/netbuf_write.c -o netbuf_write.o
 network_accept.o: ../network/network_accept.c ../events/events.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_accept.c -o network_accept.o
-network_connect.o: ../network/network_connect.c ../events/events.h ../util/sock.h ../network/network.h
+network_connect.o: ../network/network_connect.c ../events/events.h ../util/sock.h ../util/warnp.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_connect.c -o network_connect.o
 network_read.o: ../network/network_read.c ../events/events.h ../datastruct/mpool.h ../util/ctassert.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_read.c -o network_read.o
