@@ -111,6 +111,7 @@ SRCS	+=	ipc_sync.c
 SRCS	+=	json.c
 SRCS	+=	monoclock.c
 SRCS	+=	noeintr.c
+SRCS	+=	noeintr_close.c
 SRCS	+=	perftest.c
 SRCS	+=	readpass.c
 SRCS	+=	readpass_file.c
