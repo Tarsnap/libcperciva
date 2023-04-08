@@ -1,6 +1,7 @@
 .POSIX:
 
 PROGS=
+LIBS=	liball
 TESTS=	perftests/http							\
 	perftests/https							\
 	perftests/network-ssl						\
@@ -55,7 +56,7 @@ all:	toplevel
 
 .PHONY:	toplevel
 toplevel:	apisupport-config.h cflags-filter.sh	\
-		cpusupport-config.h liball		\
+		cpusupport-config.h libs		\
 		posix-flags.sh
 
 # For "loop-back" building of a subdirectory
@@ -68,15 +69,17 @@ buildsubdir: toplevel
 	export HAVE_BUILD_FLAGS=1;			\
 	cd ${BUILD_SUBDIR} && ${MAKE} ${BUILD_TARGET}
 
-# For "loop-back" building of the library
-.PHONY:	liball
-liball: cflags-filter.sh cpusupport-config.h posix-flags.sh
+# For "loop-back" building of libraries
+.PHONY:	libs
+libs: cflags-filter.sh cpusupport-config.h posix-flags.sh
 	. ./posix-flags.sh;				\
 	. ./cpusupport-config.h;			\
 	. ./cflags-filter.sh;				\
 	. ./apisupport-config.h;			\
 	export HAVE_BUILD_FLAGS=1;			\
-	( cd liball && make all ) || exit 2;
+	for D in ${LIBS}; do				\
+		( cd $${D} && make all ) || exit 2;	\
+	done
 
 posix-flags.sh:
 	if [ -d ${LIBCPERCIVA_DIR}/POSIX/ ]; then			\
@@ -135,7 +138,7 @@ install:	all
 .PHONY:	clean
 clean:	test-clean
 	rm -f apisupport-config.h cflags-filter.sh cpusupport-config.h posix-flags.sh
-	for D in liball ${PROGS} ${TESTS}; do			\
+	for D in ${LIBS} ${PROGS} ${TESTS}; do			\
 		( cd $${D} && ${MAKE} clean ) || exit 2;	\
 	done
 
