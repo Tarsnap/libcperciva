@@ -40,7 +40,7 @@ jobs:
     - name: Install software
       run: sudo apt-get install --no-install-recommends valgrind
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Compile with clang
       env:
         CC: clang-12
@@ -72,7 +72,7 @@ jobs:
     runs-on: macOS-11
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
     - name: Compile with clang
       env:
         CC: clang
