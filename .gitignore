@@ -9,6 +9,8 @@ cpusupport-config.h
 posix-flags.sh
 # Compiled libraries and test binaries.
 liball/liball.a
+liball/optional_mutex_normal/liball_optional_mutex_normal.a
+liball/optional_mutex_pthread/liball_optional_mutex_pthread.a
 perftests/http/test_http
 perftests/https/test_https
 perftests/network-ssl/test_network_ssl

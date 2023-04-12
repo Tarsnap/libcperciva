@@ -1,7 +1,9 @@
 .POSIX:
 
 PROGS=
-LIBS=	liball
+LIBS=	liball								\
+	liball/optional_mutex_normal					\
+	liball/optional_mutex_pthread
 TESTS=	perftests/http							\
 	perftests/https							\
 	perftests/network-ssl						\

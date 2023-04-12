@@ -1,0 +1,18 @@
+# Libary name.
+LIB	=	all_optional_mutex_normal
+
+# Don't install it.
+NOINST	=	1
+
+# Don't link to liball.a.
+NOLIBALL	=	1
+
+# Useful relative directories.
+LIBCPERCIVA_DIR	=	../..
+
+# Handle optional_mutex (this cannot be part of liball).
+.PATH.c	:	${LIBCPERCIVA_DIR}/util
+SRCS	+=	optional_mutex.c
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
+
+.include <bsd.prog.mk>
