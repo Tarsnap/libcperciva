@@ -53,7 +53,7 @@ err0:
 	return (-1);
 }
 
-/*
+/**
  * events_interrupter_interrupted(void):
  * Return 1 if we received SIGUSR1; else return 0.
  */
@@ -64,7 +64,7 @@ events_interrupter_interrupted(void)
 	return ((int)interrupted);
 }
 
-/*
+/**
  * events_interrupter_reset(void):
  * Clear the "did we receive SIGUSR1" flag.
  */
