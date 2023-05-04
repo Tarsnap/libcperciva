@@ -16,6 +16,9 @@ SRCS	=	main.c
 SRCS	+=	optional_mutex.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
+# Required define.
+CFLAGS.optional_mutex.c=	-DOPTIONAL_MUTEX_PTHREAD_NO
+
 test:	all
 	./${PROG}
 
