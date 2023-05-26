@@ -6,10 +6,10 @@ test_stderr="${s_basename}-stderr.txt"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/sock_util || exit
+	cd "${scriptdir}/sock_util" || exit
 
 	setup_check_variables "test_sock_util"
 	${c_valgrind_cmd}			\
 	    ./test_sock_util 2> "${test_stderr}"
-	echo "$?" > ${c_exitfile}
+	echo "$?" > "${c_exitfile}"
 }

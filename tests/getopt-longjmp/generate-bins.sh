@@ -17,14 +17,14 @@ do
 	do
 		# Check each compiler-flag combination.
 		thisbin=$CC$O
-		make clean && make CC=$CC CFLAGS=$O
+		make clean && make CC="$CC" CFLAGS="$O"
 		if ./${bin} ; then
 			# Don't keep a working binary.
 			rm ${bin}
 		else
 			# Keep track of failures.
 			failed="$failed $thisbin"
-			mv $bin $thisbin
+			mv $bin "$thisbin"
 		fi
 	done
 done

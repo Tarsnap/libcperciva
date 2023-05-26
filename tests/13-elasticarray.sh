@@ -6,10 +6,10 @@ test_output="${s_basename}-stdout.txt"
 
 ### Actual command
 scenario_cmd() {
-	cd ${scriptdir}/elasticarray || exit
+	cd "${scriptdir}/elasticarray" || exit
 
 	setup_check_variables "test_elasticarray"
 	${c_valgrind_cmd}			\
-	    ./test_elasticarray 1> ${test_output}
-	echo "$?" > ${c_exitfile}
+	    ./test_elasticarray 1> "${test_output}"
+	echo "$?" > "${c_exitfile}"
 }

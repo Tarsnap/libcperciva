@@ -10,22 +10,22 @@ if [ ! -n "${LOGFILE}" ]; then
 fi
 
 # Set up filenames
-filename=${LOGFILE}-all.txt
-filename_png=${LOGFILE}-all.png
-rm -f ${filename}
+filename="${LOGFILE}-all.txt"
+filename_png="${LOGFILE}-all.png"
+rm -f "${filename}"
 
 # Combine all timing data for gnuplot stats
-printf "#full-malloc\tfull-mpool" >> ${filename}
-printf "\tpartial-malloc\tfull-mpool" >> ${filename}
-printf "\tnone-malloc\tnone-mpool" >> ${filename}
-printf "\n" >> ${filename}
-paste	${LOGFILE}-full-malloc.txt	\
-	${LOGFILE}-full-mpool.txt	\
-	${LOGFILE}-partial-malloc.txt	\
-	${LOGFILE}-partial-mpool.txt	\
-	${LOGFILE}-none-malloc.txt	\
-	${LOGFILE}-none-mpool.txt	\
-	>> ${filename}
+printf "#full-malloc\tfull-mpool" >> "${filename}"
+printf "\tpartial-malloc\tfull-mpool" >> "${filename}"
+printf "\tnone-malloc\tnone-mpool" >> "${filename}"
+printf "\n" >> "${filename}"
+paste	"${LOGFILE}-full-malloc.txt"	\
+	"${LOGFILE}-full-mpool.txt"	\
+	"${LOGFILE}-partial-malloc.txt"	\
+	"${LOGFILE}-partial-mpool.txt"	\
+	"${LOGFILE}-none-malloc.txt"	\
+	"${LOGFILE}-none-mpool.txt"	\
+	>> "${filename}"
 
 # Generate plot
-gnuplot -c visualize-mpool.gnuplot ${filename} ${filename_png} ${YMAX}
+gnuplot -c visualize-mpool.gnuplot "${filename}" "${filename_png}" "${YMAX}"
