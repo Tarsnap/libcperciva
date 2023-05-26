@@ -19,7 +19,7 @@ run_test() {
 	# $(), and writing the exit code to a file, was necessary to cover
 	# Linux, FreeBSD, MacOS X, and Solaris.
 	(
-	    $(./test_parsenum $1 2>${log}; echo "$?" > "${rcfile}" ) 2>/dev/null
+	    $(./test_parsenum "$1" 2>${log}; echo "$?" > "${rcfile}" ) 2>/dev/null
 	) 2>/dev/null
 	rc=$( cat "${rcfile}" )
 

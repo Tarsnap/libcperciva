@@ -18,7 +18,7 @@ fi
 make_count() {
 	END=$1
 	N=1
-	while [ $N -le ${END} ]; do
+	while [ $N -le "${END}" ]; do
 		echo $N
 		N=$((N + 1))
 	done
@@ -33,17 +33,17 @@ run() {
 
 	# "Warm up"; don't record this data
 	for j in ${WARMUP_REPS}; do
-		./test_mpool ${SETS} ${REPS} 0 > /dev/null
-		./test_mpool ${SETS} ${REPS} 1 > /dev/null
+		./test_mpool "${SETS}" "${REPS}" 0 > /dev/null
+		./test_mpool "${SETS}" "${REPS}" 1 > /dev/null
 	done
 
 	arr_malloc=""
 	arr_mpool=""
 	# Get raw data
 	for i in ${BINARY_REPS}; do
-		usec=$( ./test_mpool ${SETS} ${REPS} 0 )
+		usec=$( ./test_mpool "${SETS}" "${REPS}" 0 )
 		arr_malloc="${arr_malloc} ${usec}"
-		usec=$( ./test_mpool ${SETS} ${REPS} 1 )
+		usec=$( ./test_mpool "${SETS}" "${REPS}" 1 )
 		arr_mpool="${arr_mpool} ${usec}"
 	done
 
@@ -53,28 +53,28 @@ run() {
 
 		# Write malloc times
 		filename="${LOGFILE}-${SUFFIX}-malloc.txt"
-		rm -f ${filename}
+		rm -f "${filename}"
 		for a in ${arr_malloc}; do
 			amortized=$( echo "scale=8;${a} / ${num};" | bc)
-			echo ${amortized} >> ${filename}
+			echo "${amortized}" >> "${filename}"
 		done
 
 		# Write mpool times
 		filename="${LOGFILE}-${SUFFIX}-mpool.txt"
-		rm -f ${filename}
+		rm -f "${filename}"
 		for a in ${arr_mpool}; do
 			amortized=$( echo "scale=8;${a} / ${num};" | bc)
-			echo ${amortized} >> ${filename}
+			echo "${amortized}" >> "${filename}"
 		done
 	fi
 
 	## Sort array, find median
-	sorted_arr=$( echo ${arr_malloc} | tr " " "\n" | sort -n | tr "\n" " " )
-	median=$( echo ${sorted_arr} | cut -d ' ' -f $(( 1 + REPEATS/2 )) )
+	sorted_arr=$( echo "${arr_malloc}" | tr " " "\n" | sort -n | tr "\n" " " )
+	median=$( echo "${sorted_arr}" | cut -d ' ' -f $(( 1 + REPEATS/2 )) )
 	val_malloc=${median}
 
-	sorted_arr=$( echo ${arr_mpool} | tr " " "\n" | sort -n | tr "\n" " " )
-	median=$( echo ${sorted_arr} | cut -d ' ' -f $(( 1 + REPEATS/2 )) )
+	sorted_arr=$( echo "${arr_mpool}" | tr " " "\n" | sort -n | tr "\n" " " )
+	median=$( echo "${sorted_arr}" | cut -d ' ' -f $(( 1 + REPEATS/2 )) )
 	val_mpool=${median}
 
 	return 0
@@ -86,7 +86,7 @@ cmp_methods () {
 	PERCENT_CUTOFF=$3
 	SUFFIX=$4
 
-	run $SETS $REPS "${SUFFIX}"
+	run "$SETS" "$REPS" "${SUFFIX}"
 	malloc=${val_malloc}
 	mpool=${val_mpool}
 

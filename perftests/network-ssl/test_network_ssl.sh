@@ -13,7 +13,7 @@ fi
 pass_test() {
 	hostname=$1
 
-	./test_network_ssl $hostname
+	./test_network_ssl "$hostname"
 	ret=$?
 
 	if [ "$ret" -ne "0" ]; then
@@ -25,7 +25,7 @@ pass_test() {
 fail_test() {
 	hostname=$1
 
-	./test_network_ssl $hostname 2>> $output
+	./test_network_ssl "$hostname" 2>> $output
 	ret=$?
 
 	if [ "$ret" -eq "0" ]; then

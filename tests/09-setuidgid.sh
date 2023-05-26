@@ -13,29 +13,29 @@ test_setuidgid_username_groupname() {
 	skip_ok=$2
 	username_groupname=$3
 
-	cd ${scriptdir}/setuidgid || exit
+	cd "${scriptdir}/setuidgid" || exit
 
 	setup_check_variables "setuidgid on ${username_groupname}"
 
 	# Print info about each check
-	printf "=== check %s" "${s_count}" >> ${test_stderr}
-	if [ ${pass_exitcode} -ne "0" ]; then
-		printf " (should fail)" >> ${test_stderr}
+	printf "=== check %s" "${s_count}" >> "${test_stderr}"
+	if [ "${pass_exitcode}" -ne "0" ]; then
+		printf " (should fail)" >> "${test_stderr}"
 	fi
-	if [ ${skip_ok} -ne "0" ]; then
-		printf " (can pass despite EPERM)" >> ${test_stderr}
+	if [ "${skip_ok}" -ne "0" ]; then
+		printf " (can pass despite EPERM)" >> "${test_stderr}"
 	fi
-	printf "\n" >> ${test_stderr}
+	printf "\n" >> "${test_stderr}"
 
 	# Run command
 	${c_valgrind_cmd}			\
 	    ./test_setuidgid "${username_groupname}"	\
-	    2>> ${test_stderr}
+	    2>> "${test_stderr}"
 	cmd_exitcode=$?
 
 	# Evaluate results
-	if [ ${cmd_exitcode} -eq "$EX_NOPERM" ]; then
-		if [ ${skip_ok} -eq "1" ]; then
+	if [ "${cmd_exitcode}" -eq "$EX_NOPERM" ]; then
+		if [ "${skip_ok}" -eq "1" ]; then
 			# Check if root
 			if [ "$(id -u)" = "0" ]; then
 				# Fail
@@ -51,8 +51,8 @@ test_setuidgid_username_groupname() {
 			printf "1"
 		fi
 	else
-		expected_exitcode ${pass_exitcode} ${cmd_exitcode}
-	fi > ${c_exitfile}
+		expected_exitcode "${pass_exitcode}" "${cmd_exitcode}"
+	fi > "${c_exitfile}"
 }
 
 ### Actual command

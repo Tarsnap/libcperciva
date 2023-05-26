@@ -17,7 +17,7 @@ pass_test() {
 
 	printf "\n%s\n" "--- Trying to PASS on $hostname $path" >> $output
 
-	./test_https $hostname $path >> $output
+	./test_https "$hostname" "$path" >> $output
 	ret=$?
 
 	if [ "$ret" -ne "0" ]; then
@@ -33,7 +33,7 @@ fail_test() {
 
 	printf "%s\n" "--- Trying to FAIL on $hostname $path" >> $output
 
-	./test_https $hostname $path 2>> $output
+	./test_https "$hostname" "$path" 2>> $output
 	ret=$?
 
 	if [ "$ret" -eq "0" ]; then

@@ -15,7 +15,7 @@ while [ ! -e "${pidfile}" ] ; do
 	sleep 1
 done
 pid=$( cat "${pidfile}" )
-kill -s USR1 ${pid}
+kill -s USR1 "${pid}"
 
 # Compare with good values
 cmp -s test-empty-events.good test-empty-events.log
