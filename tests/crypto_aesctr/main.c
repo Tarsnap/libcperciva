@@ -205,7 +205,7 @@ parse_testcase(const struct testcase testcase,
     uint8_t plaintext_arr[static MAX_PLAINTEXT_LENGTH],
     uint8_t ciphertext_arr[static MAX_PLAINTEXT_LENGTH])
 {
-	uint8_t key[32];	/* We will use 16 or 32 of these bytes. */
+	uint8_t key_unexpanded[32]; /* We will use 16 or 32 of these bytes. */
 	const size_t len = strlen(testcase.plaintext_str);
 
 	/* Determine key length. */
@@ -216,11 +216,12 @@ parse_testcase(const struct testcase testcase,
 	assert(len <= MAX_PLAINTEXT_LENGTH);
 
 	/* Prepare the key. */
-	if (unhexify(testcase.keytext_hex, key, *keylen_p)) {
+	if (unhexify(testcase.keytext_hex, key_unexpanded, *keylen_p)) {
 		warn0("unhexify(%s)", testcase.keytext_hex);
 		goto err0;
 	}
-	if ((*key_exp_p = crypto_aes_key_expand(key, *keylen_p)) == NULL) {
+	if ((*key_exp_p = crypto_aes_key_expand(key_unexpanded, *keylen_p))
+	    == NULL) {
 		warn0("crypto_aes_key_expand");
 		goto err0;
 	}
@@ -233,7 +234,7 @@ parse_testcase(const struct testcase testcase,
 	}
 
 	/* Clean up.  Irrelevant for a test, but it's a good habit. */
-	insecure_memzero(key, 32);
+	insecure_memzero(key_unexpanded, 32);
 
 	/* Success! */
 	return (0);
@@ -279,7 +280,7 @@ perftest(void)
 {
 	struct crypto_aesctr * aesctr;
 	struct crypto_aes_key * key_exp;
-	uint8_t key[32];
+	uint8_t key_unexpanded[32];
 	size_t i;
 
 	/* Inform user about the hardware optimization status. */
@@ -288,8 +289,8 @@ perftest(void)
 
 	/* Prepare the key.  We're only performance-testing 256-bit keys. */
 	for (i = 0; i < 32; i++)
-		key[i] = (uint8_t)i;
-	if ((key_exp = crypto_aes_key_expand(key, 32)) == NULL)
+		key_unexpanded[i] = (uint8_t)i;
+	if ((key_exp = crypto_aes_key_expand(key_unexpanded, 32)) == NULL)
 		goto err0;
 
 	/* Prepare the aesctr object. */
@@ -325,7 +326,7 @@ selftest_unaligned_access(size_t keylen)
 {
 	struct crypto_aesctr * aesctr;
 	struct crypto_aes_key * key_exp;
-	uint8_t key[32];
+	uint8_t key_unexpanded[32];
 	uint8_t * largebuf;
 	uint8_t * largebuf_out1;
 	uint8_t * largebuf_out2;
@@ -341,8 +342,8 @@ selftest_unaligned_access(size_t keylen)
 
 	/* Prepare the key: 00010203... */
 	for (i = 0; i < keylen; i++)
-		key[i] = (uint8_t)i;
-	if ((key_exp = crypto_aes_key_expand(key, keylen)) == NULL)
+		key_unexpanded[i] = (uint8_t)i;
+	if ((key_exp = crypto_aes_key_expand(key_unexpanded, keylen)) == NULL)
 		goto err1;
 
 	/* Test with a large buffer and unaligned access. */
