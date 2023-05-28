@@ -115,7 +115,7 @@ parse_testcase(const struct testcase testcase,
     uint8_t plaintext_arr[static MAX_PLAINTEXT_LENGTH],
     uint8_t ciphertext_arr[static MAX_PLAINTEXT_LENGTH])
 {
-	uint8_t key[32];	/* We will use 16 or 32 of these bytes. */
+	uint8_t key_unexpanded[32]; /* We will use 16 or 32 of these bytes. */
 	const size_t len = strlen(testcase.plaintext_hex) / 2;
 
 	/* Determine key length. */
@@ -126,11 +126,12 @@ parse_testcase(const struct testcase testcase,
 	assert(len == 16);
 
 	/* Prepare the key. */
-	if (unhexify(testcase.keytext_hex, key, *keylen_p)) {
+	if (unhexify(testcase.keytext_hex, key_unexpanded, *keylen_p)) {
 		warn0("unhexify(%s)", testcase.keytext_hex);
 		goto err0;
 	}
-	if ((*key_exp_p = crypto_aes_key_expand(key, *keylen_p)) == NULL) {
+	if ((*key_exp_p = crypto_aes_key_expand(key_unexpanded, *keylen_p))
+	    == NULL) {
 		warn0("crypto_aes_key_expand");
 		goto err0;
 	}
@@ -146,7 +147,7 @@ parse_testcase(const struct testcase testcase,
 	}
 
 	/* Clean up.  Irrelevant for a test, but it's a good habit. */
-	insecure_memzero(key, 32);
+	insecure_memzero(key_unexpanded, 32);
 
 	/* Success! */
 	return (0);
