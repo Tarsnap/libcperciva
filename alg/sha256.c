@@ -376,10 +376,7 @@ SHA256_Init(SHA256_CTX * ctx)
 #endif
 }
 
-/**
- * SHA256_Update(ctx, in, len):
- * Input ${len} bytes from ${in} into the SHA256 context ${ctx}.
- */
+/* Internal function for SHA256_Update, using intermediate values. */
 static void
 SHA256_Update_internal(SHA256_CTX * ctx, const void * in, size_t len,
     uint32_t tmp32[static restrict 72])
@@ -420,7 +417,10 @@ SHA256_Update_internal(SHA256_CTX * ctx, const void * in, size_t len,
 	memcpy(ctx->buf, src, len);
 }
 
-/* Wrapper function for intermediate-values sanitization. */
+/**
+ * SHA256_Update(ctx, in, len):
+ * Input ${len} bytes from ${in} into the SHA256 context ${ctx}.
+ */
 void
 SHA256_Update(SHA256_CTX * ctx, const void * in, size_t len)
 {
