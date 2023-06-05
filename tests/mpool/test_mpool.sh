@@ -32,7 +32,7 @@ run() {
 	SUFFIX=$3
 
 	# "Warm up"; don't record this data
-	for j in ${WARMUP_REPS}; do
+	for _ in ${WARMUP_REPS}; do
 		./test_mpool "${SETS}" "${REPS}" 0 > /dev/null
 		./test_mpool "${SETS}" "${REPS}" 1 > /dev/null
 	done
@@ -40,7 +40,7 @@ run() {
 	arr_malloc=""
 	arr_mpool=""
 	# Get raw data
-	for i in ${BINARY_REPS}; do
+	for _ in ${BINARY_REPS}; do
 		usec=$( ./test_mpool "${SETS}" "${REPS}" 0 )
 		arr_malloc="${arr_malloc} ${usec}"
 		usec=$( ./test_mpool "${SETS}" "${REPS}" 1 )
