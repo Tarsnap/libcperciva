@@ -2,7 +2,6 @@
 
 ### Constants
 c_valgrind_min=1
-passdir=${scriptdir}/readpass_file
 
 
 file_success() {
