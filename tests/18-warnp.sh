@@ -46,7 +46,7 @@ scenario_cmd() {
 
 	# Check console output.
 	setup_check_variables "test_warnp output console"
-	$(set -e ; check_output "${test_output}" "${nonce}")
+	(set -e ; check_output "${test_output}" "${nonce}")
 	echo "$?" > "${c_exitfile}"
 
 	# Run binary to check multithreaded output.
