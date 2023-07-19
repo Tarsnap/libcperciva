@@ -21,6 +21,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/cpusupport
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/crypto
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/datastruct
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/events
+IDIRS	+=	-I${LIBCPERCIVA_DIR}/external/queue
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/http
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/netbuf
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/network
@@ -28,7 +29,7 @@ IDIRS	+=	-I${LIBCPERCIVA_DIR}/network_ssl
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
 all_extra:
-	${MAKE} -f Makefile-headers CFLAGS_POSIX="${CFLAGS_POSIX}" CFLAGS="${CFLAGS}" IDIRS="${IDIRS}" buildsingles
+	${MAKE} -f Makefile-headers CFLAGS_POSIX="${CFLAGS_POSIX}" CPPFLAGS="${CPPFLAGS}" CFLAGS="${CFLAGS}" IDIRS="${IDIRS}" buildsingles
 
 clean_extra:
 	${MAKE} -f Makefile-headers clean
