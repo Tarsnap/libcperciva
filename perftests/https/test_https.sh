@@ -15,13 +15,13 @@ pass_test() {
 	# Initialize to "/" if not specified
 	path=${2:-"/"}
 
-	printf "\n%s\n" "--- Trying to PASS on $hostname $path" >> $output
+	printf "\n%s\n" "--- Trying to PASS on ${hostname} ${path}" >> "${output}"
 
-	./test_https "$hostname" "$path" >> $output
+	./test_https "${hostname}" "${path}" >> "${output}"
 	ret=$?
 
-	if [ "$ret" -ne "0" ]; then
-		printf "Failed on %s!\n" "$hostname"
+	if [ "${ret}" -ne "0" ]; then
+		printf "Failed on %s!\n" "${hostname}"
 		failed=$((failed + 1))
 	fi
 }
@@ -31,13 +31,13 @@ fail_test() {
 	# Initialize to "/" if not specified
 	path=${2:-"/"}
 
-	printf "%s\n" "--- Trying to FAIL on $hostname $path" >> $output
+	printf "%s\n" "--- Trying to FAIL on ${hostname} ${path}" >> "${output}"
 
-	./test_https "$hostname" "$path" 2>> $output
+	./test_https "${hostname}" "${path}" 2>> "${output}"
 	ret=$?
 
-	if [ "$ret" -eq "0" ]; then
-		printf "Failed to fail on %s!\n" "$hostname"
+	if [ "${ret}" -eq "0" ]; then
+		printf "Failed to fail on %s!\n" "${hostname}"
 		failed=$((failed + 1))
 	fi
 }
@@ -57,6 +57,6 @@ fail_test self-signed.badssl.com
 fail_test expired.badssl.com
 fail_test untrusted-root.badssl.com
 
-if [ "$failed" -ne 0 ]; then
+if [ "${failed}" -ne 0 ]; then
 	exit 1
 fi

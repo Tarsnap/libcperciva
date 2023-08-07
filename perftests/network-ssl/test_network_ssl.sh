@@ -13,11 +13,11 @@ fi
 pass_test() {
 	hostname=$1
 
-	./test_network_ssl "$hostname"
+	./test_network_ssl "${hostname}"
 	ret=$?
 
-	if [ "$ret" -ne "0" ]; then
-		printf "Failed on %s!\n" "$hostname"
+	if [ "${ret}" -ne "0" ]; then
+		printf "Failed on %s!\n" "${hostname}"
 		failed=$((failed + 1))
 	fi
 }
@@ -25,11 +25,11 @@ pass_test() {
 fail_test() {
 	hostname=$1
 
-	./test_network_ssl "$hostname" 2>> $output
+	./test_network_ssl "${hostname}" 2>> "${output}"
 	ret=$?
 
-	if [ "$ret" -eq "0" ]; then
-		printf "Failed to fail on %s!\n" "$hostname"
+	if [ "${ret}" -eq "0" ]; then
+		printf "Failed to fail on %s!\n" "${hostname}"
 		failed=$((failed + 1))
 	fi
 }
@@ -46,6 +46,6 @@ fail_test self-signed.badssl.com
 fail_test expired.badssl.com
 fail_test untrusted-root.badssl.com
 
-if [ "$failed" -ne 0 ]; then
+if [ "${failed}" -ne 0 ]; then
 	exit 1
 fi
