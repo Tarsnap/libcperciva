@@ -18,13 +18,13 @@ fi
 make_count() {
 	END=$1
 	N=1
-	while [ $N -le "${END}" ]; do
-		echo $N
+	while [ "${N}" -le "${END}" ]; do
+		echo "${N}"
 		N=$((N + 1))
 	done
 }
-WARMUP_REPS=$( make_count ${WARM_UP} )
-BINARY_REPS=$( make_count ${REPEATS} )
+WARMUP_REPS=$( make_count "${WARM_UP}" )
+BINARY_REPS=$( make_count "${REPEATS}" )
 
 run() {
 	SETS=$1
@@ -86,7 +86,7 @@ cmp_methods () {
 	PERCENT_CUTOFF=$3
 	SUFFIX=$4
 
-	run "$SETS" "$REPS" "${SUFFIX}"
+	run "${SETS}" "${REPS}" "${SUFFIX}"
 	malloc=${val_malloc}
 	mpool=${val_mpool}
 

@@ -34,7 +34,7 @@ test_setuidgid_username_groupname() {
 	cmd_exitcode=$?
 
 	# Evaluate results
-	if [ "${cmd_exitcode}" -eq "$EX_NOPERM" ]; then
+	if [ "${cmd_exitcode}" -eq "${EX_NOPERM}" ]; then
 		if [ "${skip_ok}" -eq "1" ]; then
 			# Check if root
 			if [ "$(id -u)" = "0" ]; then
