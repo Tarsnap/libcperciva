@@ -163,7 +163,7 @@ static const size_t nbytes_warmup = 1024 * 10000;	/* approx 10 MB */
 
 /* Print a name, then an array in hex. */
 static void
-print_arr(const char * name, uint8_t * arr, size_t len)
+print_arr(const char * name, const uint8_t * arr, size_t len)
 {
 	size_t i;
 
