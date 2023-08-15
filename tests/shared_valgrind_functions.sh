@@ -327,7 +327,7 @@ valgrind_check_basenames() {
 	val_basename=$(valgrind_get_basename "${exitfile}")
 
 	# Get list of files to check.  (Yes, the star goes outside the quotes.)
-	logfiles=$(ls "${val_basename}"* 2>/dev/null)
+	logfiles=$(set -o noglob; get_filelist "${val_basename}"*)
 	num_logfiles=$(echo "${logfiles}" | wc -w)
 
 	# Bail if we don't have any valgrind logfiles to check.

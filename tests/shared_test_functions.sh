@@ -26,6 +26,9 @@
 #   Set up the below variables.
 # - expected_exitcode(expected, actual):
 #   Check if ${expected} matches ${actual}.
+# - get_filelist (pattern):
+#   Return a sorted list of files corresponding to ${pattern}, separated by
+#   newlines.
 # - run_scenarios():
 #   Run scenarios in the test directory.
 #
@@ -205,6 +208,29 @@ expected_exitcode() {
 	fi
 }
 
+## get_filelist (pattern):
+# Return a sorted list of files corresponding to ${pattern}, separated by
+# newlines.
+get_filelist() {
+	_get_filelist_pattern=$1
+
+	# Separate the pattern into directory and basename.
+	_get_filelist_dir=$(dirname "${_get_filelist_pattern}")
+	_get_filelist_base=$(basename "${_get_filelist_pattern}")
+
+	# Find all files matching the pattern.  Don't complain if the
+	# directory does not exist (e.g., checking for non-existent valgrind
+	# logfiles).
+	_get_filelist_unsorted=$(find "${_get_filelist_dir}"		\
+	    -name "${_get_filelist_base}" -prune -print 2>/dev/null)
+
+	# Sort the list.
+	_get_filelist_filelist=$(printf "%s" "${_get_filelist_unsorted}" | sort)
+
+	# Return the sorted list.
+	printf "%s" "${_get_filelist_filelist}"
+}
+
 ## notify_success_or_fail (log_basename, val_log_basename):
 # Examine all "exit code" files beginning with ${log_basename} and
 # print "SUCCESS!", "FAILED!", "SKIP!", or "PARTIAL SUCCESS / SKIP!"
@@ -217,7 +243,7 @@ notify_success_or_fail() {
 	val_log_basename=$2
 
 	# Bail if there's no exitfiles.
-	exitfiles=$(ls "${log_basename}"-*.exit) || true
+	exitfiles=$(set -o noglob; get_filelist "${log_basename}"-*.exit)
 	if [ -z "${exitfiles}" ]; then
 		echo "FAILED" 1>&2
 		s_retval=1
@@ -229,7 +255,7 @@ notify_success_or_fail() {
 	skip_exitfiles=0
 
 	# Check each exitfile.
-	for exitfile in $(echo "${exitfiles}" | sort); do
+	for exitfile in ${exitfiles}; do
 		ret=$(cat "${exitfile}")
 		total_exitfiles=$(( total_exitfiles + 1 ))
 		if [ "${ret}" -lt 0 ]; then
@@ -313,11 +339,13 @@ scenario_runner() {
 ## run_scenarios (scenario_filenames):
 # Run all scenarios matching ${scenario_filenames}.
 run_scenarios() {
-	# Get the test number(s) to run.
+	# Get the test scenario(s) to run.
 	if [ "${N:-0}" -gt "0" ]; then
+		# There will only be one such file, so no need to sort.
 		test_scenarios="$(printf "${scriptdir}/%02d-*.sh" "${N}")"
 	else
-		test_scenarios="${scriptdir}/??-*.sh"
+		test_scenarios="$(set -o noglob;			\
+		    get_filelist "${scriptdir}"/??-*.sh)"
 	fi
 
 	# Clean up any previous directory, and create a new one.
