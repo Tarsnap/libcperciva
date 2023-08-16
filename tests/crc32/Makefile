@@ -5,7 +5,7 @@ SRCS=main.c
 IDIRS=-I../../alg -I../../cpusupport -I../../util
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/crc32
-LIBALL=../../liball/liball.a
+LIBALL=../../liball/liball.a ../../liball/optional_mutex_normal/liball_optional_mutex_normal.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \

@@ -6,7 +6,7 @@ IDIRS=-I../../util
 LDADD_REQ=-lm
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/parsenum
-LIBALL=../../liball/liball.a
+LIBALL=../../liball/liball.a ../../liball/optional_mutex_normal/liball_optional_mutex_normal.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \

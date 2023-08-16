@@ -5,7 +5,7 @@ SRCS=main.c
 IDIRS=-I ../../events -I ../../http -I ../../util
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=perftests/http
-LIBALL=../../liball/liball.a
+LIBALL=../../liball/liball.a ../../liball/optional_mutex_normal/liball_optional_mutex_normal.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \

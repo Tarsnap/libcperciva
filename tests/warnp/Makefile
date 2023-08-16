@@ -6,7 +6,7 @@ IDIRS=-I../../util
 LDADD_REQ=-lpthread
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/warnp
-LIBALL=../../liball/liball.a
+LIBALL=../../liball/liball.a ../../liball/optional_mutex_pthread/liball_optional_mutex_pthread.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
