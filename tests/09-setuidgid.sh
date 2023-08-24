@@ -18,7 +18,7 @@ test_setuidgid_username_groupname() {
 	setup_check_variables "setuidgid on ${username_groupname}"
 
 	# Print info about each check
-	printf "=== check %s" "${s_count}" >> "${test_stderr}"
+	printf "=== check %s" "${c_count_str}" >> "${test_stderr}"
 	if [ "${pass_exitcode}" -ne "0" ]; then
 		printf " (should fail)" >> "${test_stderr}"
 	fi

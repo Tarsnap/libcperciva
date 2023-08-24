@@ -9,7 +9,7 @@ file_success() {
 	expect_pass=$2
 
 	setup_check_variables "test_readpass_file ${filename}"
-	output="${s_basename}-${s_count}.stdout"
+	output="${s_basename}-${c_count_str}.stdout"
 	${c_valgrind_cmd}			\
 	    ./test_readpass_file "${filename}"	\
 	    1> "${output}"
@@ -25,7 +25,7 @@ file_fail() {
 	expect_fail=$2
 
 	setup_check_variables "test_readpass_file ${filename}"
-	err_output="${s_basename}-${s_count}.stderr"
+	err_output="${s_basename}-${c_count_str}.stderr"
 	${c_valgrind_cmd}			\
 	    ./test_readpass_file "${filename}"	\
 	    2> "${err_output}"
