@@ -14,13 +14,8 @@ LIBCPERCIVA_DIR	=	../../..
 .PATH.c	:	..
 SRCS	=	main.c
 
-# Handle optional_mutex (this cannot be part of liball).
-.PATH.c	:	${LIBCPERCIVA_DIR}/util
-SRCS	+=	optional_mutex.c
+# libcperciva includes
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
-
-# Required define.
-CFLAGS.optional_mutex.c=	-DOPTIONAL_MUTEX_PTHREAD_YES
 
 # Special test-only define.
 CFLAGS.main.c= -DNUM_THREADS=10

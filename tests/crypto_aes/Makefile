@@ -6,7 +6,7 @@ IDIRS=-I../../cpusupport -I../../crypto -I../../util
 LDADD_REQ=-lcrypto
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/crypto_aes
-LIBALL=../../liball/liball.a
+LIBALL=../../liball/liball.a ../../liball/optional_mutex_normal/liball_optional_mutex_normal.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
