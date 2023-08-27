@@ -144,7 +144,7 @@ err1:
 
 /* Check if ${sock} produces our magic cookie.  Return 0 if it doesn't. */
 static int
-is_sock_still_open(int sock)
+is_sock_still_open_and_magic(int sock)
 {
 	uint8_t cookie_recv[MAGIC_COOKIE_LEN];
 
@@ -255,7 +255,7 @@ noeintr_close(int fd)
 		 * referring to the same socket as s[1]; if so, the
 		 * descriptor wasn't actually closed.
 		 */
-		switch (is_sock_still_open(fd)) {
+		switch (is_sock_still_open_and_magic(fd)) {
 		case -1:
 			/* Fatal error. */
 			goto err1;
