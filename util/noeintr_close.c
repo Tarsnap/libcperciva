@@ -142,15 +142,15 @@ err1:
 	return (-1);
 }
 
-/* Check if ${fd} produces our magic cookie.  Return 0 if it doesn't. */
+/* Check if ${sock} produces our magic cookie.  Return 0 if it doesn't. */
 static int
-is_fd_still_open(int fd)
+is_sock_still_open(int sock)
 {
 	uint8_t cookie_recv[MAGIC_COOKIE_LEN];
 
-	/* Read from ${fd}. */
+	/* Read from ${sock}. */
 	errno = 0;
-	while (recv(fd, &cookie_recv, MAGIC_COOKIE_LEN, MSG_PEEK)
+	while (recv(sock, &cookie_recv, MAGIC_COOKIE_LEN, MSG_PEEK)
 	    != MAGIC_COOKIE_LEN) {
 		/*
 		 * If recv() didn't read the full value but doesn't
@@ -255,7 +255,7 @@ noeintr_close(int fd)
 		 * referring to the same socket as s[1]; if so, the
 		 * descriptor wasn't actually closed.
 		 */
-		switch (is_fd_still_open(fd)) {
+		switch (is_sock_still_open(fd)) {
 		case -1:
 			/* Fatal error. */
 			goto err1;
