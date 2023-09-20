@@ -72,5 +72,6 @@ main(int argc, char * argv[])
 	/* Free the heap. */
 	ptrheap_free(H);
 
+	/* Success! */
 	return (0);
 }

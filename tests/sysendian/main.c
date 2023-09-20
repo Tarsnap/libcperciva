@@ -151,6 +151,7 @@ perftest_func(void * cookie, uint8_t * buf, size_t buflen, size_t nreps)
 			PERFTEST_FULL(tests, 64);
 	}
 
+	/* Success! */
 	return (0);
 }
 
