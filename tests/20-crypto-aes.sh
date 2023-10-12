@@ -8,7 +8,7 @@ test_output="${s_basename}-stdout.txt"
 scenario_cmd() {
 	cd "${scriptdir}/crypto_aes" || exit
 
-	setup_check_variables "test_crypto_aes"
+	setup_check "test_crypto_aes"
 	${c_valgrind_cmd}			\
 	    ./test_crypto_aes -x 1> "${test_output}"
 	echo "$?" > "${c_exitfile}"

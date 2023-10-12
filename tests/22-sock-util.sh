@@ -8,7 +8,7 @@ test_stderr="${s_basename}-stderr.txt"
 scenario_cmd() {
 	cd "${scriptdir}/sock_util" || exit
 
-	setup_check_variables "test_sock_util"
+	setup_check "test_sock_util"
 	${c_valgrind_cmd}			\
 	    ./test_sock_util 2> "${test_stderr}"
 	echo "$?" > "${c_exitfile}"

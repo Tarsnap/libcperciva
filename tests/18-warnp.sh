@@ -39,24 +39,24 @@ scenario_cmd() {
 
 	# Run binary to check stderr vs. syslog.
 	nonce="normal"
-	setup_check_variables "test_warnp"
+	setup_check "test_warnp"
 	${c_valgrind_cmd}			\
 	    ./test_warnp "${nonce}" 1 2> "${test_output}"
 	echo "$?" > "${c_exitfile}"
 
 	# Check console output.
-	setup_check_variables "test_warnp output console"
+	setup_check "test_warnp output console"
 	(set -e ; check_output "${test_output}" "${nonce}")
 	echo "$?" > "${c_exitfile}"
 
 	# Run binary to check multithreaded output.
-	setup_check_variables "test_warnp multithreaded"
+	setup_check "test_warnp multithreaded"
 	${c_valgrind_cmd}			\
 	    ./test_warnp "${nonce}" 2 2> "${test_output_multithreaded}"
 	echo "$?" > "${c_exitfile}"
 
 	# Check multithreaded console output.
-	setup_check_variables "test_warnp multithreaded output"
+	setup_check "test_warnp multithreaded output"
 	grep -q -v "test_warnp: " "${test_output_multithreaded}"
 	expected_exitcode 1 "$?" > "${c_exitfile}"
 }

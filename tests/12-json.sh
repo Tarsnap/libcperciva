@@ -8,7 +8,7 @@ test_output="${s_basename}-stdout.txt"
 scenario_cmd() {
 	cd "${scriptdir}/json" || exit
 
-	setup_check_variables "test_json"
+	setup_check "test_json"
 	${c_valgrind_cmd}			\
 	    ./test_json 1> "${test_output}"
 	echo "$?" > "${c_exitfile}"
