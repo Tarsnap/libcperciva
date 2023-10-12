@@ -8,12 +8,12 @@ test_output="${s_basename}-stderr.txt"
 scenario_cmd() {
 	cd "${scriptdir}/aws" || exit
 
-	setup_check_variables "test_aws"
+	setup_check "test_aws"
 	${c_valgrind_cmd}			\
 	    ./test_aws 2> "${test_output}"
 	echo "$?" > "${c_exitfile}"
 
-	setup_check_variables "test_aws output against reference"
+	setup_check "test_aws output against reference"
 	cmp -s "${scriptdir}/aws/test_aws.good" "${test_output}"
 	echo "$?" > "${c_exitfile}"
 }

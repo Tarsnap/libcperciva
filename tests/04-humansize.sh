@@ -8,7 +8,7 @@ test_output="${s_basename}-stdout.txt"
 scenario_cmd() {
 	cd "${scriptdir}/humansize" || exit
 
-	setup_check_variables "test_humansize"
+	setup_check "test_humansize"
 	${c_valgrind_cmd}			\
 	    ./test_humansize 1> "${test_output}"
 	echo "$?" > "${c_exitfile}"

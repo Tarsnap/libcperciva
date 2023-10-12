@@ -11,16 +11,16 @@ flag_1="${s_basename}-1.flag"
 scenario_cmd() {
 	cd "${scriptdir}/events" || exit
 
-	setup_check_variables "test_events"
+	setup_check "test_events"
 	${c_valgrind_cmd}			\
 	    ./test_events 1> "${test_output}"
 	echo "$?" > "${c_exitfile}"
 
-	setup_check_variables "test_events output against reference"
+	setup_check "test_events output against reference"
 	cmp -s "${scriptdir}/events/test-events.good" "${test_output}"
 	echo "$?" > "${c_exitfile}"
 
-	setup_check_variables "test_events without events"
+	setup_check "test_events without events"
 	# Run a loop without any events
 	(
 		${c_valgrind_cmd}					\
@@ -39,7 +39,7 @@ scenario_cmd() {
 	wait_while test ! -e "${flag_1}"
 
 	# Compare with good values
-	setup_check_variables "test-empty-events"
+	setup_check "test-empty-events"
 	cmp -s test-empty-events.good "${test_emptyloop_output}"
 	echo "$?" > "${c_exitfile}"
 }
