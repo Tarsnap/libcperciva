@@ -9,6 +9,7 @@ LIBCPERCIVA_DIR	=	../..
 
 # Main test code
 SRCS	=	main.c
+SRCS	+=	elasticarray_perftest.c
 
 # libcperciva includes
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/datastruct

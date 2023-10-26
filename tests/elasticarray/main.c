@@ -5,6 +5,8 @@
 #include "getopt.h"
 #include "warnp.h"
 
+#include "elasticarray_perftest.h"
+
 #define NUM_ELEM 2
 
 struct dyn {
@@ -239,6 +241,7 @@ usage(void)
 {
 
 	fprintf(stderr, "usage: test_elasticarray -x\n");
+	fprintf(stderr, "       test_elasticarray -t\n");
 	exit(1);
 }
 
@@ -254,6 +257,8 @@ main(int argc, char * argv[])
 		GETOPT_SWITCH(ch) {
 		GETOPT_OPT("-x"):
 			exit(selftest());
+		GETOPT_OPT("-t"):
+			exit(elasticarray_perftest());
 		GETOPT_DEFAULT:
 			usage();
 		}
