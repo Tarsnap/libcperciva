@@ -2,6 +2,8 @@
 #include <stdlib.h>
 
 #include "elasticarray.h"
+#include "getopt.h"
+#include "warnp.h"
 
 #define NUM_ELEM 2
 
@@ -204,12 +206,9 @@ err0:
 	return (-1);
 }
 
-int
-main(int argc, char * argv[])
+static int
+selftest(void)
 {
-
-	(void)argc; /* UNUSED */
-	(void)argv; /* UNUSED */
 
 	/* Elasticarray with simple integers. */
 	if (test_intlist())
@@ -228,9 +227,37 @@ main(int argc, char * argv[])
 		goto err0;
 
 	/* Success! */
-	exit(0);
+	return (0);
 
 err0:
 	/* Failure! */
+	return (-1);
+}
+
+static void
+usage(void)
+{
+
+	fprintf(stderr, "usage: test_elasticarray -x\n");
 	exit(1);
+}
+
+int
+main(int argc, char * argv[])
+{
+	const char * ch;
+
+	WARNP_INIT;
+
+	/* Process arguments. */
+	while ((ch = GETOPT(argc, argv)) != NULL) {
+		GETOPT_SWITCH(ch) {
+		GETOPT_OPT("-x"):
+			exit(selftest());
+		GETOPT_DEFAULT:
+			usage();
+		}
+	}
+
+	usage();
 }

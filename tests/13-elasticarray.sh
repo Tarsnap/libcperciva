@@ -10,6 +10,6 @@ scenario_cmd() {
 
 	setup_check "test_elasticarray"
 	${c_valgrind_cmd}			\
-	    ./test_elasticarray 1> "${test_output}"
+	    ./test_elasticarray -x 1> "${test_output}"
 	echo "$?" > "${c_exitfile}"
 }
