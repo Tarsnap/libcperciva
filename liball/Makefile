@@ -111,7 +111,7 @@ netbuf_read.o: ../netbuf/netbuf_read.c ../events/events.h ../network/network.h .
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../netbuf/netbuf_read.c -o netbuf_read.o
 netbuf_ssl.o: ../netbuf/netbuf_ssl.c ../network_ssl/network_ssl.h ../netbuf/netbuf.h ../netbuf/netbuf_ssl_internal.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../netbuf/netbuf_ssl.c -o netbuf_ssl.o
-netbuf_write.o: ../netbuf/netbuf_write.c ../network/network.h ../external/queue/queue.h ../util/warnp.h ../netbuf/netbuf.h ../netbuf/netbuf_ssl_internal.h
+netbuf_write.o: ../netbuf/netbuf_write.c ../network/network.h ../external/queue/queue.h ../netbuf/netbuf.h ../netbuf/netbuf_ssl_internal.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../netbuf/netbuf_write.c -o netbuf_write.o
 network_accept.o: ../network/network_accept.c ../events/events.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_accept.c -o network_accept.o
