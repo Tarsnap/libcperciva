@@ -10,7 +10,7 @@ enum E {
 
 /* Error on Solaris 11.4 with gcc 7.3.0 -O1. */
 static int
-getopt_int(int argc, char ** argv)
+getopt_int(int argc, char * argv[])
 {
 	/* Command-line arguments. */
 	int a = 0;
@@ -84,7 +84,7 @@ err0:
  * an error on Debian buster-i386 with clang-7.0.1 -O1 and O2.
  */
 static int
-getopt_int_int_enum(int argc, char ** argv)
+getopt_int_int_enum(int argc, char * argv[])
 {
 	/* Command-line arguments. */
 	int a = 0;

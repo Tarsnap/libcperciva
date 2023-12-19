@@ -47,7 +47,7 @@ err0:
 }
 
 int
-main(int argc, char ** argv)
+main(int argc, char * argv[])
 {
 	const char * filename_bad = "/dev/null";
 	const char * filename_good = "format.key";

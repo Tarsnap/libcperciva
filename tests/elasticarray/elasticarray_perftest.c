@@ -14,14 +14,14 @@ ELASTICARRAY_DECL(INTLIST, intlist, int);
 #define BENCH_START						\
 	if (monoclock_get(&tv0)) {				\
 		warnp("monoclock");				\
-		goto err0;					\
+		goto err1;					\
 	}							\
 	for (i = 0; i < REPS; i++)
 
 #define BENCH_END(delta_ns)					\
 	if (monoclock_get(&tv1)) {				\
 		warnp("monoclock");				\
-		goto err0;					\
+		goto err1;					\
 	}							\
 	(delta_ns) = timeval_diff(tv0, tv1) * 1e9 / (double)REPS;
 
