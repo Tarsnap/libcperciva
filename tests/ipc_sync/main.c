@@ -108,7 +108,7 @@ err0:
 }
 
 static int
-check(struct testcase * test)
+check(const struct testcase * test)
 {
 	struct child_info CI_actual;
 	struct child_info * CI = &CI_actual;

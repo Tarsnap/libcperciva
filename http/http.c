@@ -69,7 +69,7 @@ struct http_cookie {
 
 static int callback_connected(void *, int);
 static int callback_read_header(void *, int);
-static int gotheaders(struct http_cookie *, uint8_t *, size_t);
+static int gotheaders(struct http_cookie *, const uint8_t *, size_t);
 static int callback_chunkedheader(void *, int);
 static int get_body_gotclen(struct http_cookie *, size_t);
 static int callback_read_toeof(void *, int);
@@ -178,7 +178,7 @@ sgetline(uint8_t * buf, size_t buflen, size_t * bufpos, size_t * linelen)
 
 /* Add data to the body buffer. */
 static int
-addbody(struct http_cookie * H, uint8_t * buf, size_t buflen)
+addbody(struct http_cookie * H, const uint8_t * buf, size_t buflen)
 {
 	size_t nalloc;
 	uint8_t * nbuf;
@@ -433,7 +433,7 @@ callback_read_header(void * cookie, int status)
 
 /* We have finished reading the request headers. */
 static int
-gotheaders(struct http_cookie * H, uint8_t * buf, size_t buflen)
+gotheaders(struct http_cookie * H, const uint8_t * buf, size_t buflen)
 {
 	size_t bufpos;
 	size_t linelen;

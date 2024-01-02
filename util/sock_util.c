@@ -192,7 +192,7 @@ err0:
 
 /* Prettyprint an IPv4 address. */
 static char *
-prettyprint_ipv4(struct sockaddr * name, size_t namelen)
+prettyprint_ipv4(const struct sockaddr * name, size_t namelen)
 {
 	struct sockaddr_in sa_in;
 	char addr[INET_ADDRSTRLEN];
@@ -219,7 +219,7 @@ prettyprint_ipv4(struct sockaddr * name, size_t namelen)
 
 /* Prettyprint an IPv6 address. */
 static char *
-prettyprint_ipv6(struct sockaddr * name, size_t namelen)
+prettyprint_ipv6(const struct sockaddr * name, size_t namelen)
 {
 	struct sockaddr_in6 sa_in6;
 	char addr[INET6_ADDRSTRLEN];
@@ -246,7 +246,7 @@ prettyprint_ipv6(struct sockaddr * name, size_t namelen)
 
 /* Prettyprint a UNIX address. */
 static char *
-prettyprint_unix(struct sockaddr_un * name)
+prettyprint_unix(const struct sockaddr_un * name)
 {
 
 	/* Just strdup the path. */
