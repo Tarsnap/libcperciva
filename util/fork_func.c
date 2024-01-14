@@ -68,7 +68,8 @@ fork_func_wait(pid_t pid)
 			warn0("pid %jd: terminated with signal %d",
 			    (intmax_t)pid, WTERMSIG(status));
 		else
-			warn0("pid %jd: exited for an unknown reason");
+			warn0("pid %jd: exited for an unknown reason",
+			    (intmax_t)pid);
 	}
 
 err0:
