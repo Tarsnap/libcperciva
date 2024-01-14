@@ -26,6 +26,7 @@
 /tests/daemonize/test_daemonize
 /tests/elasticarray/test_elasticarray
 /tests/events/test_events
+/tests/fork_func/test_fork_func
 /tests/getopt-longjmp/test_getopt_longjmp
 /tests/getopt/test_getopt
 /tests/heap/test_heap
