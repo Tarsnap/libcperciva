@@ -95,6 +95,38 @@ err0:
 }
 #endif
 
+/* Return 0 if everything matches; 1 if they do not match; -1 on error. */
+static int
+check_counter(int counter_expected)
+{
+	int rc;
+
+	/* Lock if we're using pthread. */
+	if ((rc = optional_mutex_lock(&mutex)) != 0) {
+		warn0("optional_mutex_lock: %s", strerror(rc));
+		goto err0;
+	}
+
+	/* Check the value and counter. */
+	if ((value == 0) && (counter == counter_expected))
+		rc = 0;
+	else
+		rc = 1;
+
+	/* Unlock if we're using pthread. */
+	if ((rc = optional_mutex_unlock(&mutex)) != 0) {
+		warn0("optional_mutex_unlock: %s", strerror(rc));
+		goto err0;
+	}
+
+	/* Success! */
+	return (rc);
+
+err0:
+	/* Failure! */
+	return (-1);
+}
+
 int
 main(int argc, char * argv[])
 {
@@ -112,8 +144,8 @@ main(int argc, char * argv[])
 	inc_dec_counter(NULL);
 #endif
 
-	/* Check the counter. */
-	if ((value != 0) || (counter != counter_expected))
+	/* Check that the counter has the expected value. */
+	if (check_counter(counter_expected))
 		goto err0;
 
 	/* Success! */
