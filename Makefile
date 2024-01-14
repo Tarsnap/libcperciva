@@ -18,6 +18,7 @@ TESTS=	perftests/http							\
 	tests/daemonize							\
 	tests/elasticarray						\
 	tests/events							\
+	tests/fork_func							\
 	tests/getopt							\
 	tests/getopt-longjmp						\
 	tests/heap							\
