@@ -33,7 +33,7 @@ events_counter_ping(void)
 {
 
 	/* Print the current count. */
-	printf("event %i\n", events_counter);
+	printf("event %d\n", events_counter);
 
 	/* Increment. */
 	events_counter++;

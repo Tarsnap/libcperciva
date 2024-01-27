@@ -36,9 +36,9 @@ main(int argc, char * argv[])
 	}
 
 	/* Display times. */
-	printf("monoclock_get():\t\t%ju seconds,\t%06ji microseconds\n",
+	printf("monoclock_get():\t\t%ju seconds,\t%06jd microseconds\n",
 	    (uintmax_t)tv_wall.tv_sec, (intmax_t)tv_wall.tv_usec);
-	printf("monoclock_get_cputime():\t%ju seconds,\t%06ji microseconds\n",
+	printf("monoclock_get_cputime():\t%ju seconds,\t%06jd microseconds\n",
 	    (uintmax_t)tv_cpu.tv_sec, (intmax_t)tv_cpu.tv_usec);
 	printf("monoclock_getres():\t\t%g\n", timer_resolution);
 
