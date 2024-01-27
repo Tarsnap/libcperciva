@@ -12,7 +12,7 @@
 #define INITIAL_POOL 100
 
 struct stuff {
-	int i;
+	uint8_t buf[128];
 };
 
 MPOOL(stuff, struct stuff, INITIAL_POOL);
@@ -28,8 +28,8 @@ check_mem(volatile struct stuff * vol)
 {
 
 	/* This is `volatile`, so it shouldn't be optimized out. */
-	vol->i = 0;
-	if (vol->i != 0)
+	vol->buf[0] = 0;
+	if (vol->buf[0] != 0)
 		goto err0;
 
 	/* Success! */
