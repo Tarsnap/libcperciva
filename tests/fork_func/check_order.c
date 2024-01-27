@@ -33,7 +33,7 @@ sleep_print_func(void * cookie)
 	millisleep((size_t)ms);
 
 	/* Write the "waited" messages to stderr. */
-	if (fprintf(stderr, "waited %i ms\n", ms) < 0) {
+	if (fprintf(stderr, "waited %d ms\n", ms) < 0) {
 		warnp("fprintf");
 		goto err0;
 	}
@@ -68,7 +68,7 @@ check_order(void)
 
 	/* Write the "spawning" messages to stdout. */
 	for (i = 0; i < NUM_PROCESSES; i++) {
-		if (fprintf(stdout, "spawning a process to wait %i ms\n",
+		if (fprintf(stdout, "spawning a process to wait %d ms\n",
 		    SLEEP_SORT_MS[i]) < 0) {
 			warnp("fprintf");
 			goto err0;

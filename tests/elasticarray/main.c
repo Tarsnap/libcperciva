@@ -39,7 +39,7 @@ test_intlist(void)
 	/* Use the list. */
 	for (i = 0; i < intlist_getsize(list); i++) {
 		x = *intlist_get(list, i);
-		printf("int:\t%i\n", x);
+		printf("int:\t%d\n", x);
 	}
 
 	/* Free memory. */
@@ -90,7 +90,7 @@ test_dynlist(void)
 	/* Use the list. */
 	for (i = 0; i < dynlist_getsize(list); i++) {
 		d = *dynlist_get(list, i);
-		printf("dyn:\t%i\n", d.arr[0]);
+		printf("dyn:\t%d\n", d.arr[0]);
 	}
 
 	/* Free memory. */
@@ -148,7 +148,7 @@ test_pointerlist(void)
 	/* Use the list. */
 	for (i = 0; i < pointerlist_getsize(list); i++) {
 		p = *pointerlist_get(list, i);
-		printf("pointer:\t%i\n", p->arr[0]);
+		printf("pointer:\t%d\n", p->arr[0]);
 	}
 
 	/* Free memory. */

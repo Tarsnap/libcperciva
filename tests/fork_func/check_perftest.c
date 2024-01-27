@@ -40,7 +40,7 @@ static inline void
 print_timediff(int type, struct timeval tv_orig, struct timeval tv_now, int ms)
 {
 
-	printf("%i\t%.4f\n", type,
+	printf("%d\t%.4f\n", type,
 	    1000.0 * timeval_diff(tv_orig, tv_now) - (double)ms);
 }
 

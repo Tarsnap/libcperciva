@@ -47,10 +47,10 @@ print_stuff(const char * extra_message)
 
 	/* Output messages involving warnp with a formatted message. */
 	errno = 0;
-	warnp("warnp errno %i", 0);
+	warnp("warnp errno %d", 0);
 
 	errno = 2;
-	warnp("warnp errno %i", 2);
+	warnp("warnp errno %d", 2);
 
 	/* Output long message. */
 	print_long_message();
@@ -81,7 +81,7 @@ workthread(void * cookie)
 	/* Output a bunch of messages. */
 	for (i = 0; i < 10; i++) {
 		errno = ENOENT;
-		warnp("thread #%i val %i", num, i);
+		warnp("thread #%d val %d", num, i);
 	}
 
 	/* Success! */

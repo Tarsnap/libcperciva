@@ -67,16 +67,16 @@ parsenum_equal(double x, double y)
 #define TEST_EX6_DO(str, var, min, max, target, base, trailing)	\
 	var parsenum_x;						\
 	int parsenum_ret;					\
-	printf("Parsing \"%s\" in base %i as %s with trailing"	\
-	    " %i between %s and %s (incl.) yields " target	\
+	printf("Parsing \"%s\" in base %d as %s with trailing"	\
+	    " %d between %s and %s (incl.) yields " target	\
 	    "... ", str, base, #var, trailing, #min, #max);	\
 	parsenum_ret = PARSENUM_EX(&parsenum_x, str, min, max, base, trailing);
 
 #define TEST_EX4_DO(str, var, target, base, trailing)		\
 	var parsenum_x;						\
 	int parsenum_ret;					\
-	printf("Parsing \"%s\" in base %i as %s with trailing"	\
-	    " %i yields " target "... ", str, base, #var,	\
+	printf("Parsing \"%s\" in base %d as %s with trailing"	\
+	    " %d yields " target "... ", str, base, #var,	\
 	    trailing);						\
 	parsenum_ret = PARSENUM_EX(&parsenum_x, str, base, trailing);
 

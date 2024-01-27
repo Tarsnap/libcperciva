@@ -149,7 +149,7 @@ main(int argc, char * argv[])
 	/* Time memory allocation method, and output it. */
 	if ((delta_us = time_func(sets, reps, use_mpool)) < 0)
 		goto err0;
-	printf("%lli\n", delta_us);
+	printf("%lld\n", delta_us);
 
 	/* Success! */
 	exit(0);
