@@ -17,7 +17,7 @@ set key at screen 1, screen 1
 set style fill solid 0.5 border -1
 set style boxplot outliers pointtype 7
 set style data boxplot
-set boxwidth  0.45
+set boxwidth 0.45
 set pointsize 0.5
 
 # Ticks
