@@ -367,7 +367,10 @@ selftest_unaligned_access(size_t keylen)
 		goto err4;
 	bytes_processed = 0;
 	while (bytes_processed < LARGE_BUFSIZE - MAX_CHUNK) {
+		/* Get an insecure random number; not used for cryptography. */
 		new_chunk = ((unsigned long int)random()) % MAX_CHUNK;
+
+		/* Process that amount of data. */
 		crypto_aesctr_stream(aesctr, &largebuf[bytes_processed],
 		    &largebuf_out2[bytes_processed], new_chunk);
 		bytes_processed += new_chunk;

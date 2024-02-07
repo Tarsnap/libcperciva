@@ -180,7 +180,10 @@ selftest(void)
 	CRC32C_Init(&ctx);
 	bytes_processed = 0;
 	while (bytes_processed < LARGE_BUFSIZE - MAX_CHUNK) {
+		/* Get an insecure random number; not used for cryptography. */
 		new_chunk = ((unsigned long int)random()) % MAX_CHUNK;
+
+		/* Process that amount of data. */
 		CRC32C_Update(&ctx, (const uint8_t *)&largebuf[bytes_processed],
 		    new_chunk);
 		bytes_processed += new_chunk;

@@ -34,6 +34,6 @@ printf "%s\n" "--- should fail:"
 
 ./test_readpass_file bad-extra-newline.pass && exit 1
 
-./test_readpass_file bad-extra-material.pass  && exit 1
+./test_readpass_file bad-extra-material.pass && exit 1
 
 printf "\nok\n"
