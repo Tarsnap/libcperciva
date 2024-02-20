@@ -129,7 +129,7 @@ asprintf.o: ../util/asprintf.c ../util/asprintf.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/asprintf.c -o asprintf.o
 b64encode.o: ../util/b64encode.c ../util/b64encode.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/b64encode.c -o b64encode.o
-daemonize.o: ../util/daemonize.c ../util/noeintr.h ../util/warnp.h ../util/daemonize.h
+daemonize.o: ../util/daemonize.c ../util/ipc_sync.h ../util/noeintr.h ../util/warnp.h ../util/daemonize.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/daemonize.c -o daemonize.o
 entropy.o: ../util/entropy.c ../util/warnp.h ../util/entropy.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/entropy.c -o entropy.o
