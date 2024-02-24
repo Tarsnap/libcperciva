@@ -31,12 +31,12 @@ scenario_cmd() {
 	) &
 
 	# Wait for the binary to initialize its signal handler
-	wait_while test ! -e "${pidfile}"
+	wait_while 0 test ! -e "${pidfile}"
 	pid=$( cat "${pidfile}" )
 
 	# Signal and wait for the binary to finish writing the logfile
 	kill -s USR1 "${pid}"
-	wait_while test ! -e "${flag_1}"
+	wait_while 0 test ! -e "${flag_1}"
 
 	# Compare with good values
 	setup_check "test-empty-events"
