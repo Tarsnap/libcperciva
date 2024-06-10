@@ -20,9 +20,9 @@ int check_exec(void);
 int check_order(void);
 
 /**
- * check_perftest(void):
+ * check_perftest(child_ms, num_reps):
  * Check the amount of delay added by func_fork() and func_fork_wait().
  */
-int check_perftest(int child_ms, int num_reps);
+int check_perftest(int, int);
 
 #endif /* !CHECK_H_ */
