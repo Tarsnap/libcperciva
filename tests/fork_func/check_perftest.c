@@ -146,7 +146,7 @@ err0:
 }
 
 /**
- * check_perftest(void):
+ * check_perftest(child_ms, num_reps):
  * Check the amount of delay added by func_fork() and func_fork_wait().
  */
 int
