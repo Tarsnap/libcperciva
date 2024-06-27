@@ -29,7 +29,7 @@ check_exec(void)
 	pid_t pid;
 
 	/* Fork. */
-	if ((pid = fork_func(func_exec, NULL) == -1))
+	if ((pid = fork_func(func_exec, NULL)) == -1)
 		goto err0;
 
 	/* Check that it didn't fail. */
