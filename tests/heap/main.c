@@ -32,8 +32,10 @@ main(int argc, char * argv[])
 	(void)argv; /* UNUSED */
 
 	/* Create a heap. */
-	if ((H = ptrheap_init(compar, NULL, NULL)) == 0)
-		exit(1);
+	if ((H = ptrheap_init(compar, NULL, NULL)) == 0) {
+		warnp("ptrheap_init");
+		goto err0;
+	}
 
 	/* Suck in the input. */
 	s = NULL;
@@ -43,7 +45,7 @@ main(int argc, char * argv[])
 		if (strlen(s) != (size_t)l) {
 			warnp("Line of length %zu has embedded NUL: %s",
 			    (size_t)l, s);
-			exit(1);
+			goto err0;
 		}
 
 		/* Remove trailing '\n'. */
@@ -51,12 +53,16 @@ main(int argc, char * argv[])
 			s[--l] = '\0';
 
 		/* Duplicate string. */
-		if ((dups = strdup(s)) == NULL)
-			exit(1);
+		if ((dups = strdup(s)) == NULL) {
+			warnp("strdup");
+			goto err0;
+		}
 
 		/* Insert string. */
-		if (ptrheap_add(H, dups))
-			exit(1);
+		if (ptrheap_add(H, dups)) {
+			warn0("ptrheap_add");
+			goto err0;
+		}
 	}
 
 	/* Free string allocated by getline. */
@@ -74,4 +80,8 @@ main(int argc, char * argv[])
 
 	/* Success! */
 	return (0);
+
+err0:
+	/* Failure! */
+	return (1);
 }

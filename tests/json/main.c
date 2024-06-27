@@ -52,11 +52,17 @@ main(int argc, char * argv[])
 			    tests[i].tofind, tests[i].json,
 			    found, tests[i].answer);
 			printf("FAILURE\n");
-			exit(1);
+			goto err0;
 		}
 	}
 
 	/* Everything went fine. */
 	printf("SUCCESS\n");
+
+	/* Success! */
 	exit(0);
+
+err0:
+	/* Failure! */
+	exit(1);
 }
