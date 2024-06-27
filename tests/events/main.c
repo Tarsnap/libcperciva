@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -143,7 +144,7 @@ write_pidfile(const char * filename)
 		warnp("fopen(%s)", filename);
 		goto err0;
 	}
-	if (fprintf(fp, "%d", getpid()) < 0) {
+	if (fprintf(fp, "%jd", (intmax_t)getpid()) < 0) {
 		warnp("fprintf");
 		goto err1;
 	}
