@@ -31,6 +31,7 @@
 /tests/getopt/test_getopt
 /tests/heap/test_heap
 /tests/humansize/test_humansize
+/tests/ipc_sync/test_ipc_sync
 /tests/json/test_json
 /tests/md5/test_md5
 /tests/monoclock/test_monoclock
