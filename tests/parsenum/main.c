@@ -159,7 +159,7 @@ test_assert_failure(const char * argv_1)
 	if (PARSENUM(&assert_num, argv_1, 1, 4)) {
 		warnp("Parameter should be an error case between 1 and 4: %s",
 		    argv_1);
-		exit(1);
+		goto err0;
 	}
 
 	/* We know that we'll abort(), so disable core files. */
@@ -167,7 +167,7 @@ test_assert_failure(const char * argv_1)
 	rlp.rlim_cur = 0;
 	if (setrlimit(RLIMIT_CORE, &rlp)) {
 		warnp("setrlimit");
-		exit(1);
+		goto err0;
 	}
 
 	/*
@@ -180,22 +180,22 @@ test_assert_failure(const char * argv_1)
 	case 1:
 		/* Signed integer without specified bounds. */
 		if (PARSENUM(&i, "1"))
-			exit(1);
+			goto err0;
 		break;
 	case 2:
 		/* Signed integer without specified bounds (with base). */
 		if (PARSENUM_EX(&i, "1", 16, 0))
-			exit(1);
+			goto err0;
 		break;
 	case 3:
 		/* Non-zero base applied to float. */
 		if (PARSENUM_EX(&f, "1.23", 16, 0))
-			exit(1);
+			goto err0;
 		break;
 	case 4:
 		/* Non-zero base applied to float (with bounds). */
 		if (PARSENUM_EX(&f, "1.23", 0, 2, 16, 0))
-			exit(1);
+			goto err0;
 		break;
 	default:
 		fprintf(stderr, "No such error case.\n");
@@ -206,6 +206,10 @@ test_assert_failure(const char * argv_1)
 	 * non-zero value, so exiting with 0 should produce a problem.
 	 */
 	exit(0);
+
+err0:
+	/* Failure! */
+	exit(1);
 }
 
 int
