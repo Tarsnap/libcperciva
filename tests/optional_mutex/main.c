@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "millisleep.h"
 #include "optional_mutex.h"
 #include "warnp.h"
 
@@ -11,17 +12,6 @@
 static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 static int value = 0;
 static int counter = 0;
-
-/* Wait duration can be interrupted by signals. */
-static inline void
-millisleep(size_t msec)
-{
-	struct timespec ts;
-
-	ts.tv_sec = msec / 1000;
-	ts.tv_nsec = (msec % 1000) * 1000000;
-	nanosleep(&ts, NULL);
-}
 
 static void *
 inc_dec_counter(void * cookie)
