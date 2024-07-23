@@ -23,6 +23,7 @@ TESTS=	perftests/http							\
 	tests/getopt-longjmp						\
 	tests/heap							\
 	tests/humansize							\
+	tests/ipc_sync							\
 	tests/json							\
 	tests/md5							\
 	tests/monoclock							\
