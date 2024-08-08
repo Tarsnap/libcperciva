@@ -215,6 +215,8 @@ crypto_aes_encrypt_block_aesni_m128i(__m128i in, const void * key)
 	}
 
 	aes_state = _mm_aesenclast_si128(aes_state, aes_key[nr]);
+
+	/* Done! */
 	return (aes_state);
 }
 

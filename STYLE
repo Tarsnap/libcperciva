@@ -94,6 +94,14 @@ is preferred over
 		goto done;
 at the start of a function.
 
+If a function has a simple return statement which is a numerical value or may
+indicate either success or failure, use the comment "Done!", as in:
+        /* Done! */
+        return (X4);
+or
+        /* Done! */
+        return (val != 0);
+
 Headers should be included in the following groups, with a blank line after
 each (non-empty) group:
 1. <sys/*.h>, with <sys/types.h> first followed by others alphabetically.

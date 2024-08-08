@@ -13,5 +13,7 @@ main(void)
 	state = _mm_crc32_u8(state, x);
 
 	state = (uint32_t)_mm_crc32_u64(state, *(const uint64_t *)&buf[0]);
+
+	/* Done! */
 	return ((int)state);
 }

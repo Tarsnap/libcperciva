@@ -66,6 +66,7 @@ SubWord_duplicate(uint8x16_t a)
 	/* AESE does AddRoundKey (nop), ShiftRows (nop), and SubBytes. */
 	a = vaeseq_u8(a, vdupq_n_u8(0));
 
+	/* Done! */
 	return (a);
 }
 
@@ -268,6 +269,7 @@ crypto_aes_encrypt_block_arm_u8(uint8x16_t in, const void * key)
 	aes_state = vaeseq_u8(aes_state, aes_key[nr - 1]);
 	aes_state = veorq_u8(aes_state, aes_key[nr]);
 
+	/* Done! */
 	return (aes_state);
 }
 

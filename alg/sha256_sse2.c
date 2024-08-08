@@ -27,6 +27,7 @@ mm_bswap_epi32(__m128i a)
 	a = _mm_shufflelo_epi16(a, _MM_SHUFFLE(2, 3, 0, 1));
 	a = _mm_shufflehi_epi16(a, _MM_SHUFFLE(2, 3, 0, 1));
 
+	/* Done! */
 	return (a);
 }
 
@@ -94,6 +95,7 @@ s1_128_high(__m128i a)
 	c = _mm_shuffle_epi32(c, _MM_SHUFFLE(2, 0, 2, 0));
 	c = _mm_slli_si128(c, 8);
 
+	/* Done! */
 	return (c);
 }
 
@@ -114,6 +116,7 @@ s1_128_low(__m128i a)
 	c = _mm_shuffle_epi32(c, _MM_SHUFFLE(2, 0, 2, 0));
 	c = _mm_srli_si128(c, 8);
 
+	/* Done! */
 	return (c);
 }
 
@@ -163,6 +166,7 @@ MSG4(__m128i X0, __m128i X1, __m128i X2, __m128i X3)
 	/* Second half of s1; this depends on the above value of X4. */
 	X4 = _mm_add_epi32(X4, s1_128_high(X4));
 
+	/* Done! */
 	return (X4);
 }
 
