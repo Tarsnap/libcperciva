@@ -64,6 +64,7 @@ CRC32C_Update_ARM(uint32_t state, const uint8_t * buf, size_t len)
 	for (; i < len; i++)
 		state = __crc32cb(state, buf[i]);
 
+	/* Done! */
 	return (state);
 }
 

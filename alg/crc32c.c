@@ -53,6 +53,7 @@ reverse(uint32_t x)
 	x = ((x & 0xcccccccc) >> 2)  | ((x & 0x33333333) << 2);
 	x = ((x & 0xaaaaaaaa) >> 1)  | ((x & 0x55555555) << 1);
 
+	/* Done! */
 	return (x);
 }
 
@@ -69,6 +70,7 @@ times256(uint32_t r)
 			r = (r << 1);
 	}
 
+	/* Done! */
 	return (r);
 }
 

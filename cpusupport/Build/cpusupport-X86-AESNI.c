@@ -13,6 +13,8 @@ load_128(const uint8_t * src)
 	__m128i x;
 
 	x = _mm_loadu_si128((const __m128i *)src);
+
+	/* Done! */
 	return (x);
 }
 
@@ -30,5 +32,7 @@ main(void)
 #endif
 	y = _mm_aesenc_si128(x, y);
 	_mm_storeu_si128((__m128i *)&a[0], y);
+
+	/* Done! */
 	return (a[0]);
 }

@@ -7,5 +7,6 @@ main(void)
 
 	val = getauxval(AT_HWCAP);
 
+	/* Done! */
 	return (val != 0);
 }
