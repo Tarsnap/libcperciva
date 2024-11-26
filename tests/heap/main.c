@@ -45,7 +45,7 @@ main(int argc, char * argv[])
 		if (strlen(s) != (size_t)l) {
 			warnp("Line of length %zu has embedded NUL: %s",
 			    (size_t)l, s);
-			goto err0;
+			goto err1;
 		}
 
 		/* Remove trailing '\n'. */
@@ -55,13 +55,13 @@ main(int argc, char * argv[])
 		/* Duplicate string. */
 		if ((dups = strdup(s)) == NULL) {
 			warnp("strdup");
-			goto err0;
+			goto err2;
 		}
 
 		/* Insert string. */
 		if (ptrheap_add(H, dups)) {
 			warn0("ptrheap_add");
-			goto err0;
+			goto err2;
 		}
 	}
 
@@ -81,6 +81,10 @@ main(int argc, char * argv[])
 	/* Success! */
 	return (0);
 
+err2:
+	free(s);
+err1:
+	ptrheap_free(H);
 err0:
 	/* Failure! */
 	return (1);
