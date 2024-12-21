@@ -121,6 +121,7 @@ size_t
 elasticqueue_getlen(const struct elasticqueue * EQ)
 {
 
+	/* Done! */
 	return (EQ->len);
 }
 

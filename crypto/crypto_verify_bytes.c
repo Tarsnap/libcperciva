@@ -17,5 +17,6 @@ crypto_verify_bytes(const uint8_t * buf0, const uint8_t * buf1, size_t len)
 	for (i = 0; i < len; i++)
 		rc = rc | (buf0[i] ^ buf1[i]);
 
+	/* Done! */
 	return (rc);
 }

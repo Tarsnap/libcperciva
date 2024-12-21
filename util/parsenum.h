@@ -153,6 +153,8 @@ parsenum_float(const char * s, double min, double max, int trailing)
 		errno = EINVAL;
 	else if ((val < min) || (val > max))
 		errno = ERANGE;
+
+	/* Done! */
 	return (val);
 }
 
@@ -173,6 +175,8 @@ parsenum_signed(const char * s, intmax_t min, intmax_t max, int base,
 		errno = ERANGE;
 		val = 0;
 	}
+
+	/* Done! */
 	return (val);
 }
 
@@ -191,6 +195,8 @@ parsenum_unsigned(const char * s, uintmax_t min, uintmax_t max,
 		errno = EINVAL;
 	else if ((val < min) || (val > max) || (val > typemax))
 		errno = ERANGE;
+
+	/* Done! */
 	return (val);
 }
 
