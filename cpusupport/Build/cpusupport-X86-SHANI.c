@@ -12,6 +12,8 @@ load_128(const uint8_t * src)
 	__m128i x;
 
 	x = _mm_loadu_si128((const __m128i *)src);
+
+	/* Done! */
 	return (x);
 }
 
@@ -24,5 +26,7 @@ main(void)
 	x = load_128(a);
 	x = _mm_sha256msg1_epu32(x, x);
 	_mm_storeu_si128((__m128i *)a, x);
+
+	/* Done! */
 	return (a[0]);
 }

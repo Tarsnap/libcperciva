@@ -45,8 +45,10 @@ load_si64(const void * mem)
 {
 
 #ifdef BROKEN_MM_LOADU_SI64
+	/* Done! */
 	return (_mm_castpd_si128(_mm_load_sd(mem)));
 #else
+	/* Done! */
 	return (_mm_loadu_si64(mem));
 #endif
 }

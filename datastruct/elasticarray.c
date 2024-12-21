@@ -151,6 +151,7 @@ size_t
 elasticarray_getsize(const struct elasticarray * EA, size_t reclen)
 {
 
+	/* Done! */
 	return (EA->size / reclen);
 }
 

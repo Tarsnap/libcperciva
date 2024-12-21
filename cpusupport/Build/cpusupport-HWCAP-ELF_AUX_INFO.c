@@ -9,5 +9,6 @@ main(void)
 	res = elf_aux_info(AT_HWCAP, &val, sizeof(unsigned long));
 	(void)res;
 
+	/* Done! */
 	return (val != 0);
 }

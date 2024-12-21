@@ -18,6 +18,7 @@ const SSL_METHOD *
 network_ssl_compat_TLS_client_method()
 {
 
+	/* Done! */
 	return (SSLv23_client_method());
 }
 #endif
@@ -134,6 +135,7 @@ network_ssl_compat_write_ex(SSL * ssl, const void * buf, size_t num,
 		 */
 	}
 
+	/* Done! */
 	return (ret);
 }
 #endif
@@ -181,6 +183,7 @@ network_ssl_compat_read_ex(SSL * ssl, void * buf, size_t num,
 		 */
 	}
 
+	/* Done! */
 	return (ret);
 }
 #endif

@@ -14,6 +14,8 @@ load_128(const char * src)
 	__m128i x;
 
 	x = _mm_loadu_si128((const __m128i *)src);
+
+	/* Done! */
 	return (x);
 }
 
@@ -25,5 +27,7 @@ main(void)
 	x = load_128(a);
 	x = _mm_alignr_epi8(x, x, 8);
 	_mm_storeu_si128((__m128i *)a, x);
+
+	/* Done! */
 	return (a[0]);
 }

@@ -75,6 +75,7 @@ CRC32C_Update_SSE42(uint32_t state, const uint8_t * buf, size_t len)
 	for (; i < len; i++)
 		state = _mm_crc32_u8(state, buf[i]);
 
+	/* Done! */
 	return (state);
 }
 
