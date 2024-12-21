@@ -35,6 +35,8 @@ optional_mutex_lock(pthread_mutex_t * mutex)
 	return (pthread_mutex_lock(mutex));
 #else
 	(void)mutex; /* UNUSED */
+
+	/* Do nothing. */
 	return (0);
 #endif
 }
@@ -52,6 +54,8 @@ optional_mutex_unlock(pthread_mutex_t * mutex)
 	return (pthread_mutex_unlock(mutex));
 #else
 	(void)mutex; /* UNUSED */
+
+	/* Do nothing. */
 	return (0);
 #endif
 }
