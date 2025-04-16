@@ -1,5 +1,3 @@
-#include <sys/time.h>
-
 #include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -13,7 +11,6 @@
 #include "getopt.h"
 #include "hexify.h"
 #include "insecure_memzero.h"
-#include "monoclock.h"
 #include "perftest.h"
 #include "warnp.h"
 
