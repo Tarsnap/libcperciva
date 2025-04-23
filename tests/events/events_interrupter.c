@@ -36,7 +36,7 @@ events_interrupter_init(void)
 	/* Set up the SIGUSR1 handler. */
 	sa.sa_handler = interrupt;
 	if (sigemptyset(&sa.sa_mask)) {
-		warnp("siginfo");
+		warnp("sigemptyset");
 		goto err0;
 	}
 	sa.sa_flags = 0;

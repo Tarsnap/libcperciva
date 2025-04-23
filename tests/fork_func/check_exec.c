@@ -15,7 +15,7 @@ func_exec(void * cookie)
 
 	/* Execute the "true" binary found in the $PATH. */
 	if (execlp("true", "true", NULL))
-		warnp("execvp");
+		warnp("execlp");
 
 	/* We should never reach this. */
 	return (127);
