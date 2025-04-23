@@ -23,7 +23,7 @@ main(int argc, char * argv[])
 	/* Get entropy enough times to trigger a reseed. */
 	for (i = 0; i < RESEED_INTERVAL + 1; i++) {
 		if (crypto_entropy_read(buf, 32)) {
-			warn0("crypto_entropy_read: internal error.");
+			warn0("crypto_entropy_read: internal error");
 			goto err0;
 		}
 	}
