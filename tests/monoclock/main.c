@@ -21,17 +21,17 @@ main(int argc, char * argv[])
 
 	/* Get time and process CPU time. */
 	if (monoclock_get(&tv_wall)) {
-		warnp("monoclock_get()");
+		warnp("monoclock_get");
 		goto err0;
 	}
 	if (monoclock_get_cputime(&tv_cpu)) {
-		warnp("monoclock_get_cputime()");
+		warnp("monoclock_get_cputime");
 		goto err0;
 	}
 
 	/* Get timer resolution. */
 	if (monoclock_getres(&timer_resolution)) {
-		warnp("monoclock_getres()");
+		warnp("monoclock_getres");
 		goto err0;
 	}
 

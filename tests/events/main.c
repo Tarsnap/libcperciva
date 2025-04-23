@@ -208,7 +208,7 @@ main(int argc, char * argv[])
 
 	/* Set up response to SIGUSR1. */
 	if (events_interrupter_init()) {
-		warnp("events_interrupter_init()");
+		warnp("events_interrupter_init");
 		goto err0;
 	}
 
