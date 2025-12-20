@@ -48,7 +48,7 @@ events_counter_ping(void)
 
 	/* Emergency exit for runaway loops. */
 	if (events_counter > INTERRUPT_BAIL) {
-		warn0("events_interrupt() is broken.");
+		warn0("events_interrupt: is broken");
 		exit(1);
 	}
 }

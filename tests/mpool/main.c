@@ -61,7 +61,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 
 	/* Get start time. */
 	if (monoclock_get_cputime(&begin)) {
-		warnp("monoclock_get_cputime()");
+		warnp("monoclock_get_cputime");
 		goto err1;
 	}
 
@@ -70,7 +70,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 		if (use_mpool) {
 			for (i = 0; i < reps; i++) {
 				if ((arr[i] = mpool_stuff_malloc()) == NULL) {
-					warnp("mpool_stuff_malloc()");
+					warnp("mpool_stuff_malloc");
 					goto err1;
 				}
 			}
@@ -78,7 +78,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 			for (i = 0; i < reps; i++) {
 				if ((arr[i] = malloc(sizeof(struct stuff)))
 				    == NULL) {
-					warnp("malloc()");
+					warnp("malloc");
 					goto err1;
 				}
 			}
@@ -107,7 +107,7 @@ time_func(unsigned long sets, unsigned long reps, unsigned int use_mpool)
 
 	/* Get end time and difference. */
 	if (monoclock_get_cputime(&end)) {
-		warnp("monoclock_get_cputime()");
+		warnp("monoclock_get_cputime");
 		goto err1;
 	}
 	delta_us = (long long)(1e6 * timeval_diff(begin, end));
