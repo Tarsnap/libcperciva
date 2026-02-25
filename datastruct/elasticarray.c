@@ -335,9 +335,17 @@ int
 elasticarray_exportdup(const struct elasticarray * EA, void ** buf,
     size_t * nrec, size_t reclen)
 {
+	size_t alloclen;
+
+	/*
+	 * Decide how much space to allocate: If the size is zero, allocate
+	 * one byte in order to avoid "silly answer to a silly question"
+	 * allocators returning NULL when the array is empty.
+	 */
+	alloclen = EA->size ? EA->size : 1;
 
 	/* Allocate buffer for the caller's copy of the data. */
-	if ((*buf = malloc(EA->size)) == NULL)
+	if ((*buf = malloc(alloclen)) == NULL)
 		goto err0;
 
 	/* Copy the data in. */
