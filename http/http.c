@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
 
 #include "imalloc.h"
@@ -860,7 +861,7 @@ http_findheader(struct http_header * headers, size_t nheaders,
 
 	/* Search for the header. */
 	for (i = 0; i < nheaders; i++) {
-		if (strcmp(headers[i].header, header) == 0)
+		if (strcasecmp(headers[i].header, header) == 0)
 			return (headers[i].value);
 	}
 
