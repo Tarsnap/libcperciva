@@ -108,6 +108,10 @@ events_timer_register_double(int (* func)(void *), void * cookie,
 {
 	struct timeval tv;
 
+	/* Treat negative timeouts as zero. */
+	if (timeo < 0.0)
+		timeo = 0.0;
+
 	/* Convert timeo to a struct timeval. */
 	tv.tv_sec = (time_t)timeo;
 	tv.tv_usec = (suseconds_t)((timeo - (double)tv.tv_sec) * 1000000.0);
