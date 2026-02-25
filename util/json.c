@@ -81,7 +81,8 @@ skip_number(const uint8_t * buf, const uint8_t * end)
 	 * number -- so we eat those until we run out.
 	 */
 	while (buf < end) {
-		if (strchr(numchars, buf[0]) == NULL)
+		if ((buf[0] == '\0') ||
+		    (strchr(numchars, buf[0]) == NULL))
 			break;
 		buf++;
 	}
@@ -200,7 +201,7 @@ skip_value(const uint8_t * buf, const uint8_t * end)
 		return (skip_object(buf, end));
 	default:
 		/* Could this plausibly be a number? */
-		if (strchr(numchars, buf[0]) != NULL)
+		if (buf[0] && strchr(numchars, buf[0]) != NULL)
 			return (skip_number(buf, end));
 
 		/* We don't have a valid JSON value.  Return. */
