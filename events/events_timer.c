@@ -271,7 +271,11 @@ static void
 events_timer_shutdown(void)
 {
 
-	/* If we have a queue and it is empty, free it. */
+	/*
+	 * If we have a queue and it is empty, free it.  We deliberately do not
+	 * clean up a non-empty queue, in order to maximize the probability of
+	 * valgrind (or similar tools) detecting leaks.
+	 */
 	if ((Q != NULL) && (timerqueue_getmin(Q) == NULL)) {
 		timerqueue_free(Q);
 		Q = NULL;
