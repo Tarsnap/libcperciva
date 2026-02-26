@@ -400,7 +400,12 @@ events_network_select(const struct timeval * tv,
 	if (nfds > 0)
 		events_network_selectstats_startclock();
 
-	/* Start scanning at the last registered descriptor and work down. */
+	/*
+	 * Start scanning at the last registered descriptor and work down.
+	 * Note that if nfds == 0, this sets fdscanpos to (size_t)(-1), which
+	 * (in events_network_get) is interpreted as a lack of ready events,
+	 * since it is not less than nfds.
+	 */
 	fdscanpos = nfds - 1;
 
 	/* Success! */
