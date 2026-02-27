@@ -47,7 +47,11 @@ warnp_setprogname(const char * progname)
 
 	/* If we haven't already done so, register our exit handler. */
 	if (initialized == 0) {
-		atexit(warnp_atexit);
+		/* On failure, warn only; we're inside a (void) function. */
+		if (atexit(warnp_atexit))
+			warnp("atexit");
+
+		/* Don't try atexit() again. */
 		initialized = 1;
 	}
 }
