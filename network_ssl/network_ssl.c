@@ -132,7 +132,10 @@ init(void)
 	}
 
 	/* Release the context when we exit. */
-	atexit(network_ssl_atexit);
+	if (atexit(network_ssl_atexit)) {
+		warnp("atexit");
+		goto err1;
+	}
 
 	/* Success! */
 	return (0);
