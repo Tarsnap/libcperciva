@@ -148,6 +148,10 @@ skip_object(const uint8_t * buf, const uint8_t * end)
 	/* Skip entries until we get to the end. */
 	do {
 		/* Skip a string and optional whitespace. */
+		if (buf == end)
+			return (end);
+		if (buf[0] != '"')
+			return (end);
 		buf = skip_string(buf, end);
 		buf = skip_ws(buf, end);
 
