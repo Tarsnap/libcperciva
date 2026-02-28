@@ -1,6 +1,7 @@
 #include <sys/types.h>
 
 #include <assert.h>
+#include <errno.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -110,6 +111,12 @@ netbuf_read_resize_buffer(struct netbuf_read * R, size_t len)
 {
 	uint8_t * nbuf;
 	size_t nbuflen;
+
+	/* Error out if doubling buflen would overflow. */
+	if (R->buflen > SIZE_MAX / 2) {
+		errno = ENOMEM;
+		goto err0;
+	}
 
 	/* Compute new buffer size. */
 	nbuflen = R->buflen * 2;
