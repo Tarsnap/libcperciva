@@ -60,8 +60,11 @@ events_timer_register(int (* func)(void *), void * cookie,
 			goto err0;
 
 		/* Clean up the timer queue at exit. */
-		if (atexit(events_timer_shutdown))
+		if (atexit(events_timer_shutdown)) {
+			timerqueue_free(Q);
+			Q = NULL;
 			goto err0;
+		}
 	}
 
 	/* Bundle into an eventrec record. */
