@@ -349,7 +349,8 @@ elasticarray_exportdup(const struct elasticarray * EA, void ** buf,
 		goto err0;
 
 	/* Copy the data in. */
-	memcpy(*buf, EA->buf, EA->size);
+	if (EA->size)
+		memcpy(*buf, EA->buf, EA->size);
 
 	/* Tell the caller how many records we have. */
 	*nrec = elasticarray_getsize(EA, reclen);
