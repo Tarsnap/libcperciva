@@ -262,7 +262,7 @@ ptrheap_delete(struct ptrheap * H, size_t rc)
 			    H->compar, H->setreccookie, H->cookie);
 		} else {
 			/* Maybe we need to move it down instead? */
-			heapify(H->elems, rc, H->nelems,
+			heapify(H->elems, rc, H->nelems - 1,
 			    H->compar, H->setreccookie, H->cookie);
 		}
 	}
