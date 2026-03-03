@@ -31,7 +31,7 @@ void timerqueue_delete(struct timerqueue *, void *);
 /**
  * timerqueue_increase(Q, cookie, tv):
  * Increase the timer associated with the cookie ${cookie} in the priority
- * queue ${Q} to ${tv}.
+ * queue ${Q} to ${tv}.  Do nothing if the value of the timer is >= ${tv}.
  */
 void timerqueue_increase(struct timerqueue *, void *, const struct timeval *);
 

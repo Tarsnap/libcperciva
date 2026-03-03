@@ -141,7 +141,9 @@ events_timer_cancel(void * cookie)
 /**
  * events_timer_reset(cookie):
  * Reset the timer for which the cookie ${cookie} was returned by
- * events_timer_register() to its initial value.
+ * events_timer_register() to its initial (relative) value.  Do nothing if
+ * the timer is already set further into the future than this would require
+ * (e.g. if the "current time" went backwards).
  */
 int
 events_timer_reset(void * cookie)
