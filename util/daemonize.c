@@ -118,5 +118,5 @@ die:
 	 * We're in the child and something bad happened; the parent will be
 	 * notified when we die thanks to the pipe being closed.
 	 */
-	_exit(0);
+	_exit(1);
 }
