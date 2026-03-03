@@ -144,13 +144,17 @@ timerqueue_delete(struct timerqueue * Q, void * cookie)
 /**
  * timerqueue_increase(Q, cookie, tv):
  * Increase the timer associated with the cookie ${cookie} in the priority
- * queue ${Q} to ${tv}.
+ * queue ${Q} to ${tv}.  Do nothing if the value of the timer is >= ${tv}.
  */
 void
 timerqueue_increase(struct timerqueue * Q, void * cookie,
     const struct timeval * tv)
 {
 	struct timerrec * r = cookie;
+
+	/* Exit early if the timer is already >= ${tv}. */
+	if (tvcmp(&r->tv, tv) != -1)
+		return;
 
 	/* Adjust timer value. */
 	memcpy(&r->tv, tv, sizeof(struct timeval));
