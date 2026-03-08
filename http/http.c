@@ -173,7 +173,7 @@ sgetline(uint8_t * buf, size_t buflen, size_t * bufpos, size_t * linelen)
 	*bufpos += *linelen + 2;
 
 	/* Return string. */
-	return (char *)(s);
+	return ((char *)s);
 }
 
 /* Add data to the body buffer. */
