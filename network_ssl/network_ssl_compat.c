@@ -15,7 +15,7 @@
  * COMPATIBILITY: Behave like TLS_client_method().
  */
 const SSL_METHOD *
-network_ssl_compat_TLS_client_method()
+network_ssl_compat_TLS_client_method(void)
 {
 
 	return (SSLv23_client_method());
