@@ -163,7 +163,7 @@ setuidgid.o: ../util/setuidgid.c ../util/parsenum.h ../util/setgroups_none.h ../
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/setuidgid.c -o setuidgid.o
 sock.o: ../util/sock.c ../util/imalloc.h ../util/parsenum.h ../util/warnp.h ../util/sock.h ../util/sock_internal.h ../util/sock_util.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/sock.c -o sock.o
-sock_util.o: ../util/sock_util.c ../util/asprintf.h ../util/sock.h ../util/sock_internal.h ../util/sock_util.h
+sock_util.o: ../util/sock_util.c ../util/asprintf.h ../util/sock.h ../util/warnp.h ../util/sock_internal.h ../util/sock_util.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/sock_util.c -o sock_util.o
 ttyfd.o: ../util/ttyfd.c ../util/ttyfd.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/ttyfd.c -o ttyfd.o
