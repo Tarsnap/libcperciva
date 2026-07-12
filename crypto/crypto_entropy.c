@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "cpusupport.h"
@@ -54,6 +55,14 @@ update_from_rdrand(void)
 	insecure_memzero(buf, sizeof(buf));
 }
 #endif
+
+/* Clear the DRBG internal state. */
+static void
+crypto_entropy_atexit(void)
+{
+
+	insecure_memzero(&drbg, sizeof(drbg));
+}
 
 /**
  * instantiate(void):
@@ -210,9 +219,13 @@ crypto_entropy_read(uint8_t * buf, size_t buflen)
 
 	/* Instantiate if needed. */
 	if (instantiated == 0) {
+		/* Clear the internal state on exit. */
+		if (atexit(crypto_entropy_atexit))
+			goto err0;
+
 		/* Try to instantiate the PRNG. */
 		if (instantiate())
-			return (-1);
+			goto err0;
 
 		/* We have instantiated the PRNG. */
 		instantiated = 1;
@@ -223,7 +236,7 @@ crypto_entropy_read(uint8_t * buf, size_t buflen)
 		/* Do we need to reseed? */
 		if (drbg.reseed_counter > RESEED_INTERVAL) {
 			if (reseed())
-				return (-1);
+				goto err0;
 		}
 
 		/* How much data are we generating in this step? */
@@ -242,4 +255,8 @@ crypto_entropy_read(uint8_t * buf, size_t buflen)
 
 	/* Success! */
 	return (0);
+
+err0:
+	/* Failure! */
+	return (-1);
 }
