@@ -59,7 +59,17 @@ dofailed(struct connect_cookie * C)
 	C->sas++;
 
 	/* Try other addresses until we run out of options. */
-	return (tryconnect(C));
+	if (tryconnect(C))
+		goto err1;
+
+	/* Success! */
+	return (0);
+
+err1:
+	free(C);
+
+	/* Failure! */
+	return (-1);
 }
 
 /* Callback when connect(2) succeeds or fails. */
@@ -115,7 +125,7 @@ callback_timeo(void * cookie)
 	return (dofailed(C));
 }
 
-/* Try to launch a connection.  Free the cookie on fatal errors. */
+/* Try to launch a connection. */
 static int
 tryconnect(struct connect_cookie * C)
 {
@@ -163,7 +173,6 @@ err2:
 err1:
 	if ((C->s != -1) && close(C->s))
 		warnp("close");
-	free(C);
 
 	/* Fatal error. */
 	return (-1);
@@ -210,11 +219,13 @@ network_connect_internal(struct sock_addr * const * sas,
 
 	/* Try to connect to the first address. */
 	if (tryconnect(C))
-		goto err0;
+		goto err1;
 
 	/* Success! */
 	return (C);
 
+err1:
+	free(C);
 err0:
 	/* Failure! */
 	return (NULL);
