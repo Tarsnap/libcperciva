@@ -92,7 +92,8 @@ callback_connect(void * cookie)
 err1:
 	if (close(C->s))
 		warnp("close");
-	free(C);
+	C->s = -1;
+	docallback(C);
 
 	/* Fatal error! */
 	return (-1);
