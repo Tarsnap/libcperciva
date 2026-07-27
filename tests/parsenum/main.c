@@ -51,6 +51,7 @@ parsenum_equal(double x, double y)
 	return (0);
 }
 
+/* We can't use do...while because these macros declare variables. */
 #define TEST4_DO(str, var, min, max, target)			\
 	var parsenum_x;						\
 	int parsenum_ret;					\
@@ -80,7 +81,7 @@ parsenum_equal(double x, double y)
 	    trailing);						\
 	parsenum_ret = PARSENUM_EX(&parsenum_x, str, base, trailing);
 
-#define CHECK_SUCCESS(target)					\
+#define CHECK_SUCCESS(target) do {				\
 	if (parsenum_ret == 0) {				\
 		if (parsenum_equal((double)parsenum_x, (double)target)) { \
 			printf("PASSED!\n");		\
@@ -91,9 +92,10 @@ parsenum_equal(double x, double y)
 	} else {						\
 		printf("FAILED!\n");			\
 		goto err0;					\
-	}
+	}							\
+} while (0)
 
-#define CHECK_FAILURE(target)					\
+#define CHECK_FAILURE(target) do {				\
 	if (parsenum_ret != 0) {				\
 		if (errno == target) {				\
 			printf("PASSED!\n");		\
@@ -104,7 +106,8 @@ parsenum_equal(double x, double y)
 	} else {						\
 		printf("FAILED!\n");			\
 		goto err0;					\
-	}
+	}							\
+} while (0)
 
 #define TEST4_SUCCESS(str, var, min, max, target) do {		\
 	TEST4_DO(str, var, min, max, #target);			\

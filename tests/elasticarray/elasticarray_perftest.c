@@ -13,6 +13,7 @@ ELASTICARRAY_DECL(INTLIST, intlist, int);
 
 #define REPS 1000000	/* 1 million. */
 
+/* We can't use do...while because this pretends to be a for() loop. */
 #define BENCH_START						\
 	if (monoclock_get(&tv0)) {				\
 		warnp("monoclock");				\
@@ -20,12 +21,13 @@ ELASTICARRAY_DECL(INTLIST, intlist, int);
 	}							\
 	for (i = 0; i < REPS; i++)
 
-#define BENCH_END(delta_ns)					\
+#define BENCH_END(delta_ns) do {				\
 	if (monoclock_get(&tv1)) {				\
 		warnp("monoclock");				\
 		goto err1;					\
 	}							\
-	(delta_ns) = timeval_diff(tv0, tv1) * 1e9 / (double)REPS;
+	(delta_ns) = timeval_diff(tv0, tv1) * 1e9 / (double)REPS; \
+} while (0)
 
 static int
 check_append_shrink(void)
@@ -44,13 +46,13 @@ check_append_shrink(void)
 		if (intlist_append(list, &i, 1))
 			goto err1;
 	}
-	BENCH_END(delta_append)
+	BENCH_END(delta_append);
 
 	/* Remove some values. */
 	BENCH_START {
 		intlist_shrink(list, 1);
 	}
-	BENCH_END(delta_shrink)
+	BENCH_END(delta_shrink);
 
 	/* Append and remove. */
 	BENCH_START {
@@ -58,7 +60,7 @@ check_append_shrink(void)
 			goto err1;
 		intlist_shrink(list, 1);
 	}
-	BENCH_END(delta_combo)
+	BENCH_END(delta_combo);
 
 	/* Clean up. */
 	intlist_free(list);
