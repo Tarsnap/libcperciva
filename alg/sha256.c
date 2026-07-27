@@ -12,7 +12,7 @@
 
 #include "sha256.h"
 
-#if defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3) ||	\
+#if (defined(CPUSUPPORT_X86_SHANI) && defined(CPUSUPPORT_X86_SSSE3)) ||	\
     defined(CPUSUPPORT_X86_SSE2) ||					\
     defined(CPUSUPPORT_ARM_SHA256)
 #define HWACCEL
