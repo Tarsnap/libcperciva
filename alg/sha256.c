@@ -207,10 +207,11 @@ hwaccel_init(void)
 #define s1(x)		(ROTR(x, 17) ^ ROTR(x, 19) ^ SHR(x, 10))
 
 /* SHA256 round function */
-#define RND(a, b, c, d, e, f, g, h, k)			\
+#define RND(a, b, c, d, e, f, g, h, k) do {		\
 	h += S1(e) + Ch(e, f, g) + k;			\
 	d += h;						\
-	h += S0(a) + Maj(a, b, c)
+	h += S0(a) + Maj(a, b, c);			\
+} while (0)
 
 /* Adjusted round function for rotating state */
 #define RNDr(S, W, i, ii)			\
