@@ -32,7 +32,7 @@ main(int argc, char * argv[])
 	(void)argv; /* UNUSED */
 
 	/* Create a heap. */
-	if ((H = ptrheap_init(compar, NULL, NULL)) == 0) {
+	if ((H = ptrheap_init(compar, NULL, NULL)) == NULL) {
 		warnp("ptrheap_init");
 		goto err0;
 	}
