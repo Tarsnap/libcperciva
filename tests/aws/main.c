@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "insecure_memzero.h"
 #include "warnp.h"
 
 #include "aws_readkeys.h"
@@ -78,7 +79,10 @@ main(int argc, char * argv[])
 	/* Generate a header. */
 	fprintf(stderr, "---- Generate a header\n");
 	if (s3_headers(key_id, key_secret))
-		goto err0;
+		goto err1;
+
+	/* Zero the secret key. */
+	insecure_memzero(key_secret, strlen(key_secret));
 
 	/* Clean up */
 	free(key_id);
@@ -87,6 +91,10 @@ main(int argc, char * argv[])
 	/* Success! */
 	exit(0);
 
+err1:
+	insecure_memzero(key_secret, strlen(key_secret));
+	free(key_id);
+	free(key_secret);
 err0:
 	/* Failure! */
 	exit(1);
