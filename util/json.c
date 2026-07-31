@@ -70,7 +70,7 @@ skip_string(const uint8_t * buf, const uint8_t * end)
 }
 
 /* Advance past number. */
-static char numchars[] = "+-0123456789.eE";
+static const char numchars[] = "+-0123456789.eE";
 static const uint8_t *
 skip_number(const uint8_t * buf, const uint8_t * end)
 {

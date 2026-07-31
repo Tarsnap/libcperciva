@@ -160,7 +160,7 @@ network_ssl_compat_read_ex(SSL * ssl, void * buf, size_t num,
 	/* Sanity check. */
 	assert(num > 0);
 
-	/* Reduce the number of bytes to write (if necessary). */
+	/* Reduce the number of bytes to read (if necessary). */
 	if (num > INT_MAX)
 		num = INT_MAX;
 

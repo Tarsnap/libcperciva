@@ -67,7 +67,7 @@ static size_t fdscanpos;
  * 5. We don't have events ready which we don't want:
  *     (fds[j].revents & (POLLIN | POLLOUT) & (~fds[j].events)) == 0
  * 6. Returned events are in position to be scanned later:
- *     fds[j].revents != 0 ==> f < fdscanpos.
+ *     fds[j].revents != 0 ==> j < fdscanpos.
  */
 
 static void events_network_shutdown(void);

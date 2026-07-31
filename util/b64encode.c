@@ -3,7 +3,7 @@
 
 #include "b64encode.h"
 
-static char b64chars[] =
+static const char b64chars[] =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
 /**
