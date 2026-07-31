@@ -15,6 +15,10 @@
  * know we will want another allocation of the same size soon, at the expense
  * of keeping memory allocated (and thus preventing any other code from
  * allocating the same memory).
+ *
+ * Note: This code is not thread-safe!  It can only be used in a threaded
+ * environment if either all the calls are made from a single thread or if
+ * the caller adds locking.
  */
 
 /* Internal data. */
@@ -83,7 +87,10 @@ mpool_free(struct mpool * M, void * p)
 
 	/*
 	 * Autotuning: If more than 1/256 of mpool_malloc() calls resulted in
-	 * a malloc(), double the stack.
+	 * a malloc(), double the stack.  Note that after 2^64 allocations,
+	 * nallocs will overflow and we will attempt to double our stack soon
+	 * thereafter; it's not worth guarding against this since in practice
+	 * we're never going to make 2^64 allocations.
 	 */
 	if (M->nempties > (M->nallocs >> 8)) {
 		/* Sanity check. */

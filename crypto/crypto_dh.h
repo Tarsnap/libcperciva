@@ -37,6 +37,14 @@ int crypto_dh_compute(const uint8_t[CRYPTO_DH_PUBLEN],
  * crypto_dh_sanitycheck(pub):
  * Sanity-check the Diffie-Hellman public value ${pub} by checking that it
  * is less than the group #14 modulus.  Return 0 if sane, -1 if insane.
+ *
+ * Note that we do not check for "weak" parameters (e.g. ${pub} equal to 0,
+ * 1, or -1); doing so is an anti-pattern since (a) if an attacker can MITM
+ * (e.g. if you don't verify a signature on the public parameter) then they
+ * can break the security without needing "weak" parameters, and (b) if there
+ * is no MITM then "weak" parameters can only be sent by a misbehaving peer,
+ * and deliberately breaking the cryptographic security doesn't win anything
+ * since they can deliberately leak information if they want.
  */
 int crypto_dh_sanitycheck(const uint8_t[CRYPTO_DH_PUBLEN]);
 
