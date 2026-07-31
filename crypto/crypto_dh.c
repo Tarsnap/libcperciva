@@ -8,6 +8,7 @@
 
 #include "crypto_dh_group14.h"
 #include "crypto_entropy.h"
+#include "insecure_memzero.h"
 
 #include "crypto_dh.h"
 
@@ -156,6 +157,9 @@ blinded_modexp(uint8_t r[CRYPTO_DH_PUBLEN], BIGNUM * a,
 	BN_clear_free(priv_bn);
 	BN_free(two_exp_256_bn);
 
+	/* Zero blinding on stack. */
+	insecure_memzero(blinding, CRYPTO_DH_PRIVLEN);
+
 	/* Success! */
 	return (0);
 
@@ -172,6 +176,7 @@ err4:
 err3:
 	BN_clear_free(blinding_bn);
 err2:
+	insecure_memzero(blinding, CRYPTO_DH_PRIVLEN);
 	BN_clear_free(priv_bn);
 err1:
 	BN_free(two_exp_256_bn);

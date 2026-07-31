@@ -5,6 +5,7 @@
 
 #include "asprintf.h"
 #include "hexify.h"
+#include "insecure_memzero.h"
 #include "sha256.h"
 #include "warnp.h"
 
@@ -42,7 +43,8 @@ aws_sign(const char * key_secret, const char * date, const char * datetime,
 	HMAC_SHA256_Buf(kService, 32, "aws4_request", strlen("aws4_request"),
 	    kSigning);
 
-	/* Free string allocated by asprintf. */
+	/* Sanitize and free string allocated by asprintf. */
+	insecure_memzero(AWS4_key, strlen(AWS4_key));
 	free(AWS4_key);
 
 	/* Generate the hexified hash of the Canonical Request string. */
@@ -56,7 +58,7 @@ aws_sign(const char * key_secret, const char * date, const char * datetime,
 	    "%s/%s/%s/aws4_request\n"
 	    "%s",
 	    datetime, date, region, service, hhex_creq) == -1)
-		goto err0;
+		goto err1;
 
 	/* Sign and hexify the String to Sign. */
 	HMAC_SHA256_Buf(kSigning, 32, STS, strlen(STS), hmac);
@@ -65,9 +67,20 @@ aws_sign(const char * key_secret, const char * date, const char * datetime,
 	/* Free string allocated by asprintf. */
 	free(STS);
 
+	/* Sanitize generated sub-keys. */
+	insecure_memzero(kDate, 32);
+	insecure_memzero(kRegion, 32);
+	insecure_memzero(kService, 32);
+	insecure_memzero(kSigning, 32);
+
 	/* Success! */
 	return (0);
 
+err1:
+	insecure_memzero(kDate, 32);
+	insecure_memzero(kRegion, 32);
+	insecure_memzero(kService, 32);
+	insecure_memzero(kSigning, 32);
 err0:
 	/* Failure! */
 	return (-1);
