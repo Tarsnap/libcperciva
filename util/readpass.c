@@ -22,7 +22,8 @@ static const int badsigs[] = {
 /* Highest signal number we care about. */
 #define MAX2(a, b) ((a) > (b) ? (a) : (b))
 #define MAX4(a, b, c, d) MAX2(MAX2(a, b), MAX2(c, d))
-#define MAX8(a, b, c, d, e, f, g, h) MAX2(MAX4(a, b, c, d), MAX4(e, f, g, h))
+#define MAX8(a, b, c, d, e, f, g, h)			\
+    MAX2(MAX4(a, b, c, d), MAX4(e, f, g, h))
 #define MAXBADSIG	MAX2(SIGALRM, MAX8(SIGHUP, SIGINT, SIGPIPE, SIGQUIT, \
 			    SIGTERM, SIGTSTP, SIGTTIN, SIGTTOU))
 

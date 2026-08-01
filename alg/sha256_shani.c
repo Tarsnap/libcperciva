@@ -38,7 +38,8 @@ be32dec_128(const uint8_t * src)
 
 /* Convert an unsigned 32-bit immediate into a signed value. */
 #define I32(a) ((UINT32_C(a) >= UINT32_C(0x80000000)) ?			\
-    -(int32_t)(UINT32_C(0xffffffff) - UINT32_C(a)) - 1 : (int32_t)INT32_C(a))
+    -(int32_t)(UINT32_C(0xffffffff) - UINT32_C(a)) - 1 :		\
+    (int32_t)INT32_C(a))
 
 /* Load four unsigned 32-bit immediates into a vector register. */
 #define IMM4(a, b, c, d) _mm_set_epi32(I32(a), I32(b), I32(c), I32(d))

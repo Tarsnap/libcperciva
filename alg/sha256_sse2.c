@@ -74,7 +74,8 @@ static const uint32_t Krnd[64] = {
 
 /* Message schedule computation */
 #define SHR32(x, n) (_mm_srli_epi32(x, n))
-#define ROTR32(x, n) (_mm_or_si128(SHR32(x, n), _mm_slli_epi32(x, (32-n))))
+#define ROTR32(x, n) (_mm_or_si128(SHR32(x, n),			\
+	_mm_slli_epi32(x, (32 - n))))
 #define s0_128(x) _mm_xor_si128(_mm_xor_si128(			\
 	ROTR32(x, 7), ROTR32(x, 18)), SHR32(x, 3))
 
