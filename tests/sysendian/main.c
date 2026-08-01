@@ -117,18 +117,18 @@ fill_testcases(struct tests * tests)
 #define PERFTEST_FULL(tests, N) do {				\
 	volatile uint ## N ## _t v_val;				\
 	uint ## N ## _t val;					\
-	uint8_t arr[N/8];					\
+	uint8_t arr[(N)/8];					\
 	size_t i;						\
 								\
-	for (i = 0; i < N/8; i++) {				\
-		be ## N ## enc(arr, tests->val ## N [i]);	\
+	for (i = 0; i < (N)/8; i++) {				\
+		be ## N ## enc(arr, (tests)->val ## N [i]);	\
 								\
-		le ## N ## enc(arr, tests->val ## N [i]);	\
+		le ## N ## enc(arr, (tests)->val ## N [i]);	\
 								\
-		val = tests->val ## N ## _be[i];		\
+		val = (tests)->val ## N ## _be[i];		\
 		v_val = be ## N ## dec(&val);			\
 								\
-		val = tests->val ## N ## _le[i];		\
+		val = (tests)->val ## N ## _le[i];		\
 		v_val = le ## N ## dec(&val);			\
 								\
 		(void)v_val;					\
@@ -198,47 +198,47 @@ print_arr(const char * str, const uint8_t * arr, size_t n)
 #define TEST_FULL(tests, N) do {				\
 	volatile uint ## N ## _t v_val;				\
 	uint ## N ## _t val;					\
-	uint8_t arr[N/8];					\
+	uint8_t arr[(N)/8];					\
 	size_t i;						\
 								\
-	for (i = 0; i < N/8; i++) {				\
-		be ## N ## enc(arr, tests->val ## N [i]);	\
-		if (memcmp(arr, tests ## N [i].be_arr, N/8)) {	\
+	for (i = 0; i < (N)/8; i++) {				\
+		be ## N ## enc(arr, (tests)->val ## N [i]);	\
+		if (memcmp(arr, tests ## N [i].be_arr, (N)/8)) { \
 			warnp("Failed be" # N "enc test %zu", i); \
-			print_arr("Computed:\t", arr, N/8);	\
+			print_arr("Computed:\t", arr, (N)/8);	\
 			print_arr("Correct:\t",			\
-			    tests ## N [i].be_arr, N/8);	\
+			    tests ## N [i].be_arr, (N)/8);	\
 			goto err0;				\
 		}						\
 								\
-		le ## N ## enc(arr, tests->val ## N [i]);	\
-		if (memcmp(arr, tests ## N [i].le_arr, N/8)) {	\
+		le ## N ## enc(arr, (tests)->val ## N [i]);	\
+		if (memcmp(arr, tests ## N [i].le_arr, (N)/8)) { \
 			warnp("Failed le" # N "enc test %zu", i); \
-			print_arr("Computed:\t", arr, N/8);	\
+			print_arr("Computed:\t", arr, (N)/8);	\
 			print_arr("Correct:\t",			\
-			    tests ## N [i].le_arr, N/8);	\
+			    tests ## N [i].le_arr, (N)/8);	\
 			goto err0;				\
 		}						\
 								\
-		val = tests->val ## N ## _be[i];		\
+		val = (tests)->val ## N ## _be[i];		\
 		v_val = be ## N ## dec(&val);			\
-		if (v_val != tests->val ## N [i]) {		\
+		if (v_val != (tests)->val ## N [i]) {		\
 			warnp("Failed be" #N "dec test %zu", i); \
 			printf("Computed:\t%" PRIu ## N "\n",	\
 			    v_val);				\
 			printf("Correct:\t%" PRIu ## N "\n",	\
-			    tests->val ## N [i]);		\
+			    (tests)->val ## N [i]);		\
 			goto err0;				\
 		}						\
 								\
-		val = tests->val ## N ## _le[i];		\
+		val = (tests)->val ## N ## _le[i];		\
 		v_val = le ## N ## dec(&val);			\
-		if (v_val != tests->val ## N [i]) {		\
+		if (v_val != (tests)->val ## N [i]) {		\
 			warnp("Failed le" #N "dec test %zu", i); \
 			printf("Computed:\t%" PRIu ## N "\n",	\
 			    v_val);				\
 			printf("Correct:\t%" PRIu ## N "\n",	\
-			    tests->val ## N [i]);		\
+			    (tests)->val ## N [i]);		\
 			goto err0;				\
 		}						\
 	}							\

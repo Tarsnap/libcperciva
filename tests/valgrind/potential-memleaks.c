@@ -196,7 +196,7 @@ pl_nss_getpwnam(void)
 }
 
 
-#define MEMLEAKTEST(x) { #x, x }
+#define MEMLEAKTEST(x) { #x, (x) }
 static const struct memleaktest {
 	const char * const name;
 	void (* const volatile func)(void);

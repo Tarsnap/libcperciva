@@ -133,12 +133,12 @@ mpool_free(struct mpool * M, void * p)
  */
 #define MPOOL(name, type, size)					\
 static void mpool_##name##_atexit(void);			\
-static void * mpool_##name##_static[size];			\
+static void * mpool_##name##_static[(size)];			\
 static struct mpool mpool_##name##_rec =			\
-    {0, size, mpool_##name##_static, 0, 0, 0,			\
+    {0, (size), mpool_##name##_static, 0, 0, 0,			\
     mpool_##name##_static, mpool_##name##_atexit};		\
 								\
-CTASSERT(size > 0);						\
+CTASSERT((size) > 0);						\
 								\
 static void							\
 mpool_##name##_atexit(void)					\

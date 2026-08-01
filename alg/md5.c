@@ -33,39 +33,39 @@ le32dec_vect(uint32_t * dst, const uint8_t * src, size_t len)
 }
 
 /* Elementary functions used by MD5 */
-#define ROTL(x, n)	((x << n) | (x >> (32 - n)))
-#define F(x, y, z)	((x & (y ^ z)) ^ z)
-#define G(x, y, z)	((z & (x ^ y)) ^ y)
-#define H(x, y, z)	(x ^ y ^ z)
-#define I(x, y, z)	(((x) | (~z)) ^ y)
+#define ROTL(x, n)	(((x) << (n)) | ((x) >> (32 - (n))))
+#define F(x, y, z)	(((x) & ((y) ^ (z))) ^ (z))
+#define G(x, y, z)	(((z) & ((x) ^ (y))) ^ (y))
+#define H(x, y, z)	((x) ^ (y) ^ (z))
+#define I(x, y, z)	(((x) | (~(z))) ^ (y))
 
 /* MD5 round functions */
 #define FF(a, b, c, d, x, s)				\
-	a = b + ROTL((a + F(b, c, d) + x), s)
+	(a) = (b) + ROTL(((a) + F((b), (c), (d)) + (x)), (s))
 #define GG(a, b, c, d, x, s)				\
-	a = b + ROTL((a + G(b, c, d) + x), s)
+	(a) = (b) + ROTL(((a) + G((b), (c), (d)) + (x)), (s))
 #define HH(a, b, c, d, x, s)				\
-	a = b + ROTL((a + H(b, c, d) + x), s)
+	(a) = (b) + ROTL(((a) + H((b), (c), (d)) + (x)), (s))
 #define II(a, b, c, d, x, s)				\
-	a = b + ROTL((a + I(b, c, d) + x), s)
+	(a) = (b) + ROTL(((a) + I((b), (c), (d)) + (x)), (s))
 
 /* Adjusted round functions for rotating state */
 #define FFr(S, W, i, s, T)				\
-	FF(S[(64 - i) % 4], S[(65 - i) % 4],		\
-	   S[(66 - i) % 4], S[(67 - i) % 4],		\
-	    W[(i * 1 + 0) % 16] + T, s)
+	FF((S)[(64 - (i)) % 4], (S)[(65 - (i)) % 4],	\
+	   (S)[(66 - (i)) % 4], (S)[(67 - (i)) % 4],	\
+	    (W)[((i) * 1 + 0) % 16] + (T), (s))
 #define GGr(S, W, i, s, T)				\
-	GG(S[(64 - i) % 4], S[(65 - i) % 4],		\
-	   S[(66 - i) % 4], S[(67 - i) % 4],		\
-	    W[(i * 5 + 1) % 16] + T, s)
+	GG((S)[(64 - (i)) % 4], (S)[(65 - (i)) % 4],	\
+	   (S)[(66 - (i)) % 4], (S)[(67 - (i)) % 4],	\
+	    (W)[((i) * 5 + 1) % 16] + (T), (s))
 #define HHr(S, W, i, s, T)				\
-	HH(S[(64 - i) % 4], S[(65 - i) % 4],		\
-	   S[(66 - i) % 4], S[(67 - i) % 4],		\
-	    W[(i * 3 + 5) % 16] + T, s)
+	HH((S)[(64 - (i)) % 4], (S)[(65 - (i)) % 4],	\
+	   (S)[(66 - (i)) % 4], (S)[(67 - (i)) % 4],	\
+	    (W)[((i) * 3 + 5) % 16] + (T), (s))
 #define IIr(S, W, i, s, T)				\
-	II(S[(64 - i) % 4], S[(65 - i) % 4],		\
-	   S[(66 - i) % 4], S[(67 - i) % 4],		\
-	    W[(i * 7 + 0) % 16] + T, s)
+	II((S)[(64 - (i)) % 4], (S)[(65 - (i)) % 4],	\
+	   (S)[(66 - (i)) % 4], (S)[(67 - (i)) % 4],	\
+	    (W)[((i) * 7 + 0) % 16] + (T), (s))
 
 /*
  * MD5 block compression function.  The 128-bit state is transformed via

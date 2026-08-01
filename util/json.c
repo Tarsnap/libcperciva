@@ -287,10 +287,10 @@ match_str(const uint8_t * buf, const uint8_t * end, const char * s,
 
 /* Helper for scanning for a character. */
 #define SCAN(buf, end, ch) do {			\
-	buf = skip_ws(buf, end);		\
-	if (buf == end)				\
+	(buf) = skip_ws((buf), (end));		\
+	if ((buf) == (end))			\
 		return (end);			\
-	if (*buf++ != ch)			\
+	if (*(buf)++ != (ch))			\
 		return (end);			\
 } while (0)
 

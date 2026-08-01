@@ -56,34 +56,34 @@ parsenum_equal(double x, double y)
 	var parsenum_x;						\
 	int parsenum_ret;					\
 	printf("Parsing \"%s\" as %s between %s and %s (incl.) yields "	\
-	    target "... ", str, #var, #min, #max);		\
-	parsenum_ret = PARSENUM(&parsenum_x, str, min, max);
+	    target "... ", (str), #var, #min, #max);		\
+	parsenum_ret = PARSENUM(&parsenum_x, (str), (min), (max));
 
 #define TEST2_DO(str, var, target)				\
 	var parsenum_x;						\
 	int parsenum_ret;					\
-	printf("Parsing \"%s\" as %s yields " target "... ", str, #var); \
-	parsenum_ret = PARSENUM(&parsenum_x, str);
+	printf("Parsing \"%s\" as %s yields " target "... ", (str), #var); \
+	parsenum_ret = PARSENUM(&parsenum_x, (str));
 
 #define TEST_EX6_DO(str, var, min, max, target, base, trailing)	\
 	var parsenum_x;						\
 	int parsenum_ret;					\
 	printf("Parsing \"%s\" in base %d as %s with trailing"	\
 	    " %d between %s and %s (incl.) yields " target	\
-	    "... ", str, base, #var, trailing, #min, #max);	\
-	parsenum_ret = PARSENUM_EX(&parsenum_x, str, min, max, base, trailing);
+	    "... ", (str), (base), #var, (trailing), #min, #max);	\
+	parsenum_ret = PARSENUM_EX(&parsenum_x, (str), (min), (max), (base), (trailing));
 
 #define TEST_EX4_DO(str, var, target, base, trailing)		\
 	var parsenum_x;						\
 	int parsenum_ret;					\
 	printf("Parsing \"%s\" in base %d as %s with trailing"	\
-	    " %d yields " target "... ", str, base, #var,	\
-	    trailing);						\
-	parsenum_ret = PARSENUM_EX(&parsenum_x, str, base, trailing);
+	    " %d yields " target "... ", (str), (base), #var,	\
+	    (trailing));					\
+	parsenum_ret = PARSENUM_EX(&parsenum_x, (str), (base), (trailing));
 
 #define CHECK_SUCCESS(target) do {				\
 	if (parsenum_ret == 0) {				\
-		if (parsenum_equal((double)parsenum_x, (double)target)) { \
+		if (parsenum_equal((double)parsenum_x, (double)(target))) { \
 			printf("PASSED!\n");		\
 		} else {					\
 			printf("FAILED!\n");		\
@@ -97,7 +97,7 @@ parsenum_equal(double x, double y)
 
 #define CHECK_FAILURE(target) do {				\
 	if (parsenum_ret != 0) {				\
-		if (errno == target) {				\
+		if (errno == (target)) {			\
 			printf("PASSED!\n");		\
 		} else {					\
 			printf("FAILED!\n");		\
@@ -110,43 +110,43 @@ parsenum_equal(double x, double y)
 } while (0)
 
 #define TEST4_SUCCESS(str, var, min, max, target) do {		\
-	TEST4_DO(str, var, min, max, #target);			\
+	TEST4_DO((str), var, (min), (max), #target);		\
 	CHECK_SUCCESS(target);					\
 } while (0)
 
 #define TEST4_FAILURE(str, var, min, max, target) do {		\
-	TEST4_DO(str, var, min, max, #target);			\
+	TEST4_DO((str), var, (min), (max), #target);		\
 	CHECK_FAILURE(target);					\
 } while (0)
 
 #define TEST2_SUCCESS(str, var, target) do {			\
-	TEST2_DO(str, var, #target);				\
+	TEST2_DO((str), var, #target);			\
 	CHECK_SUCCESS(target);					\
 } while (0)
 
 #define TEST2_FAILURE(str, var, target) do {			\
-	TEST2_DO(str, var, #target);				\
+	TEST2_DO((str), var, #target);			\
 	CHECK_FAILURE(target);					\
 } while (0)
 
 /* Handle extended PARSENUM */
 #define TEST_EX6_SUCCESS(str, var, min, max, target, base, trailing) do { \
-	TEST_EX6_DO(str, var, min, max, #target, base, trailing); \
+	TEST_EX6_DO((str), var, (min), (max), #target, (base), (trailing)); \
 	CHECK_SUCCESS(target);					\
 } while (0)
 
 #define TEST_EX6_FAILURE(str, var, min, max, target, base, trailing) do { \
-	TEST_EX6_DO(str, var, min, max, #target, base, trailing); \
+	TEST_EX6_DO((str), var, (min), (max), #target, (base), (trailing)); \
 	CHECK_FAILURE(target);					\
 } while (0)
 
 #define TEST_EX4_SUCCESS(str, var, target, base, trailing) do {	\
-	TEST_EX4_DO(str, var, #target, base, trailing);		\
+	TEST_EX4_DO((str), var, #target, (base), (trailing));	\
 	CHECK_SUCCESS(target);					\
 } while (0)
 
 #define TEST_EX4_FAILURE(str, var, target, base, trailing) do {	\
-	TEST_EX4_DO(str, var, #target, base, trailing);		\
+	TEST_EX4_DO((str), var, #target, (base), (trailing));	\
 	CHECK_FAILURE(target);					\
 } while (0)
 

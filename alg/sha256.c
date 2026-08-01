@@ -197,33 +197,33 @@ hwaccel_init(void)
 #endif /* HWACCEL */
 
 /* Elementary functions used by SHA256 */
-#define Ch(x, y, z)	((x & (y ^ z)) ^ z)
-#define Maj(x, y, z)	((x & (y | z)) | (y & z))
-#define SHR(x, n)	(x >> n)
-#define ROTR(x, n)	((x >> n) | (x << (32 - n)))
-#define S0(x)		(ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22))
-#define S1(x)		(ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25))
-#define s0(x)		(ROTR(x, 7) ^ ROTR(x, 18) ^ SHR(x, 3))
-#define s1(x)		(ROTR(x, 17) ^ ROTR(x, 19) ^ SHR(x, 10))
+#define Ch(x, y, z)	(((x) & ((y) ^ (z))) ^ (z))
+#define Maj(x, y, z)	(((x) & ((y) | (z))) | ((y) & (z)))
+#define SHR(x, n)	((x) >> (n))
+#define ROTR(x, n)	(((x) >> (n)) | ((x) << (32 - (n))))
+#define S0(x)		(ROTR((x), 2) ^ ROTR((x), 13) ^ ROTR((x), 22))
+#define S1(x)		(ROTR((x), 6) ^ ROTR((x), 11) ^ ROTR((x), 25))
+#define s0(x)		(ROTR((x), 7) ^ ROTR((x), 18) ^ SHR((x), 3))
+#define s1(x)		(ROTR((x), 17) ^ ROTR((x), 19) ^ SHR((x), 10))
 
 /* SHA256 round function */
 #define RND(a, b, c, d, e, f, g, h, k) do {		\
-	h += S1(e) + Ch(e, f, g) + k;			\
-	d += h;						\
-	h += S0(a) + Maj(a, b, c);			\
+	(h) += S1((e)) + Ch((e), (f), (g)) + (k);	\
+	(d) += (h);					\
+	(h) += S0((a)) + Maj((a), (b), (c));		\
 } while (0)
 
 /* Adjusted round function for rotating state */
 #define RNDr(S, W, i, ii)			\
-	RND(S[(64 - i) % 8], S[(65 - i) % 8],	\
-	    S[(66 - i) % 8], S[(67 - i) % 8],	\
-	    S[(68 - i) % 8], S[(69 - i) % 8],	\
-	    S[(70 - i) % 8], S[(71 - i) % 8],	\
-	    W[i + ii] + Krnd[i + ii])
+	RND((S)[(64 - (i)) % 8], (S)[(65 - (i)) % 8],	\
+	    (S)[(66 - (i)) % 8], (S)[(67 - (i)) % 8],	\
+	    (S)[(68 - (i)) % 8], (S)[(69 - (i)) % 8],	\
+	    (S)[(70 - (i)) % 8], (S)[(71 - (i)) % 8],	\
+	    (W)[(i) + (ii)] + Krnd[(i) + (ii)])
 
 /* Message schedule computation */
 #define MSCH(W, ii, i)				\
-	W[i + ii + 16] = s1(W[i + ii + 14]) + W[i + ii + 9] + s0(W[i + ii + 1]) + W[i + ii]
+	(W)[(i) + (ii) + 16] = s1((W)[(i) + (ii) + 14]) + (W)[(i) + (ii) + 9] + s0((W)[(i) + (ii) + 1]) + (W)[(i) + (ii)]
 
 /*
  * SHA256 block compression function.  The 256-bit state is transformed via

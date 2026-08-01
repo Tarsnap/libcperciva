@@ -23,13 +23,13 @@ struct crypto_aes_key_aesni {
 
 /* Compute an AES-128 round key. */
 #define MKRKEY128(rkeys, i, rcon) do {				\
-	__m128i _s = rkeys[i - 1];				\
-	__m128i _t = rkeys[i - 1];				\
+	__m128i _s = (rkeys)[(i) - 1];				\
+	__m128i _t = (rkeys)[(i) - 1];				\
 	_s = _mm_xor_si128(_s, _mm_slli_si128(_s, 4));		\
 	_s = _mm_xor_si128(_s, _mm_slli_si128(_s, 8));		\
-	_t = _mm_aeskeygenassist_si128(_t, rcon);		\
+	_t = _mm_aeskeygenassist_si128(_t, (rcon));		\
 	_t = _mm_shuffle_epi32(_t, 0xff);			\
-	rkeys[i] = _mm_xor_si128(_s, _t);			\
+	(rkeys)[(i)] = _mm_xor_si128(_s, _t);			\
 } while (0)
 
 /**
@@ -79,13 +79,13 @@ crypto_aes_key_expand_128_aesni(const uint8_t key_unexpanded[16],
 
 /* Compute an AES-256 round key. */
 #define MKRKEY256(rkeys, i, shuffle, rcon)	do {		\
-	__m128i _s = rkeys[i - 2];				\
-	__m128i _t = rkeys[i - 1];				\
+	__m128i _s = (rkeys)[(i) - 2];				\
+	__m128i _t = (rkeys)[(i) - 1];				\
 	_s = _mm_xor_si128(_s, _mm_slli_si128(_s, 4));		\
 	_s = _mm_xor_si128(_s, _mm_slli_si128(_s, 8));		\
-	_t = _mm_aeskeygenassist_si128(_t, rcon);		\
-	_t = _mm_shuffle_epi32(_t, shuffle);			\
-	rkeys[i] = _mm_xor_si128(_s, _t);			\
+	_t = _mm_aeskeygenassist_si128(_t, (rcon));		\
+	_t = _mm_shuffle_epi32(_t, (shuffle));			\
+	(rkeys)[(i)] = _mm_xor_si128(_s, _t);			\
 } while (0)
 
 /**

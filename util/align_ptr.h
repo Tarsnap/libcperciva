@@ -13,7 +13,7 @@
  * "${name}_buf".
  */
 #define ALIGN_PTR_DECL(type, name, num, alignsize)			\
-	uint8_t name##_buf[num * sizeof(type) + (alignsize - 1)];	\
+	uint8_t name##_buf[(num) * sizeof(type) + ((alignsize) - 1)];	\
 	type * name
 
 /**
@@ -25,7 +25,7 @@
  * relative to aligned memory.
  */
 #define ALIGN_PTR_INIT(name, alignsize)					\
-	name = align_ptr(name##_buf, alignsize)
+	(name) = align_ptr(name##_buf, (alignsize))
 
 /**
  * align_ptr(arr, alignment):
