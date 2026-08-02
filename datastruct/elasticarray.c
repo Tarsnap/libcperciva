@@ -336,12 +336,18 @@ elasticarray_exportdup(const struct elasticarray * EA, void ** buf,
     size_t * nrec, size_t reclen)
 {
 
-	/* Allocate buffer for the caller's copy of the data. */
-	if ((*buf = malloc(EA->size)) == NULL)
-		goto err0;
+	/* Set the caller's buffer. */
+	if (EA->size == 0) {
+		/* Avoid malloc(0), which is implementation-defined. */
+		*buf = NULL;
+	} else {
+		/* Allocate buffer for the caller's copy of the data. */
+		if ((*buf = malloc(EA->size)) == NULL)
+			goto err0;
 
-	/* Copy the data in. */
-	memcpy(*buf, EA->buf, EA->size);
+		/* Copy the data in. */
+		memcpy(*buf, EA->buf, EA->size);
+	}
 
 	/* Tell the caller how many records we have. */
 	*nrec = elasticarray_getsize(EA, reclen);
