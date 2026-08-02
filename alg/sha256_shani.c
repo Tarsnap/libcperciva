@@ -38,7 +38,8 @@ be32dec_128(const uint8_t * src)
 
 /* Convert an unsigned 32-bit immediate into a signed value. */
 #define I32(a) ((UINT32_C(a) >= UINT32_C(0x80000000)) ?			\
-    -(int32_t)(UINT32_C(0xffffffff) - UINT32_C(a)) - 1 : (int32_t)INT32_C(a))
+    -(int32_t)(UINT32_C(0xffffffff) - UINT32_C(a)) - 1 :		\
+    (int32_t)INT32_C(a))
 
 /* Load four unsigned 32-bit immediates into a vector register. */
 #define IMM4(a, b, c, d) _mm_set_epi32(I32(a), I32(b), I32(c), I32(d))
@@ -48,29 +49,29 @@ be32dec_128(const uint8_t * src)
 	__m128i M;								\
 										\
 	/* Add the next four words of message schedule and round constants. */	\
-	M = _mm_add_epi32(W, IMM4(K3, K2, K1, K0));				\
+	M = _mm_add_epi32((W), IMM4(K3, K2, K1, K0));				\
 										\
 	/* Perform two rounds of SHA256, using the low two words in M. */	\
-	S[1] = _mm_sha256rnds2_epu32(S[1], S[0], M);				\
+	(S)[1] = _mm_sha256rnds2_epu32((S)[1], (S)[0], M);				\
 										\
 	/* Shift the two words of M down and perform the next two rounds. */	\
 	M = _mm_srli_si128(M, 8);						\
-	S[0] = _mm_sha256rnds2_epu32(S[0], S[1], M);				\
+	(S)[0] = _mm_sha256rnds2_epu32((S)[0], (S)[1], M);				\
 } while (0)
 
 /* Compute the ith set of four words of message schedule. */
 #define MSG4(W, i) do {								\
-	W[(i + 0) % 4] = _mm_sha256msg1_epu32(W[(i + 0) % 4], W[(i + 1) % 4]);	\
-	W[(i + 0) % 4] = _mm_add_epi32(W[(i + 0) % 4],				\
-	    _mm_alignr_epi8(W[(i + 3) % 4], W[(i + 2) % 4], 4));		\
-	W[(i + 0) % 4] = _mm_sha256msg2_epu32(W[(i + 0) % 4], W[(i + 3) % 4]);	\
+	(W)[((i) + 0) % 4] = _mm_sha256msg1_epu32((W)[((i) + 0) % 4], (W)[((i) + 1) % 4]);	\
+	(W)[((i) + 0) % 4] = _mm_add_epi32((W)[((i) + 0) % 4],				\
+	    _mm_alignr_epi8((W)[((i) + 3) % 4], (W)[((i) + 2) % 4], 4));		\
+	(W)[((i) + 0) % 4] = _mm_sha256msg2_epu32((W)[((i) + 0) % 4], (W)[((i) + 3) % 4]);	\
 } while (0)
 
 /* Perform 4 rounds of SHA256 and generate more message schedule if needed. */
 #define RNDMSG(S, W, i, K0, K1, K2, K3) do {			\
-	RND4(S, W[i % 4], K0, K1, K2, K3);			\
-	if (i < 12)						\
-		MSG4(W, i + 4);					\
+	RND4((S), (W)[(i) % 4], K0, K1, K2, K3);		\
+	if ((i) < 12)						\
+		MSG4((W), (i) + 4);				\
 } while (0)
 
 /**

@@ -83,7 +83,7 @@ extern int optind, opterr, optreset;
  * the next option string and set optarg / optind appropriately; abort if not
  * properly initialized when not being called for the first time.
  */
-#define GETOPT(argc, argv) getopt(argc, argv)
+#define GETOPT(argc, argv) getopt((argc), (argv))
 
 /**
  * GETOPT_SWITCH(ch):
@@ -107,13 +107,13 @@ extern int optind, opterr, optreset;
  * GETOPT_OPT("-x") is equivalent to "case 'x'" in a standard getopt loop
  * which has an optstring containing "x".
  */
-#define GETOPT_OPT(os)	GETOPT_OPT_(os, __LINE__)
-#define GETOPT_OPT_(os, ln)	GETOPT_OPT__(os, ln)
+#define GETOPT_OPT(os)	GETOPT_OPT_((os), __LINE__)
+#define GETOPT_OPT_(os, ln)	GETOPT_OPT__((os), ln)
 #define GETOPT_OPT__(os, ln)						\
 	case ln:							\
 		if (getopt_initialized)					\
 			goto getopt_skip_ ## ln;			\
-		getopt_register_opt(os, ln - getopt_ln_min, 0);		\
+		getopt_register_opt((os), (ln) - getopt_ln_min, 0);	\
 		DO_LONGJMP;						\
 	getopt_skip_ ## ln
 
@@ -126,15 +126,15 @@ extern int optind, opterr, optreset;
  * GETOPT_OPTARG("-x") is equivalent to "case 'x'" in a standard getopt loop
  * which has an optstring containing "x:".
  */
-#define GETOPT_OPTARG(os)	GETOPT_OPTARG_(os, __LINE__)
-#define GETOPT_OPTARG_(os, ln)	GETOPT_OPTARG__(os, ln)
+#define GETOPT_OPTARG(os)	GETOPT_OPTARG_((os), __LINE__)
+#define GETOPT_OPTARG_(os, ln)	GETOPT_OPTARG__((os), ln)
 #define GETOPT_OPTARG__(os, ln)						\
 	case ln:							\
 		if (getopt_initialized) {				\
 			assert(optarg != NULL);				\
 			goto getopt_skip_ ## ln;			\
 		}							\
-		getopt_register_opt(os, ln - getopt_ln_min, 1);		\
+		getopt_register_opt((os), (ln) - getopt_ln_min, 1);	\
 		DO_LONGJMP;						\
 	getopt_skip_ ## ln
 
@@ -153,7 +153,7 @@ extern int optind, opterr, optreset;
 	case ln:							\
 		if (getopt_initialized)					\
 			goto getopt_skip_ ## ln;			\
-		getopt_register_missing(ln - getopt_ln_min);		\
+		getopt_register_missing((ln) - getopt_ln_min);		\
 		DO_LONGJMP;						\
 	getopt_skip_ ## ln
 
@@ -179,7 +179,7 @@ extern int optind, opterr, optreset;
 		if (getopt_initialized)					\
 			goto getopt_skip_ ## ln;			\
 		if (!getopt_default_missing) {				\
-			getopt_setrange(ln - getopt_ln_min);		\
+			getopt_setrange((ln) - getopt_ln_min);		\
 			getopt_default_missing = 1;			\
 		}							\
 		DO_LONGJMP;						\

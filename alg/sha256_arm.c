@@ -38,15 +38,15 @@ static const uint32_t Krnd[64] = {
 #define RND4(S, M, Kp) do {					\
 	uint32x4_t S0_step;					\
 	uint32x4_t Wk;						\
-	S0_step = S[0];						\
-	Wk = vaddq_u32(M, vld1q_u32(Kp));			\
-	S[0] = vsha256hq_u32(S[0], S[1], Wk);			\
-	S[1] = vsha256h2q_u32(S[1], S0_step, Wk);		\
+	S0_step = (S)[0];					\
+	Wk = vaddq_u32((M), vld1q_u32(Kp));			\
+	(S)[0] = vsha256hq_u32((S)[0], (S)[1], Wk);		\
+	(S)[1] = vsha256h2q_u32((S)[1], S0_step, Wk);		\
 } while (0)
 
 /* Message schedule computation */
 #define MSG4(X0, X1, X2, X3)					\
-	X0 = vsha256su1q_u32(vsha256su0q_u32(X0, X1), X2, X3)
+	(X0) = vsha256su1q_u32(vsha256su0q_u32((X0), (X1)), (X2), (X3))
 
 /**
  * SHA256_Transform_arm(state, block):

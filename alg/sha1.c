@@ -33,45 +33,45 @@ be32dec_vect(uint32_t * dst, const uint8_t * src, size_t len)
 }
 
 /* Elementary functions used by SHA1 */
-#define ROTL(x, n)	((x << n) | (x >> (32 - n)))
-#define Ch(x, y, z)	((x & (y ^ z)) ^ z)
-#define Maj(x, y, z)	((x & (y | z)) | (y & z))
+#define ROTL(x, n)	(((x) << (n)) | ((x) >> (32 - (n))))
+#define Ch(x, y, z)	(((x) & ((y) ^ (z))) ^ (z))
+#define Maj(x, y, z)	(((x) & ((y) | (z))) | ((y) & (z)))
 
 /* SHA1 round functions */
 #define RND0(a, b, c, d, e, k) do {				\
-	e = ROTL(a, 5) + Ch(b, c, d) + e + k + 0x5A827999;	\
-	b = ROTL(b, 30);					\
+	(e) = ROTL((a), 5) + Ch((b), (c), (d)) + (e) + (k) + 0x5A827999; \
+	(b) = ROTL((b), 30);					\
 } while (0)
 #define RND1(a, b, c, d, e, k) do {				\
-	e = ROTL(a, 5) + (b ^ c ^ d) + e + k + 0x6ED9EBA1;	\
-	b = ROTL(b, 30);					\
+	(e) = ROTL((a), 5) + ((b) ^ (c) ^ (d)) + (e) + (k) + 0x6ED9EBA1; \
+	(b) = ROTL((b), 30);					\
 } while (0)
 #define RND2(a, b, c, d, e, k) do {				\
-	e = ROTL(a, 5) + Maj(b, c, d) + e + k + 0x8F1BBCDC;	\
-	b = ROTL(b, 30);					\
+	(e) = ROTL((a), 5) + Maj((b), (c), (d)) + (e) + (k) + 0x8F1BBCDC; \
+	(b) = ROTL((b), 30);					\
 } while (0)
 #define RND3(a, b, c, d, e, k) do {				\
-	e = ROTL(a, 5) + (b ^ c ^ d) + e + k + 0xCA62C1D6;	\
-	b = ROTL(b, 30);					\
+	(e) = ROTL((a), 5) + ((b) ^ (c) ^ (d)) + (e) + (k) + 0xCA62C1D6; \
+	(b) = ROTL((b), 30);					\
 } while (0)
 
 /* Adjusted round functions for rotating state */
 #define RND0r(S, W, i)				\
-	RND0(S[(80 - i) % 5], S[(81 - i) % 5],	\
-	     S[(82 - i) % 5], S[(83 - i) % 5],	\
-	     S[(84 - i) % 5], W[i])
+	RND0((S)[(80 - (i)) % 5], (S)[(81 - (i)) % 5],	\
+	     (S)[(82 - (i)) % 5], (S)[(83 - (i)) % 5],	\
+	     (S)[(84 - (i)) % 5], (W)[(i)])
 #define RND1r(S, W, i)				\
-	RND1(S[(80 - i) % 5], S[(81 - i) % 5],	\
-	     S[(82 - i) % 5], S[(83 - i) % 5],	\
-	     S[(84 - i) % 5], W[i])
+	RND1((S)[(80 - (i)) % 5], (S)[(81 - (i)) % 5],	\
+	     (S)[(82 - (i)) % 5], (S)[(83 - (i)) % 5],	\
+	     (S)[(84 - (i)) % 5], (W)[(i)])
 #define RND2r(S, W, i)				\
-	RND2(S[(80 - i) % 5], S[(81 - i) % 5],	\
-	     S[(82 - i) % 5], S[(83 - i) % 5],	\
-	     S[(84 - i) % 5], W[i])
+	RND2((S)[(80 - (i)) % 5], (S)[(81 - (i)) % 5],	\
+	     (S)[(82 - (i)) % 5], (S)[(83 - (i)) % 5],	\
+	     (S)[(84 - (i)) % 5], (W)[(i)])
 #define RND3r(S, W, i)				\
-	RND3(S[(80 - i) % 5], S[(81 - i) % 5],	\
-	     S[(82 - i) % 5], S[(83 - i) % 5],	\
-	     S[(84 - i) % 5], W[i])
+	RND3((S)[(80 - (i)) % 5], (S)[(81 - (i)) % 5],	\
+	     (S)[(82 - (i)) % 5], (S)[(83 - (i)) % 5],	\
+	     (S)[(84 - (i)) % 5], (W)[(i)])
 
 /*
  * SHA1 block compression function.  The 160-bit state is transformed via

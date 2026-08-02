@@ -30,7 +30,7 @@ struct crypto_aes_key_arm {
  * vdupq_laneq_u32(), except that accepts (and returns) uint8x16_t.
  */
 #define vdupq_laneq_u32_u8(a, lane)			\
-	vreinterpretq_u8_u32(vdupq_laneq_u32(vreinterpretq_u32_u8(a), lane))
+	vreinterpretq_u8_u32(vdupq_laneq_u32(vreinterpretq_u32_u8(a), (lane)))
 
 /**
  * vshlq_n_u128(a, n):
@@ -45,7 +45,7 @@ struct crypto_aes_key_arm {
  * intrinsics; all of the built-in shift instructions operate on multiple
  * values (such as a pair of 64-bit values).
  */
-#define vshlq_n_u128(a, n) vextq_u8(vdupq_n_u8(0), a, 16 - n)
+#define vshlq_n_u128(a, n) vextq_u8(vdupq_n_u8(0), (a), 16 - (n))
 
 /**
  * SubWord_duplicate(a):
@@ -101,12 +101,12 @@ SubWord_RotWord_XOR_duplicate(uint8x16_t a, const uint32_t rcon)
 
 /* Compute an AES-128 round key. */
 #define MKRKEY128(rkeys, i, rcon) do {				\
-	uint8x16_t _s = rkeys[i - 1];				\
-	uint8x16_t _t = rkeys[i - 1];				\
+	uint8x16_t _s = (rkeys)[(i) - 1];			\
+	uint8x16_t _t = (rkeys)[(i) - 1];			\
 	_s = veorq_u8(_s, vshlq_n_u128(_s, 4));			\
 	_s = veorq_u8(_s, vshlq_n_u128(_s, 8));			\
-	_t = SubWord_RotWord_XOR_duplicate(_t, rcon);		\
-	rkeys[i] = veorq_u8(_s, _t);				\
+	_t = SubWord_RotWord_XOR_duplicate(_t, (rcon));		\
+	(rkeys)[(i)] = veorq_u8(_s, _t);			\
 } while (0)
 
 /**
@@ -144,14 +144,14 @@ crypto_aes_key_expand_128_arm(const uint8_t key_unexpanded[16],
 
 /* Compute an AES-256 round key. */
 #define MKRKEY256(rkeys, i, rcon)	do {			\
-	uint8x16_t _s = rkeys[i - 2];				\
-	uint8x16_t _t = rkeys[i - 1];				\
+	uint8x16_t _s = (rkeys)[(i) - 2];			\
+	uint8x16_t _t = (rkeys)[(i) - 1];			\
 	_s = veorq_u8(_s, vshlq_n_u128(_s, 4));			\
 	_s = veorq_u8(_s, vshlq_n_u128(_s, 8));			\
-	_t = (i % 2 == 1) ?					\
+	_t = ((i) % 2 == 1) ?					\
 	    SubWord_duplicate(_t) :				\
-	    SubWord_RotWord_XOR_duplicate(_t, rcon);		\
-	rkeys[i] = veorq_u8(_s, _t);				\
+	    SubWord_RotWord_XOR_duplicate(_t, (rcon));		\
+	(rkeys)[(i)] = veorq_u8(_s, _t);			\
 } while (0)
 
 /**

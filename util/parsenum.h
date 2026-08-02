@@ -54,9 +54,9 @@ _Pragma("clang diagnostic pop")
  * set to +/- infinity or the limits of the unsigned integer type.
  */
 #define PARSENUM2(x, s)							\
-	PARSENUM_EX4(x, s, 0, 0, "PARSENUM")
+	PARSENUM_EX4((x), (s), 0, 0, "PARSENUM")
 #define PARSENUM4(x, s, min, max)					\
-	PARSENUM_EX6(x, s, min, max, 0, 0, "PARSENUM")
+	PARSENUM_EX6((x), (s), (min), (max), 0, 0, "PARSENUM")
 
 /* Magic to select which version of PARSENUM to use. */
 #define PARSENUM(...)	PARSENUM_(PARSENUM_COUNT(__VA_ARGS__))(__VA_ARGS__)

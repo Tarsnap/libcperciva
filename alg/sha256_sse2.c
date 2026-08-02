@@ -51,32 +51,33 @@ static const uint32_t Krnd[64] = {
 };
 
 /* Elementary functions used by SHA256 */
-#define Ch(x, y, z)	((x & (y ^ z)) ^ z)
-#define Maj(x, y, z)	((x & (y | z)) | (y & z))
-#define ROTR(x, n)	((x >> n) | (x << (32 - n)))
-#define S0(x)		(ROTR(x, 2) ^ ROTR(x, 13) ^ ROTR(x, 22))
-#define S1(x)		(ROTR(x, 6) ^ ROTR(x, 11) ^ ROTR(x, 25))
+#define Ch(x, y, z)	(((x) & ((y) ^ (z))) ^ (z))
+#define Maj(x, y, z)	(((x) & ((y) | (z))) | ((y) & (z)))
+#define ROTR(x, n)	(((x) >> (n)) | ((x) << (32 - (n))))
+#define S0(x)		(ROTR((x), 2) ^ ROTR((x), 13) ^ ROTR((x), 22))
+#define S1(x)		(ROTR((x), 6) ^ ROTR((x), 11) ^ ROTR((x), 25))
 
 /* SHA256 round function */
 #define RND(a, b, c, d, e, f, g, h, k) do {		\
-	h += S1(e) + Ch(e, f, g) + k;			\
-	d += h;						\
-	h += S0(a) + Maj(a, b, c);			\
+	(h) += S1((e)) + Ch((e), (f), (g)) + (k);	\
+	(d) += (h);					\
+	(h) += S0((a)) + Maj((a), (b), (c));		\
 } while (0)
 
 /* Adjusted round function for rotating state */
 #define RNDr(S, W, i, ii)			\
-	RND(S[(64 - i) % 8], S[(65 - i) % 8],	\
-	    S[(66 - i) % 8], S[(67 - i) % 8],	\
-	    S[(68 - i) % 8], S[(69 - i) % 8],	\
-	    S[(70 - i) % 8], S[(71 - i) % 8],	\
-	    W[i + ii] + Krnd[i + ii])
+	RND((S)[(64 - (i)) % 8], (S)[(65 - (i)) % 8],	\
+	    (S)[(66 - (i)) % 8], (S)[(67 - (i)) % 8],	\
+	    (S)[(68 - (i)) % 8], (S)[(69 - (i)) % 8],	\
+	    (S)[(70 - (i)) % 8], (S)[(71 - (i)) % 8],	\
+	    (W)[(i) + (ii)] + Krnd[(i) + (ii)])
 
 /* Message schedule computation */
-#define SHR32(x, n) (_mm_srli_epi32(x, n))
-#define ROTR32(x, n) (_mm_or_si128(SHR32(x, n), _mm_slli_epi32(x, (32-n))))
+#define SHR32(x, n) (_mm_srli_epi32((x), (n)))
+#define ROTR32(x, n) (_mm_or_si128(SHR32((x), (n)),	\
+	_mm_slli_epi32((x), (32 - (n)))))
 #define s0_128(x) _mm_xor_si128(_mm_xor_si128(			\
-	ROTR32(x, 7), ROTR32(x, 18)), SHR32(x, 3))
+	ROTR32((x), 7), ROTR32((x), 18)), SHR32((x), 3))
 
 static inline __m128i
 s1_128_high(__m128i a)
