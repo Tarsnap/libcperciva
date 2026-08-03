@@ -8,9 +8,7 @@
 #include <stdint.h>
 #include <string.h>
 
-#ifdef __ARM_NEON
 #include <arm_neon.h>
-#endif
 
 #include "crypto_aes.h"
 #include "crypto_aes_arm_u8.h"

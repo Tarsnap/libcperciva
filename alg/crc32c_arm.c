@@ -4,9 +4,7 @@
  * CPUSUPPORT CFLAGS: ARM_CRC32_64
  */
 
-#ifdef __ARM_ACLE
 #include <arm_acle.h>
-#endif
 
 #include <assert.h>
 
