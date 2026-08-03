@@ -44,6 +44,9 @@ readpass_file(char ** passwd, const char * filename)
 	if (fgetc(f) != EOF) {
 		warn0("line too long, or more than 1 line in %s", filename);
 		goto err2;
+	} else if (ferror(f)) {
+		warnp("fgetc");
+		goto err2;
 	}
 
 	/* Close the file. */
