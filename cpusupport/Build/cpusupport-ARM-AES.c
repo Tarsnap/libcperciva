@@ -20,6 +20,7 @@ main(void)
 
 	/* Check _u32: some compilers only support the _u8 variant. */
 	lanes = vdupq_laneq_u32(lanes, 0);
+	(void)lanes; /* UNUSED */
 
 	/* Success! */
 	return (0);

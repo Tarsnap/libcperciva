@@ -14,6 +14,7 @@ main(void)
 	/* Test 8-bit and 64-bit. */
 	state = __crc32b(state, x);
 	state = __crc32cd(state, *(const uint64_t *)&buf[0]);
+	(void)state; /* UNUSED */
 
 	/* Success! */
 	return (0);
