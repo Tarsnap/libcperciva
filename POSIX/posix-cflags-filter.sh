@@ -23,7 +23,7 @@ if ! ${CC} -O2 "${D}/posix-trivial.c" 2>/dev/null; then
 		echo '	if [ "$OPT" = "-O2" ]; then'
 		echo '		continue'
 		echo '	fi'
-		echo '	CFLAGS_FILTERED="$CFLAGS $OPT"'
+		echo '	CFLAGS_FILTERED="$CFLAGS_FILTERED $OPT"'
 		echo 'done'
 		echo 'CFLAGS="$CFLAGS_FILTERED"'
 		echo "WARNING: POSIX violation: make's CC doesn't understand -O2" 1>&2
