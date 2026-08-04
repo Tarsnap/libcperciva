@@ -97,6 +97,10 @@ is preferred over
 		goto done;
 at the start of a function.
 
+Don't check for failures in an error-handling path if they will not affect
+behaviour.  In particular, if we're already in an unrecoverable state, don't
+let a callback's return value determine control flow.
+
 Headers should be included in the following groups, with a blank line after
 each (non-empty) group:
 1. <sys/*.h>, with <sys/types.h> first followed by others alphabetically.
