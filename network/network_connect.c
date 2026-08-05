@@ -66,7 +66,8 @@ dofailed(struct connect_cookie * C)
 	return (0);
 
 err1:
-	free(C);
+	C->s = -1;
+	docallback(C);
 
 	/* Failure! */
 	return (-1);
