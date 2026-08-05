@@ -8,9 +8,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#ifdef __ARM_NEON
 #include <arm_neon.h>
-#endif
 
 #include "sha256_arm.h"
 

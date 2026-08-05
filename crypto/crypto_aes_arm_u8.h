@@ -1,9 +1,7 @@
 #ifndef CRYPTO_AES_ARM_U8_H_
 #define CRYPTO_AES_ARM_U8_H_
 
-#ifdef __ARM_NEON
 #include <arm_neon.h>
-#endif
 
 /**
  * crypto_aes_encrypt_block_arm_u8(in, key):

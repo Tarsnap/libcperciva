@@ -7,9 +7,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#ifdef __ARM_NEON
 #include <arm_neon.h>
-#endif
 
 #include "align_ptr.h"
 #include "insecure_memzero.h"
