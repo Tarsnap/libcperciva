@@ -3,7 +3,8 @@
 
 /*
  * CTASSERT(foo) will produce a compile-time error if "foo" is not a constant
- * expression which evaluates to a non-zero value.
+ * expression which evaluates to a non-zero value.  Only one CTASSERT() may
+ * be used per line in a source file after macro expansion.
  */
 
 /* Kill any existing definition, just in case it's different. */
