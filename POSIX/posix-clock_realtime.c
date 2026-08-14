@@ -4,5 +4,8 @@ int
 main(void)
 {
 
-	return (CLOCK_REALTIME);
+	(void)CLOCK_REALTIME;
+
+	/* Success! */
+	return (0);
 }
