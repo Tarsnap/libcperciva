@@ -217,9 +217,9 @@ ipc_sync_done(struct ipc_sync * IS)
 
 	/* Close any open file descriptors. */
 	if ((IS->fd[W] != -1) && ipc_sync_close(IS->fd[W]))
-		goto err1;
-	if ((IS->fd[R] != -1) && ipc_sync_close(IS->fd[R]))
 		goto err2;
+	if ((IS->fd[R] != -1) && ipc_sync_close(IS->fd[R]))
+		goto err1;
 
 	/* Clean up. */
 	free(IS);
