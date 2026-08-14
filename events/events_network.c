@@ -91,12 +91,15 @@ init(void)
 
 	/* Clean up the socket list at exit. */
 	if (atexit(events_network_shutdown))
-		goto err0;
+		goto err1;
 
 done:
 	/* Success! */
 	return (0);
 
+err1:
+	socketlist_free(S);
+	S = NULL;
 err0:
 	/* Failure! */
 	return (-1);

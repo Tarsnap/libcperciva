@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "warnp.h"
+
 #include "getopt.h"
 
 /*
@@ -90,7 +92,11 @@ reset(int argc, char * const argv[])
 
 	/* Register atexit handler if we haven't done so already. */
 	if (!atexit_registered) {
-		atexit(getopt_atexit);
+		/* On failure, warn only; we're inside a (void) function. */
+		if (atexit(getopt_atexit))
+			warnp("atexit");
+
+		/* Don't try atexit() again. */
 		atexit_registered = 1;
 	}
 

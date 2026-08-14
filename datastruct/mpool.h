@@ -7,6 +7,7 @@
 #include <string.h>
 
 #include "ctassert.h"
+#include "warnp.h"
 
 /**
  * Memory allocator cache.  Memory allocations can be returned to the pool
@@ -62,12 +63,19 @@ mpool_malloc(struct mpool * M, size_t len)
 
 	/* Initialize the atexit function (the first time we reach here). */
 	if (M->state == 0) {
-		atexit(M->atexitfunc);
+		if (atexit(M->atexitfunc)) {
+			warnp("atexit");
+			goto err0;
+		}
 		M->state = 1;
 	}
 
 	/* Allocate a new object. */
 	return (malloc(len));
+
+err0:
+	/* Failure! */
+	return (NULL);
 }
 
 static inline void
