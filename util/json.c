@@ -81,7 +81,7 @@ skip_number(const uint8_t * buf, const uint8_t * end)
 	 * number -- so we eat those until we run out.
 	 */
 	while (buf < end) {
-		if (strchr(numchars, buf[0]) == NULL)
+		if ((buf[0] == '\0') || (strchr(numchars, buf[0]) == NULL))
 			break;
 		buf++;
 	}
@@ -122,6 +122,9 @@ skip_array(const uint8_t * buf, const uint8_t * end)
 		/* Otherwise we should have a comma. */
 		if (*buf++ != ',')
 			return (end);
+
+		/* Skip optional whitespace. */
+		buf = skip_ws(buf, end);
 	} while (1);
 
 	/* NOTREACHED */
@@ -145,6 +148,10 @@ skip_object(const uint8_t * buf, const uint8_t * end)
 	/* Skip entries until we get to the end. */
 	do {
 		/* Skip a string and optional whitespace. */
+		if (buf == end)
+			return (end);
+		if (buf[0] != '"')
+			return (end);
 		buf = skip_string(buf, end);
 		buf = skip_ws(buf, end);
 
@@ -168,6 +175,9 @@ skip_object(const uint8_t * buf, const uint8_t * end)
 		/* Otherwise we should have a comma. */
 		if (*buf++ != ',')
 			return (end);
+
+		/* Skip optional whitespace. */
+		buf = skip_ws(buf, end);
 	} while (1);
 
 	/* NOTREACHED */
@@ -200,7 +210,7 @@ skip_value(const uint8_t * buf, const uint8_t * end)
 		return (skip_object(buf, end));
 	default:
 		/* Could this plausibly be a number? */
-		if (strchr(numchars, buf[0]) != NULL)
+		if ((buf[0] != '\0') && (strchr(numchars, buf[0]) != NULL))
 			return (skip_number(buf, end));
 
 		/* We don't have a valid JSON value.  Return. */

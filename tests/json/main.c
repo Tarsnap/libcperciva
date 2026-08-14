@@ -24,9 +24,15 @@ static struct jsontest {
 	{ "{\"food\":[123,234,567,\"bar\",{\"foo\":\"barf\"}],\"foo\":\"bar\"}", "foo", "\"bar\"}"},
 	/* Random whitespace. */
 	{ " {\"food\"\n:\"barf\",\"foo\": \t\"bar\" }", "foo", "\"bar\" }"},
+	{ "{\"food\":{\"barf\":\"baz\", \"barg\":\"bay\"},\"foo\":\"bar\"}", "foo", "\"bar\"}"},
+	{ "{\"food\":[1 , 2 , 3],\"foo\":\"bar\"}", "foo", "\"bar\"}"},
 	/* Non-matches. */
 	{ "{\"foo\":\"bar\"}", "fo", ""},
 	{ "{\"foo\":\"bar\"}", "foo2", ""},
+	/* Non-match because JSON is invalid. */
+	{ "{\"bar\":{foo\":\"bar\"},\"foo\":\"baz\"}", "foo", ""},
+	/* Non-match because of truncated nested object. */
+	{ "{\"bar\":{\"foo\":\"bar\",", "foo", ""},
 	/* Non-7-bit-clean. */
 	{ "{\"tête\":\"oui\"}", "tête", "\"oui\"}"},
 	{ "{\"t\u00EAte\":\"oui\"}", "t\u00EAte", "\"oui\"}"},
