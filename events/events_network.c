@@ -85,12 +85,20 @@ init(void)
 	if ((S = socketlist_init(0)) == NULL)
 		goto err0;
 
-	/* We have no poll structures allocated or initialized. */
-	fds = NULL;
-	fds_alloc = nfds = fdscanpos = 0;
-
 	/* Clean up the socket list at exit. */
 	if (atexit(events_network_shutdown))
+		goto err1;
+
+	/* We have no poll structures initialized. */
+	nfds = fdscanpos = 0;
+
+	/*
+	 * Allocate our initial set of fds.  This cannot be 0, otherwise we
+	 * could end up with fds == NULL and POSIX says that fds "points to an
+	 * array".
+	 */
+	fds_alloc = 16;
+	if ((fds = malloc(fds_alloc * sizeof(struct pollfd))) == NULL)
 		goto err1;
 
 done:
@@ -143,9 +151,12 @@ growpollfd(size_t fd)
 	/* We should not be called if the descriptor is already listed. */
 	assert(socketlist_get(S, fd)->pollpos == (size_t)(-1));
 
+	/* Sanity check (fds_alloc is initialized to 16 and only increases). */
+	assert(fds_alloc >= 16);
+
 	/* Expand the pollfd allocation if needed. */
 	if (fds_alloc == nfds) {
-		new_fds_alloc = fds_alloc == 0 ? 16 : fds_alloc * 2;
+		new_fds_alloc = fds_alloc * 2;
 		if (new_fds_alloc > SIZE_MAX / sizeof(struct pollfd)) {
 			errno = ENOMEM;
 			goto err0;
