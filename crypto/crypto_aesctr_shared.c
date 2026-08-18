@@ -1,4 +1,8 @@
+#include <assert.h>
 #include <stdint.h>
+
+#include "crypto_aes.h"
+#include "sysendian.h"
 
 /*
  * This code is shared between crypto_aesctr*.c files, and should not be
@@ -27,7 +31,10 @@ crypto_aesctr_stream_cipherblock_generate(struct crypto_aesctr * stream)
 	if (stream->pblk[15] == 0) {
 		/*
 		 * If incrementing the least significant byte resulted in it
-		 * wrapping, re-encode the complete 64-bit value.
+		 * wrapping, re-encode the complete 64-bit value from bytectr;
+		 * this happens once every 256 blocks.  We also rely on this to
+		 * finish initializing the stream, as crypto_aesctr_init2() set
+		 * pblk[15] <- 0xff.
 		 */
 		be64enc(stream->pblk + 8, stream->bytectr / 16);
 	}
@@ -71,7 +78,7 @@ crypto_aesctr_stream_pre_wholeblock(struct crypto_aesctr * stream,
 	bytemod = stream->bytectr % 16;
 	if (bytemod != 0) {
 		/* Do we have enough to complete the request? */
-		if (bytemod + *buflen_p <= 16) {
+		if (*buflen_p <= 16 - bytemod) {
 			/* Process only buflen bytes, then return. */
 			crypto_aesctr_stream_cipherblock_use(stream, inbuf,
 			    outbuf, buflen_p, *buflen_p, bytemod);
