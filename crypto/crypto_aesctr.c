@@ -178,6 +178,15 @@ crypto_aesctr_stream(struct crypto_aesctr * stream, const uint8_t * inbuf,
     uint8_t * outbuf, size_t buflen)
 {
 
+	/*
+	 * Sanity check: we can't handle 2^64 bytes; bytectr would overflow.
+	 * This check will be removed in a NDEBUG compile, but that's not
+	 * really a problem -- this is a theoretical issue, as even if the
+	 * process was encrypting continuously at 10 GB/s, it would take more
+	 * than 50 years to reach the overflow.
+	 */
+	assert(buflen < UINT64_MAX - stream->bytectr);
+
 #if defined(HWACCEL)
 #if defined(CPUSUPPORT_X86_AESNI)
 	if ((buflen >= 16) && (hwaccel == HW_X86_AESNI)) {
