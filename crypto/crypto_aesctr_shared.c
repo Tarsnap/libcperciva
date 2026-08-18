@@ -1,4 +1,8 @@
+#include <assert.h>
 #include <stdint.h>
+
+#include "crypto_aes.h"
+#include "sysendian.h"
 
 /*
  * This code is shared between crypto_aesctr*.c files, and should not be
