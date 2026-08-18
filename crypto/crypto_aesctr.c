@@ -120,6 +120,15 @@ crypto_aesctr_init2(struct crypto_aesctr * stream,
 	 */
 	stream->pblk[15] = 0xff;
 
+	/*-
+	 * This leaves stream->pblk as:
+	 *   [0..7]: nonce
+	 *   [8..14]: uninitialized
+	 *   [15]: 0xff
+	 * Bytes [8..15] will be overwritten with bytectr / 16 before pblk
+	 * is encrypted in crypto_aesctr_stream_cipherblock_generate().
+	 */
+
 #ifdef HWACCEL
 	hwaccel_init();
 #endif

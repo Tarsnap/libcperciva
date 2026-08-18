@@ -27,7 +27,10 @@ crypto_aesctr_stream_cipherblock_generate(struct crypto_aesctr * stream)
 	if (stream->pblk[15] == 0) {
 		/*
 		 * If incrementing the least significant byte resulted in it
-		 * wrapping, re-encode the complete 64-bit value.
+		 * wrapping, re-encode the complete 64-bit value from bytectr;
+		 * this happens once every 256 blocks.  We also rely on this to
+		 * finish initializing the stream, as crypto_aesctr_init2() set
+		 * pblk[15] <- 0xff.
 		 */
 		be64enc(stream->pblk + 8, stream->bytectr / 16);
 	}
