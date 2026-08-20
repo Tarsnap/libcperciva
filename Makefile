@@ -117,9 +117,10 @@ apisupport-config.h:
 		command -p sh						\
 		    ${LIBCPERCIVA_DIR}/apisupport/Build/apisupport.sh	\
 		    "$$PATH";						\
-	else								\
-		:;							\
 	fi > $@
+	if [ ! -s $@ ]; then						\
+		printf "#define APISUPPORT_NONE 1\n";			\
+	fi >> $@
 
 cpusupport-config.h:
 	if [ -d ${LIBCPERCIVA_DIR}/cpusupport/ ]; then			\
