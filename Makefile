@@ -59,9 +59,7 @@ all:	toplevel
 	done
 
 .PHONY:	toplevel
-toplevel:	apisupport-config.h cflags-filter.sh	\
-		cpusupport-config.h libs		\
-		posix-flags.sh
+toplevel:	libs
 
 # For "loop-back" building of a subdirectory
 .PHONY:	buildsubdir
