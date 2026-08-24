@@ -258,7 +258,7 @@ docallback(int (* callback)(void *, ssize_t), void * cookie, ssize_t len,
 
 /* Try to SSL_read. */
 static int
-doread(struct network_ssl_ctx * ssl)
+doread(struct network_ssl_ctx * ssl, int * invoked)
 {
 	size_t len;
 	int sslerr;
@@ -307,6 +307,7 @@ doread(struct network_ssl_ctx * ssl)
 			}
 #endif
 
+			*invoked = 1;
 			return (docallback(ssl->read_callback,
 			    ssl->read_cookie, (ssize_t)ssl->read_bufpos,
 			    &ssl->read_callback));
@@ -339,7 +340,8 @@ doread(struct network_ssl_ctx * ssl)
 		/* FALLTHROUGH */
 	case SSL_ERROR_ZERO_RETURN:
 		/* Connection EOF. */
-		return (docallback(ssl->read_callback,
+		*invoked = 1;
+			return (docallback(ssl->read_callback,
 		    ssl->read_cookie, 0, &ssl->read_callback));
 	case SSL_ERROR_SSL:
 		/* SSL failure, probably a protocol error. */
@@ -353,13 +355,14 @@ doread(struct network_ssl_ctx * ssl)
 	}
 
 	/* Connection failure. */
+	*invoked = 1;
 	return (docallback(ssl->read_callback, ssl->read_cookie, -1,
 	    &ssl->read_callback));
 }
 
 /* Try to SSL_write. */
 static int
-dowrite(struct network_ssl_ctx * ssl)
+dowrite(struct network_ssl_ctx * ssl, int * invoked)
 {
 	size_t len;
 	int sslerr;
@@ -402,6 +405,7 @@ dowrite(struct network_ssl_ctx * ssl)
 			}
 #endif
 
+			*invoked = 1;
 			return (docallback(ssl->write_callback,
 			    ssl->write_cookie, (ssize_t)ssl->write_bufpos,
 			    &ssl->write_callback));
@@ -441,6 +445,7 @@ dowrite(struct network_ssl_ctx * ssl)
 	}
 
 	/* Connection failure. */
+	*invoked = 1;
 	return (docallback(ssl->write_callback, ssl->write_cookie, -1,
 	    &ssl->write_callback));
 }
@@ -608,6 +613,8 @@ network_ssl_read(struct network_ssl_ctx * ssl, uint8_t * buf,
 
 err0:
 	/* Failure! */
+	ssl->read_callback = NULL;
+	ssl->read_needs_r = ssl->read_needs_w = 0;
 	return (NULL);
 }
 
@@ -681,6 +688,8 @@ network_ssl_write(struct network_ssl_ctx * ssl, const uint8_t * buf,
 
 err0:
 	/* Failure! */
+	ssl->write_callback = NULL;
+	ssl->write_needs_r = ssl->write_needs_w = 0;
 	return (NULL);
 }
 
