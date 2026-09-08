@@ -17,7 +17,9 @@ millisleep(size_t msec)
 
 	ts.tv_sec = msec / 1000;
 	ts.tv_nsec = (msec % 1000) * 1000000;
-	nanosleep(&ts, NULL);
+
+	/* Wait for "up to" the specific duration; ignore errors. */
+	(void)nanosleep(&ts, NULL);
 }
 
 #endif /* !MILLISLEEP_H_ */

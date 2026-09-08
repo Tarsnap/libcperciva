@@ -4,5 +4,8 @@ int
 main(void)
 {
 
-	return (MSG_NOSIGNAL);
+	(void)MSG_NOSIGNAL;
+
+	/* Success! */
+	return (0);
 }

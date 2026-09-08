@@ -4,5 +4,8 @@ int
 main(void)
 {
 
-	return (INET6_ADDRSTRLEN);
+	(void)INET6_ADDRSTRLEN;
+
+	/* Success! */
+	return (0);
 }
