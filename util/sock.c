@@ -280,7 +280,7 @@ sock_resolve(const char * addr)
 	ips[strlen(ips) - 1] = '\0';
 
 	/* Parse the port number in base 10, no trailing characters. */
-	if (PARSENUM_EX(&p, ports, 1, 65535, 10, 0)) {
+	if (PARSENUM_EX(&p, ports, 0, 65535, 10, 0)) {
 		warn0("Invalid port number: %s", ports);
 		goto err1;
 	}
