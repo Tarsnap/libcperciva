@@ -151,7 +151,7 @@ parsenum_float(const char * s, double min, double max, int trailing,
 	val = strtod(s, &eptr);
 	if (eptr == s || (!trailing && (*eptr != '\0')))
 		errno = EINVAL;
-	else if (bounded && ((val < min) || (val > max)))
+	else if (bounded && (isnan(val) || (val < min) || (val > max)))
 		errno = ERANGE;
 	return (val);
 }
