@@ -292,6 +292,8 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("123", uintmax_t, 0, UINTMAX_MAX, 123);
 	TEST4_SUCCESS("123", uintmax_t, -200, 200, 123);
 	TEST4_FAILURE("-123", uintmax_t, -200, -100, ERANGE);
+	TEST2_FAILURE("-1", uintmax_t, ERANGE);
+	TEST2_FAILURE(" \t -1", uintmax_t, ERANGE);
 
 	TEST4_SUCCESS("123", intmax_t, 0, INTMAX_MAX, 123);
 	TEST4_SUCCESS("-123", intmax_t, -200, -100, -123);
