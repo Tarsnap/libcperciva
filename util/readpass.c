@@ -145,6 +145,9 @@ retry:
 		goto err3;
 	}
 
+	/* Terminate the string at the first "\r" or "\n" (if any). */
+	passbuf[strcspn(passbuf, "\r\n")] = '\0';
+
 	/* Confirm the password if necessary. */
 	if (confirmprompt != NULL) {
 		if (usingtty)
@@ -156,15 +159,16 @@ retry:
 				warnp("Cannot read password");
 			goto err3;
 		}
+
+		/* Terminate the string at the first "\r" or "\n" (if any). */
+		confpassbuf[strcspn(confpassbuf, "\r\n")] = '\0';
+
 		if (strcmp(passbuf, confpassbuf)) {
 			fprintf(stderr,
 			    "Passwords mismatch, please try again\n");
 			goto retry;
 		}
 	}
-
-	/* Terminate the string at the first "\r" or "\n" (if any). */
-	passbuf[strcspn(passbuf, "\r\n")] = '\0';
 
 	/* If we changed terminal settings, reset them. */
 	if (usingtty)
