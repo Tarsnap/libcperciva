@@ -234,7 +234,6 @@ main(int argc, char * argv[])
 #endif
 
 	TEST4_SUCCESS("123.456", double, 0, 1000, 123.456);
-	TEST4_SUCCESS("nAn", double, 0, 0, NAN);
 	TEST4_SUCCESS("inf", double, 0, INFINITY, INFINITY);
 	TEST4_SUCCESS("-InFiNitY", double, -INFINITY, 0, -INFINITY);
 	TEST4_SUCCESS("0", double, 0, 0, 0);
@@ -246,7 +245,6 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("1e-2", double, 0, 1000, 0.01);
 
 	TEST4_SUCCESS("123.456", float, 0, 1000, 123.456);
-	TEST4_SUCCESS("nAn", float, 0, 0, NAN);
 	TEST4_SUCCESS("inf", float, 0, INFINITY, INFINITY);
 	TEST4_SUCCESS("-InFiNitY", float, -INFINITY, 0, -INFINITY);
 	TEST4_SUCCESS("0", float, 0, 0, 0);
@@ -256,6 +254,14 @@ main(int argc, char * argv[])
 	TEST4_SUCCESS("-0x7f", float, -1000, 0, -127);
 	TEST4_SUCCESS("-1e2", float, -1000, 0, -100);
 	TEST4_SUCCESS("1e-2", float, 0, 1000, 0.01);
+
+	/* NaNs: accept if unbounded, reject if bounded. */
+	TEST2_SUCCESS("nAn", double, NAN);
+	TEST4_FAILURE("NAN", double, 0, 1, ERANGE);
+	TEST4_FAILURE("nAN", double, -INFINITY, INFINITY, ERANGE);
+	TEST2_SUCCESS("nAn", float, NAN);
+	TEST4_FAILURE("naN", float, -100, 100, ERANGE);
+	TEST4_FAILURE("nan", float, -INFINITY, INFINITY, ERANGE);
 
 	TEST4_SUCCESS("1234", size_t, -123, 4000, 1234);
 	TEST4_FAILURE("7f", size_t, 0, 1000, EINVAL);
