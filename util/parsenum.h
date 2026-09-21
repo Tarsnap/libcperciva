@@ -89,8 +89,7 @@ _Pragma("clang diagnostic pop")
 		(((*(x)) = 1, (*(x)) /= 2) > 0)	?			\
 			(((base) == 0) ?				\
 				((*(x)) = parsenum_float((s),		\
-				    (double)-INFINITY,			\
-				    (double)INFINITY, (trailing))) :	\
+				    0, 0, (trailing), 0)) :		\
 				(ASSERT_FAIL(_define_name " applied to"	\
 				    " float with base != 0"), 1)) :	\
 		(((*(x)) = -1) > 0) ?					\
@@ -109,7 +108,7 @@ _Pragma("clang diagnostic pop")
 			(((base) == 0) ?				\
 				((*(x)) = parsenum_float((s),		\
 				    (double)(min), (double)(max),	\
-				    (trailing))) :			\
+				    (trailing), 1)) :			\
 				(ASSERT_FAIL(_define_name " applied to"	\
 				    " float with base != 0"), 1)) :	\
 		(((*(x)) = -1) <= 0) ?					\
@@ -140,7 +139,8 @@ _Pragma("clang diagnostic pop")
 
 /* Functions for performing the parsing and parameter checking. */
 static inline double
-parsenum_float(const char * s, double min, double max, int trailing)
+parsenum_float(const char * s, double min, double max, int trailing,
+    int bounded)
 {
 	char * eptr;
 	double val;
@@ -151,7 +151,7 @@ parsenum_float(const char * s, double min, double max, int trailing)
 	val = strtod(s, &eptr);
 	if (eptr == s || (!trailing && (*eptr != '\0')))
 		errno = EINVAL;
-	else if ((val < min) || (val > max))
+	else if (bounded && ((val < min) || (val > max)))
 		errno = ERANGE;
 	return (val);
 }
