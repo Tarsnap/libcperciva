@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <strings.h>
 #include <unistd.h>
 
 #include "imalloc.h"
@@ -432,6 +433,48 @@ callback_read_header(void * cookie, int status)
 	return (0);
 }
 
+/*
+ * If ${text} has "chunked" at the end (in any case) return 1; else 0.  If
+ * "chunked" does not appear at the beginning of the string, the preceding
+ * character must be whitespace or a comma.  For this function, "whitespace"
+ * only refers to space or horizontal tab; other values are not permitted as
+ * per RFC 7230.  Assume that there is no trailing whitespace.
+ */
+static int
+is_transfer_encoding_chunked(const char * text)
+{
+	static const char chunked[] = "chunked";
+	const size_t clen = strlen(chunked);
+	size_t len = strlen(text);
+	size_t i;
+	char c;
+
+	/* Reject if the string isn't long enough. */
+	if (len < clen)
+		return (0);
+
+	/* Does the string "chunked" (in any case) occur at the end? */
+	for (i = 0; i < clen; i++) {
+		c = text[len - clen + i];
+
+		/* Check either case; reject if no match. */
+		if ((c | 0x20) != chunked[i])
+			return (0);
+	}
+
+	/* If this is the beginning of the string, accept it. */
+	if (len == clen)
+		return (1);
+
+	/* Otherwise, we need a whitespace or comma before it. */
+	c = text[len - clen - 1];
+	if ((c != ' ') && (c != '\t') && (c != ','))
+		return (0);
+
+	/* Yes, it's chunked. */
+	return (1);
+}
+
 /* We have finished reading the request headers. */
 static int
 gotheaders(struct http_cookie * H, uint8_t * buf, size_t buflen)
@@ -573,7 +616,7 @@ gotheaders(struct http_cookie * H, uint8_t * buf, size_t buflen)
 	 */
 	if ((te = http_findheader(H->res.headers, H->res.nheaders,
 	    "Transfer-Encoding")) != NULL) {
-		if (strstr(te, "chunked") != NULL) {
+		if (is_transfer_encoding_chunked(te)) {
 			/* We're using chunked transfer-encoding. */
 			H->chunked = 1;
 
@@ -860,7 +903,7 @@ http_findheader(struct http_header * headers, size_t nheaders,
 
 	/* Search for the header. */
 	for (i = 0; i < nheaders; i++) {
-		if (strcmp(headers[i].header, header) == 0)
+		if (strcasecmp(headers[i].header, header) == 0)
 			return (headers[i].value);
 	}
 
