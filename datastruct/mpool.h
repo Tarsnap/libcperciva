@@ -105,7 +105,11 @@ mpool_free(struct mpool * M, void * p)
 		assert(M->allocsize > 0);
 
 		/* Allocate new stack and copy pointers into it. */
-		allocs_new = (void **)malloc(M->allocsize * 2 * sizeof(void *));
+		if (M->allocsize <= SIZE_MAX / (2 * sizeof(void *)))
+			allocs_new = (void **)malloc(M->allocsize *
+			    2 * sizeof(void *));
+		else
+			allocs_new = NULL;
 		if (allocs_new) {
 			memcpy(allocs_new, M->allocs,
 			    M->allocsize * sizeof(void *));

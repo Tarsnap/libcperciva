@@ -87,6 +87,13 @@ aws_readkeys(const char * fname, char ** key_id, char ** key_secret)
 		goto err1;
 	}
 
+	/*
+	 * Sanitize our buffer.  Note that, depending on the design of the
+	 * stdio library, the keys may still be in (most likely now-freed)
+	 * memory in the FILE structure.
+	 */
+	insecure_memzero(buf, sizeof(buf));
+
 	/* Success! */
 	return (0);
 
@@ -101,6 +108,7 @@ err1:
 		insecure_memzero(*key_secret, strlen(*key_secret));
 		free(*key_secret);
 	}
+	insecure_memzero(buf, sizeof(buf));
 err0:
 	/* Failure! */
 	return (-1);

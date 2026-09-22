@@ -456,6 +456,12 @@ gotheaders(struct http_cookie * H, uint8_t * buf, size_t buflen)
 	/* Consume the headers from the buffered reader. */
 	netbuf_read_consume(H->R, H->res_headlen);
 
+	/*
+	 * We consumed the headers so we can no longer say that "\r\n\r\n"
+	 * does not appear before any particular point.
+	 */
+	H->hepos = 0;
+
 	/* Count header lines. */
 	for (H->res.nheaders = 0, bufpos = 0;
 	    bufpos < H->res_headlen;
