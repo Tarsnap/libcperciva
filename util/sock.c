@@ -340,6 +340,7 @@ sock_resolve_one(const char * addr, int addport)
 	struct sock_addr * sa;
 	struct sock_addr ** sa_tmp;
 	char * addr_alloc = NULL;
+	int minport = addport ? 0 : 1;
 
 	/* Prepare the address to resolve. */
 	if (addport &&
@@ -349,7 +350,7 @@ sock_resolve_one(const char * addr, int addport)
 	}
 
 	/* Resolve target address. */
-	if ((sas = sock_resolve_internal(addr, 1)) == NULL) {
+	if ((sas = sock_resolve_internal(addr, minport)) == NULL) {
 		warnp("Error resolving socket address: %s", addr);
 		goto err1;
 	}
