@@ -229,12 +229,9 @@ err0:
 	return (NULL);
 }
 
-/**
- * sock_resolve(addr):
- * Return a NULL-terminated array of pointers to sock_addr structures.
- */
-struct sock_addr **
-sock_resolve(const char * addr)
+/* Resolve a sock addr, possibly allowing the port to be 0. */
+static struct sock_addr **
+sock_resolve_internal(const char * addr, int minport)
 {
 	struct sock_addr ** res;
 	char * s;
@@ -280,7 +277,7 @@ sock_resolve(const char * addr)
 	ips[strlen(ips) - 1] = '\0';
 
 	/* Parse the port number in base 10, no trailing characters. */
-	if (PARSENUM_EX(&p, ports, 1, 65535, 10, 0)) {
+	if (PARSENUM_EX(&p, ports, minport, 65535, 10, 0)) {
 		warn0("Invalid port number: %s", ports);
 		goto err1;
 	}
@@ -306,6 +303,30 @@ err0:
 }
 
 /**
+ * sock_resolve(addr):
+ * Return a NULL-terminated array of pointers to sock_addr structures.
+ * The address must contain a port number from 1..65535 (inclusive).
+ */
+struct sock_addr **
+sock_resolve(const char * addr)
+{
+
+	return (sock_resolve_internal(addr, 1));
+}
+
+/**
+ * sock_resolve_bindable(addr):
+ * Return a NULL-terminated array of pointers to sock_addr structures.
+ * The address must contain a port number from 0..65535 (inclusive).
+ */
+struct sock_addr **
+sock_resolve_bindable(const char * addr)
+{
+
+	return (sock_resolve_internal(addr, 0));
+}
+
+/**
  * sock_resolve_one(addr, addport):
  * Return a single sock_addr structure, or NULL if there are no addresses.
  * Warn if there is more than one address, and return the first one.
@@ -319,6 +340,7 @@ sock_resolve_one(const char * addr, int addport)
 	struct sock_addr * sa;
 	struct sock_addr ** sa_tmp;
 	char * addr_alloc = NULL;
+	int minport = addport ? 0 : 1;
 
 	/* Prepare the address to resolve. */
 	if (addport &&
@@ -328,7 +350,7 @@ sock_resolve_one(const char * addr, int addport)
 	}
 
 	/* Resolve target address. */
-	if ((sas = sock_resolve(addr)) == NULL) {
+	if ((sas = sock_resolve_internal(addr, minport)) == NULL) {
 		warnp("Error resolving socket address: %s", addr);
 		goto err1;
 	}
