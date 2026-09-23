@@ -350,7 +350,7 @@ sock_addr_validate(const char * addr)
 	assert(addr != NULL);
 
 	/* Check for an empty address. */
-	if (strlen(addr) == 0) {
+	if (addr[0] == '\0') {
 		warn0("Empty socket address");
 		goto err0;
 	}
