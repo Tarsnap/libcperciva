@@ -51,6 +51,11 @@ pl_freebsd_getdelim(void)
 	size_t linecap = 0;
 	char * line = NULL;
 
+	/*
+	 * FreeBSD implements getline() as a 1-line getdelim() call, so this
+	 * generates a suppression file with getdelim() and no mention of
+	 * getline().
+	 */
 	if (getline(&line, &linecap, stdin) == -1)
 		printf("error in getline()\n");
 
@@ -232,6 +237,10 @@ main(int argc, char * argv[])
 		}
 
 		/* We didn't find the desired function name. */
+		fprintf(stderr, "Unknown test: %s\n", argv[1]);
+		goto err0;
+	} else if (argc > 2) {
+		fprintf(stderr, "usage: %s [testname]\n", argv[0]);
 		goto err0;
 	} else {
 		/* Print test names. */
