@@ -16,7 +16,7 @@ static struct testcase_port {
 	{ "[127.0.0.1]:80", "[127.0.0.1]:80" },
 	{ "[::1]", "[::1]:0" },
 	{ "[::1]:80", "[::1]:80" },
-	/* Check that even badly-formed strings are handled. */
+	/* Check that even badly-formed strings don't cause a crash. */
 	{ ":", ":" },
 	{ "", ":0" },
 };
@@ -35,7 +35,10 @@ check_ensure_port(void)
 		expected = tests_port[i].output;
 
 		/* Run the function and check its output. */
-		out = sock_addr_ensure_port(in);
+		if ((out = sock_addr_ensure_port(in)) == NULL) {
+			warnp("sock_addr_ensure_port(\"%s\")", in);
+			goto err0;
+		}
 		if (strcmp(out, expected) != 0) {
 			warn0("Failed; sock_addr_ensure_port(\"%s\") "
 			    "expected \"%s\", got \"%s\"", in, expected, out);
@@ -51,7 +54,7 @@ check_ensure_port(void)
 
 err1:
 	free(out);
-
+err0:
 	/* Failure! */
 	return (-1);
 }
