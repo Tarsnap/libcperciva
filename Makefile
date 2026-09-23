@@ -84,7 +84,7 @@ libs: apisupport-config.h cflags-filter.sh cpusupport-config.h posix-flags.sh
 	. ./apisupport-config.h;			\
 	export HAVE_BUILD_FLAGS=1;			\
 	for D in ${LIBS}; do				\
-		( cd $${D} && make all ) || exit 2;	\
+		( cd $${D} && ${MAKE} all ) || exit 2;	\
 	done
 
 posix-flags.sh:
