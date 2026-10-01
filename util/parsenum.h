@@ -176,6 +176,22 @@ parsenum_signed(const char * s, intmax_t min, intmax_t max, int base,
 	return (val);
 }
 
+/*
+ * parsenum_hasminus(s):
+ * Return nonzero if the first non-whitespace character of ${s} is '-'.
+ * Used to reject negative strings for unsigned targets, since strtoumax()
+ * silently accepts a leading '-' and wraps the result.
+ */
+static inline int
+parsenum_hasminus(const char * s)
+{
+
+	while (*s == ' ' || *s == '\t' || *s == '\n' || *s == '\r' ||
+	    *s == '\f' || *s == '\v')
+		s++;
+	return (*s == '-');
+}
+
 static inline uintmax_t
 parsenum_unsigned(const char * s, uintmax_t min, uintmax_t max,
     uintmax_t typemax, int base, int trailing)
@@ -189,6 +205,17 @@ parsenum_unsigned(const char * s, uintmax_t min, uintmax_t max,
 	val = strtoumax(s, &eptr, base);
 	if (eptr == s || (!trailing && (*eptr != '\0')))
 		errno = EINVAL;
+	else if (parsenum_hasminus(s))
+		/*
+		 * strtoumax() accepts an optional '-' and returns the value
+		 * negated modulo UINTMAX_MAX + 1 (C99 7.22.1.4p5).  For an
+		 * unsigned target that wrap is never inside [min, max] in
+		 * intent, but for a 64-bit-wide target the wrapped value can
+		 * equal the type maximum, so the range check below cannot
+		 * catch it.  A negative string is out of range for an
+		 * unsigned target, so reject it explicitly.
+		 */
+		errno = ERANGE;
 	else if ((val < min) || (val > max) || (val > typemax))
 		errno = ERANGE;
 	return (val);
