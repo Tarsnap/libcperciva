@@ -600,13 +600,15 @@ network_ssl_read(struct network_ssl_ctx * ssl, uint8_t * buf,
 	if (ssl->immediate_cookie == NULL) {
 		if ((ssl->immediate_cookie = events_immediate_register(
 		    callback_immediate, ssl, 0)) == NULL)
-			goto err0;
+			goto err1;
 	}
 
 	/* Success! */
 	return (ssl);
 
-err0:
+err1:
+	ssl->read_callback = NULL;
+
 	/* Failure! */
 	return (NULL);
 }
@@ -673,13 +675,15 @@ network_ssl_write(struct network_ssl_ctx * ssl, const uint8_t * buf,
 	if (ssl->immediate_cookie == NULL) {
 		if ((ssl->immediate_cookie = events_immediate_register(
 		    callback_immediate, ssl, 0)) == NULL)
-			goto err0;
+			goto err1;
 	}
 
 	/* Success! */
 	return (ssl);
 
-err0:
+err1:
+	ssl->write_callback = NULL;
+
 	/* Failure! */
 	return (NULL);
 }
