@@ -78,7 +78,10 @@ main(int argc, char * argv[])
 	s = NULL;
 
 	/* Send request. */
-	(void)https_request(sas, &R, 1000000, donereq, &done, argv[1]);
+	if (https_request(sas, &R, 1000000, donereq, &done, argv[1]) == NULL) {
+		warn0("https_request");
+		goto err2;
+	}
 
 	/* Wait for request to complete. */
 	if (events_spin(&done)) {
