@@ -10,7 +10,7 @@ NOLIBALL	=	1
 # Useful relative directories.
 LIBCPERCIVA_DIR	=	../..
 
-# Handle optional_mutex (this cannot be part of liball).
+# Handle optional_pthread (this cannot be part of liball).
 .PATH.c	:	${LIBCPERCIVA_DIR}/util
 SRCS	+=	optional_mutex.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util

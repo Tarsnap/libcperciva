@@ -36,8 +36,8 @@
 /tests/md5/test_md5
 /tests/monoclock/test_monoclock
 /tests/mpool/test_mpool
-/tests/optional_mutex/normal/test_optional_pthread_no
-/tests/optional_mutex/pthread/test_optional_pthread_yes
+/tests/optional_pthread/no/test_optional_pthread_no
+/tests/optional_pthread/yes/test_optional_pthread_yes
 /tests/parsenum/test_parsenum
 /tests/readpass_file/test_readpass_file
 /tests/setuidgid/test_setuidgid
