@@ -5,7 +5,7 @@ SRCS=main.c
 IDIRS=-I../../alg -I../../cpusupport -I../../util
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/sha256
-LIBALL=../../liball/liball.a ../../liball/optional_mutex_normal/liball_optional_mutex_normal.a
+LIBALL=../../liball/liball.a ../../liball/optional_pthread_no/liball_optional_pthread_no.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
@@ -22,7 +22,7 @@ clean:
 ${PROG}:${SRCS:.c=.o} ${LIBALL}
 	${CC} -o ${PROG} ${SRCS:.c=.o} ${LIBALL} ${LDFLAGS} ${LDADD_EXTRA} ${LDADD_REQ} ${LDADD_POSIX}
 
-main.o: main.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../util/getopt.h ../../util/hexify.h ../../util/monoclock.h ../../util/perftest.h ../../alg/sha256.h ../../util/warnp.h
+main.o: main.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../util/getopt.h ../../util/hexify.h ../../util/perftest.h ../../alg/sha256.h ../../util/warnp.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c main.c -o main.o
 
 test:	all

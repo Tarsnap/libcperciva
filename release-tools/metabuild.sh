@@ -60,16 +60,16 @@ addvar_lib() {
 	fi
 }
 
-copyvar_LIBALL_optional_mutex() {
+copyvar_LIBALL_optional_pthread() {
 	var=LIBALL
 	val=$(${MAKEBSD} -v LIBALL)
 	if [ -n "${val}" ]; then
-		# Replace optional_mutex_normal with pthread variant,
+		# Replace optional_pthread_no with optional_pthread_yes,
 		# if appropriate.
 		ldadd_req=$(${MAKEBSD} -v LDADD_REQ)
 		if [ "${ldadd_req#*-lpthread}" != "${ldadd_req}" ] ; then
 			val=$(echo "${val}" |				\
-			    sed 's/optional_mutex_normal/optional_mutex_pthread/g')
+			    sed 's/optional_pthread_no/optional_pthread_yes/g')
 		fi
 		printf "%s=%s\n" "${var}" "${val}" >> "${OUT}"
 	fi
@@ -199,7 +199,7 @@ elif [ -n "${var_SRCS}" ]; then
 	# This *must* come after SUBDIR_DEPTH has been copied into
 	# the Makefile, because it depends on being able to run:
 	#     make -v SUBDIR_DEPTH
-	copyvar_LIBALL_optional_mutex
+	copyvar_LIBALL_optional_pthread
 	add_makefile_prog
 else
 	printf "\nall:\n\ttrue\n\nclean:\n\ttrue\n" >> "${OUT}"
