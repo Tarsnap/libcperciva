@@ -78,7 +78,10 @@ main(int argc, char * argv[])
 	s = NULL;
 
 	/* Send request. */
-	(void)http_request(sas, &R, 1000000, donereq, &done);
+	if (http_request(sas, &R, 1000000, donereq, &done) == NULL) {
+		warn0("http_request");
+		goto err2;
+	}
 
 	/* Wait for request to complete. */
 	if (events_spin(&done)) {

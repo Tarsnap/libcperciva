@@ -14,6 +14,18 @@ Functions with external linkage are declared like this:
 
 The identical comment appears in the C file where the function is defined.
 
+The parameter names in the comment should normally match the parameter names
+in the implementation, with the exception that variable names may be prefixed
+with an underscore if convenient for avoiding namespace collisions, e.g.
+	int
+	compar(const void * _x, const void * _y)
+	{
+		const foo * x = _x;
+		const foo * y = _y;
+
+		/* Compare x and y here. */
+	}
+
 Static functions may have the above form of comment, or simply a
 /* Brief description of what the function does. */
 line before the function.
@@ -179,6 +191,10 @@ after a period which ends a sentence.
 The first local variable declaration in cookie-using functions should be
 	struct foo * bar = cookie;
 
+If a function has a cookie as an argument but does not use it, the function
+should begin with
+	(void)cookie; /* UNUSED */
+
 When versions of functions are written to exploit special CPU features
 (using the cpusupport framework), that code should be placed into a
 separate file (e.g., crypto_aes_aesni.c) so that it can be compiled with
@@ -215,3 +231,10 @@ take the form
 
 If there are multiple CPU-feature-exploiting variants, the `if` could instead
 be a `switch` which invokes the appropriate variant function.
+
+When iterating through an array or buffer, e.g. when serializing/deserializing
+a structure to/from a buffer or iterating through argv, every step should
+increment the pointer, including the final step; the compiler will elide the
+final "dead store" but keeping the consistent paradigm in the C code of "do
+something and move the pointer along" reduces the risk of bugs being introduced
+at a later date.
