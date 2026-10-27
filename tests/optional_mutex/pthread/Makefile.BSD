@@ -1,5 +1,5 @@
 # Program name.
-PROG	=	test_optional_mutex_pthread
+PROG	=	test_optional_pthread_yes
 
 # Don't install it.
 NOINST	=	1

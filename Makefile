@@ -2,8 +2,8 @@
 
 PROGS=
 LIBS=	liball								\
-	liball/optional_mutex_normal					\
-	liball/optional_mutex_pthread
+	liball/optional_pthread_no					\
+	liball/optional_pthread_yes
 TESTS=	perftests/http							\
 	perftests/https							\
 	perftests/network-ssl						\

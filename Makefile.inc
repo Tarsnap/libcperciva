@@ -28,10 +28,10 @@ FINALIZED_SUBDIR_DEPTH	!=	${MAKE} -v SUBDIR_DEPTH
 .if !defined(NOLIBALL)
 # Link everything to liball.a, unless they specifically ask not to use it.
 LIBALL	=	${SUBDIR_DEPTH}/liball/liball.a
-.if exists(${FINALIZED_SUBDIR_DEPTH}/liball/optional_mutex_normal)
+.if exists(${FINALIZED_SUBDIR_DEPTH}/liball/optional_pthread_no)
 # If we have optional_mutex, add it. If appropriate, metabuild.sh will do:
-#     s/optional_mutex_normal/optional_mutex_pthread/g
-LIBALL	+=	${SUBDIR_DEPTH}/liball/optional_mutex_normal/liball_optional_mutex_normal.a
+#     s/optional_pthread_no/optional_pthread_yes/g
+LIBALL	+=	${SUBDIR_DEPTH}/liball/optional_pthread_no/liball_optional_pthread_no.a
 .endif
 LDADD	+=	${LIBALL}
 DPADD	+=	${LIBALL}

@@ -64,12 +64,12 @@ copyvar_LIBALL_optional_mutex() {
 	var=LIBALL
 	val=$(${MAKEBSD} -v LIBALL)
 	if [ -n "${val}" ]; then
-		# Replace optional_mutex_normal with pthread variant,
+		# Replace optional_pthread_no with pthread variant,
 		# if appropriate.
 		ldadd_req=$(${MAKEBSD} -v LDADD_REQ)
 		if [ "${ldadd_req#*-lpthread}" != "${ldadd_req}" ] ; then
 			val=$(echo "${val}" |				\
-			    sed 's/optional_mutex_normal/optional_mutex_pthread/g')
+			    sed 's/optional_pthread_no/optional_pthread_yes/g')
 		fi
 		printf "%s=%s\n" "${var}" "${val}" >> "${OUT}"
 	fi
