@@ -5,7 +5,7 @@ SRCS=main.c
 IDIRS=-I ../../util
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/json
-LIBALL=../../liball/liball.a ../../liball/optional_mutex_normal/liball_optional_mutex_normal.a
+LIBALL=../../liball/liball.a ../../liball/optional_pthread_no/liball_optional_pthread_no.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \

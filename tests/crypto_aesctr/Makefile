@@ -6,7 +6,7 @@ IDIRS=-I../../cpusupport -I../../crypto -I../../util
 LDADD_REQ=-lcrypto
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=tests/crypto_aesctr
-LIBALL=../../liball/liball.a ../../liball/optional_mutex_normal/liball_optional_mutex_normal.a
+LIBALL=../../liball/liball.a ../../liball/optional_pthread_no/liball_optional_pthread_no.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \
@@ -23,7 +23,7 @@ clean:
 ${PROG}:${SRCS:.c=.o} ${LIBALL}
 	${CC} -o ${PROG} ${SRCS:.c=.o} ${LIBALL} ${LDFLAGS} ${LDADD_EXTRA} ${LDADD_REQ} ${LDADD_POSIX}
 
-main.o: main.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_aes.h ../../crypto/crypto_aesctr.h ../../util/getopt.h ../../util/hexify.h ../../util/insecure_memzero.h ../../util/monoclock.h ../../util/perftest.h ../../util/warnp.h
+main.o: main.c ../../cpusupport/cpusupport.h ../../cpusupport-config.h ../../crypto/crypto_aes.h ../../crypto/crypto_aesctr.h ../../util/getopt.h ../../util/hexify.h ../../util/insecure_memzero.h ../../util/perftest.h ../../util/warnp.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I../.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c main.c -o main.o
 
 test:	all
