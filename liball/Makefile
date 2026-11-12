@@ -41,7 +41,7 @@ sha256_sse2.o: ../alg/sha256_sse2.c ../cpusupport/cpusupport.h ../cpusupport-con
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} ${CFLAGS_X86_SSE2} -c ../alg/sha256_sse2.c -o sha256_sse2.o
 aws_readkeys.o: ../aws/aws_readkeys.c ../util/insecure_memzero.h ../util/warnp.h ../aws/aws_readkeys.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../aws/aws_readkeys.c -o aws_readkeys.o
-aws_sign.o: ../aws/aws_sign.c ../util/asprintf.h ../util/hexify.h ../alg/sha256.h ../util/warnp.h ../aws/aws_sign.h
+aws_sign.o: ../aws/aws_sign.c ../util/asprintf.h ../util/hexify.h ../util/insecure_memzero.h ../alg/sha256.h ../util/warnp.h ../aws/aws_sign.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../aws/aws_sign.c -o aws_sign.o
 cpusupport_arm_aes.o: ../cpusupport/cpusupport_arm_aes.c ../cpusupport/cpusupport.h ../cpusupport-config.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../cpusupport/cpusupport_arm_aes.c -o cpusupport_arm_aes.o
@@ -73,7 +73,7 @@ crypto_aesctr_aesni.o: ../crypto/crypto_aesctr_aesni.c ../cpusupport/cpusupport.
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} ${CFLAGS_X86_AESNI} -c ../crypto/crypto_aesctr_aesni.c -o crypto_aesctr_aesni.o
 crypto_aesctr_arm.o: ../crypto/crypto_aesctr_arm.c ../cpusupport/cpusupport.h ../cpusupport-config.h ../crypto/crypto_aes.h ../crypto/crypto_aes_arm_u8.h ../util/sysendian.h ../crypto/crypto_aesctr_arm.h ../crypto/crypto_aesctr_shared.c
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} ${CFLAGS_ARM_AES} -c ../crypto/crypto_aesctr_arm.c -o crypto_aesctr_arm.o
-crypto_dh.o: ../crypto/crypto_dh.c ../util/warnp.h ../crypto/crypto_dh_group14.h ../crypto/crypto_entropy.h ../crypto/crypto_dh.h
+crypto_dh.o: ../crypto/crypto_dh.c ../util/warnp.h ../crypto/crypto_dh_group14.h ../crypto/crypto_entropy.h ../util/insecure_memzero.h ../crypto/crypto_dh.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../crypto/crypto_dh.c -o crypto_dh.o
 crypto_dh_group14.o: ../crypto/crypto_dh_group14.c ../crypto/crypto_dh_group14.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../crypto/crypto_dh_group14.c -o crypto_dh_group14.o
@@ -93,9 +93,9 @@ seqptrmap.o: ../datastruct/seqptrmap.c ../datastruct/elasticqueue.h ../datastruc
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../datastruct/seqptrmap.c -o seqptrmap.o
 timerqueue.o: ../datastruct/timerqueue.c ../datastruct/ptrheap.h ../datastruct/timerqueue.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../datastruct/timerqueue.c -o timerqueue.o
-events.o: ../events/events.c ../datastruct/mpool.h ../util/ctassert.h ../events/events.h ../events/events_internal.h
+events.o: ../events/events.c ../datastruct/mpool.h ../util/ctassert.h ../util/warnp.h ../events/events.h ../events/events_internal.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../events/events.c -o events.o
-events_immediate.o: ../events/events_immediate.c ../datastruct/mpool.h ../util/ctassert.h ../external/queue/queue.h ../events/events.h ../events/events_internal.h
+events_immediate.o: ../events/events_immediate.c ../datastruct/mpool.h ../util/ctassert.h ../util/warnp.h ../external/queue/queue.h ../events/events.h ../events/events_internal.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../events/events_immediate.c -o events_immediate.o
 events_network.o: ../events/events_network.c ../util/ctassert.h ../datastruct/elasticarray.h ../util/warnp.h ../events/events.h ../events/events_internal.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../events/events_network.c -o events_network.o
@@ -117,7 +117,7 @@ network_accept.o: ../network/network_accept.c ../events/events.h ../network/netw
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_accept.c -o network_accept.o
 network_connect.o: ../network/network_connect.c ../events/events.h ../util/sock.h ../util/warnp.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_connect.c -o network_connect.o
-network_read.o: ../network/network_read.c ../events/events.h ../datastruct/mpool.h ../util/ctassert.h ../network/network.h
+network_read.o: ../network/network_read.c ../events/events.h ../datastruct/mpool.h ../util/ctassert.h ../util/warnp.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_read.c -o network_read.o
 network_write.o: ../network/network_write.c ../events/events.h ../datastruct/mpool.h ../util/ctassert.h ../util/warnp.h ../network/network.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../network/network_write.c -o network_write.o
@@ -135,7 +135,7 @@ entropy.o: ../util/entropy.c ../util/warnp.h ../util/entropy.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/entropy.c -o entropy.o
 fork_func.o: ../util/fork_func.c ../util/warnp.h ../util/fork_func.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/fork_func.c -o fork_func.o
-getopt.o: ../util/getopt.c ../util/getopt.h
+getopt.o: ../util/getopt.c ../util/warnp.h ../util/getopt.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/getopt.c -o getopt.o
 hexify.o: ../util/hexify.c ../util/hexify.h
 	${CC} ${CFLAGS_POSIX} -D_POSIX_C_SOURCE=200809L -D_XOPEN_SOURCE=700 -DCPUSUPPORT_CONFIG_FILE=\"cpusupport-config.h\" -DAPISUPPORT_CONFIG_FILE=\"apisupport-config.h\" -I.. ${IDIRS} ${CPPFLAGS} ${CFLAGS} -c ../util/hexify.c -o hexify.o

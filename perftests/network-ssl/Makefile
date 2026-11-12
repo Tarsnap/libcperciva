@@ -6,7 +6,7 @@ IDIRS=-I ../../events -I ../../network_ssl -I ../../util
 LDADD_REQ=-lssl -lcrypto
 SUBDIR_DEPTH=../..
 RELATIVE_DIR=perftests/network-ssl
-LIBALL=../../liball/liball.a ../../liball/optional_mutex_normal/liball_optional_mutex_normal.a
+LIBALL=../../liball/liball.a ../../liball/optional_pthread_no/liball_optional_pthread_no.a
 
 all:
 	if [ -z "$${HAVE_BUILD_FLAGS}" ]; then \

@@ -2,8 +2,8 @@
 
 PROGS=
 LIBS=	liball								\
-	liball/optional_mutex_normal					\
-	liball/optional_mutex_pthread
+	liball/optional_pthread_no					\
+	liball/optional_pthread_yes
 TESTS=	perftests/http							\
 	perftests/https							\
 	perftests/network-ssl						\
@@ -28,8 +28,8 @@ TESTS=	perftests/http							\
 	tests/md5							\
 	tests/monoclock							\
 	tests/mpool							\
-	tests/optional_mutex/normal					\
-	tests/optional_mutex/pthread					\
+	tests/optional_pthread/no					\
+	tests/optional_pthread/yes					\
 	tests/parsenum							\
 	tests/readpass_file						\
 	tests/setuidgid							\
