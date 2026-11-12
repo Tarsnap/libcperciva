@@ -15,8 +15,16 @@ struct sock_addr;
 /**
  * sock_resolve(addr):
  * Return a NULL-terminated array of pointers to sock_addr structures.
+ * The address must contain a port number from 1..65535 (inclusive).
  */
 struct sock_addr ** sock_resolve(const char *);
+
+/**
+ * sock_resolve_bindable(addr):
+ * Return a NULL-terminated array of pointers to sock_addr structures.
+ * The address must contain a port number from 0..65535 (inclusive).
+ */
+struct sock_addr ** sock_resolve_bindable(const char *);
 
 /**
  * sock_resolve_one(addr, addport):
