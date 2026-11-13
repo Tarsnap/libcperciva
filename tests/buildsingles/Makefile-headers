@@ -24,9 +24,10 @@ HEADERS=\
 	align_ptr.h asprintf.h b64encode.h ctassert.h daemonize.h entropy.h \
 		fork_func.h getopt.h hexify.h humansize.h imalloc.h \
 		insecure_memzero.h ipc_sync.h json.h millisleep.h \
-		monoclock.h noeintr.h optional_mutex.h parsenum.h \
-		perftest.h readpass.h setgroups_none.h setuidgid.h sock.h \
-		sock_internal.h sock_util.h sysendian.h ttyfd.h warnp.h \
+		monoclock.h noeintr.h optional_mutex.h optional_once.h \
+		parsenum.h perftest.h readpass.h setgroups_none.h \
+		setuidgid.h sock.h sock_internal.h sock_util.h sysendian.h \
+		ttyfd.h warnp.h
 
 buildsingles: Makefile.tmp
 	${MAKE} -f Makefile.tmp CPPFLAGS="${CPPFLAGS}" CFLAGS="${CFLAGS}" \
@@ -39,7 +40,7 @@ Makefile.tmp: Makefile-headers
 		H=$$(find ../../ -name "$${HN}");		\
 		echo;						\
 		echo "$${HN%.h}-main: $${H}";			\
-		echo "	${CC} -DHEADER=\"\\\"$${HN}\\\"\" ${CPPFLAGS} ${CFLAGS} -D_POSIX_C_SOURCE=200809L -I../../cpusupport ${IDIRS} ${CFLAGS_POSIX} -o $${HN%.h}-main main.c ${LDADD_POSIX}";	\
+		echo "	${CC} -DHEADER=\"\\\"$${HN}\\\"\" ${CPPFLAGS} ${CFLAGS} -D_POSIX_C_SOURCE=200809L -DOPTIONAL_PTHREAD_NO -I../../cpusupport ${IDIRS} ${CFLAGS_POSIX} -o $${HN%.h}-main main.c ${LDADD_POSIX}";	\
 	done >> Makefile.tmp
 
 clean:
