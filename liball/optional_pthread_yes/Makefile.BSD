@@ -13,9 +13,11 @@ LIBCPERCIVA_DIR	=	../..
 # Handle optional_pthread (this cannot be part of liball).
 .PATH.c	:	${LIBCPERCIVA_DIR}/util
 SRCS	+=	optional_mutex.c
+SRCS	+=	optional_once.c
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
 
-# Required define.
+# Required defines.
 CFLAGS.optional_mutex.c=	-DOPTIONAL_PTHREAD_YES
+CFLAGS.optional_once.c=		-DOPTIONAL_PTHREAD_YES
 
 .include <bsd.prog.mk>
