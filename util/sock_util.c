@@ -247,11 +247,20 @@ prettyprint_ipv6(struct sockaddr * name, size_t namelen)
 
 /* Prettyprint a UNIX address. */
 static char *
-prettyprint_unix(struct sockaddr_un * name)
+prettyprint_unix(struct sockaddr * name, size_t namelen)
 {
+	struct sockaddr_un sa_un;
 
-	/* Just strdup the path. */
-	return (strdup(name->sun_path));
+	/* Check that the name length fits; shorter is ok. */
+	if (namelen > sizeof(struct sockaddr_un))
+		return (NULL);
+
+	/* Copy into buffer for alignment, after zeroing. */
+	memset(&sa_un, 0, sizeof(sa_un));
+	memcpy(&sa_un, name, namelen);
+
+	/* Return a copy of the path; don't assume it contains a NUL. */
+	return (strndup(sa_un.sun_path, sizeof(sa_un.sun_path)));
 }
 
 /**
@@ -273,7 +282,7 @@ sock_addr_prettyprint(const struct sock_addr * sa)
 	case AF_INET6:
 		return (prettyprint_ipv6(sa->name, sa->namelen));
 	case AF_UNIX:
-		return (prettyprint_unix((struct sockaddr_un *)(sa->name)));
+		return (prettyprint_unix(sa->name, sa->namelen));
 	default:
 		return (strdup("Unknown address"));
 	}
