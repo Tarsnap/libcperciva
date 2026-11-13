@@ -27,6 +27,8 @@ env:
   CFLAGS_OSX: -Wno-poison-system-directories
               -I/opt/homebrew/opt/openssl@3/include
               -Wno-reserved-id-macro
+              -Wno-switch-default
+              -Wno-cast-function-type-strict
   LDFLAGS_OSX: -L/opt/homebrew/opt/openssl@3/lib
 
 jobs:
@@ -73,7 +75,7 @@ jobs:
         fi
   macOS:
     name: macOS
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
     - name: Checkout code
       uses: actions/checkout@v7
