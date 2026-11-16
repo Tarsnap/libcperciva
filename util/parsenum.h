@@ -7,6 +7,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /* Handle compiler warnings about implicit variable conversion in PARSENUM. */
 #ifdef __clang__
@@ -185,6 +186,15 @@ parsenum_unsigned(const char * s, uintmax_t min, uintmax_t max,
 
 	/* Sanity check. */
 	assert(s != NULL);
+
+	/* Strip leading whitespace. */
+	s += strspn(s, "\t\n\v\f\r ");
+
+	/* Reject any string representing a negative value. */
+	if (s[0] == '-') {
+		errno = ERANGE;
+		return (0);
+	}
 
 	val = strtoumax(s, &eptr, base);
 	if (eptr == s || (!trailing && (*eptr != '\0')))
