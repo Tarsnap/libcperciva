@@ -10,6 +10,7 @@ LIBCPERCIVA_DIR	=	../../..
 # Main test code
 .PATH.c	:	..
 SRCS	=	main.c
+SRCS	+=	check_mutex.c
 
 # libcperciva includes
 IDIRS	+=	-I${LIBCPERCIVA_DIR}/util
