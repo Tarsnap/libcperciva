@@ -238,8 +238,8 @@ timerqueue_free(struct timerqueue * Q)
 
 	/* Extract elements from the heap and free them one by one. */
 	while ((r = ptrheap_getmin(Q->H)) != NULL) {
-		free(r);
 		ptrheap_deletemin(Q->H);
+		free(r);
 	}
 
 	/* Free the heap. */
