@@ -399,6 +399,7 @@ sock_listener(const struct sock_addr * sa)
 {
 	int s;
 	int val = 1;
+	int flags;
 
 	/* Create a socket. */
 	if ((s = socket(sa->ai_family, sa->ai_socktype, 0)) == -1) {
@@ -428,7 +429,11 @@ sock_listener(const struct sock_addr * sa)
 	}
 
 	/* Mark the socket as non-blocking. */
-	if (fcntl(s, F_SETFL, O_NONBLOCK) == -1) {
+	if ((flags = fcntl(s, F_GETFL, 0)) == -1) {
+		warnp("Cannot read fcntl flags");
+		goto err1;
+	}
+	if (fcntl(s, F_SETFL, flags | O_NONBLOCK) == -1) {
 		warnp("Error marking socket as non-blocking");
 		goto err1;
 	}
@@ -454,6 +459,7 @@ int
 sock_connect(struct sock_addr * const * sas)
 {
 	int s = -1;
+	int flags;
 
 	/* Iterate through the addresses provided. */
 	for (; sas[0] != NULL; sas++) {
@@ -478,7 +484,11 @@ sock_connect(struct sock_addr * const * sas)
 	}
 
 	/* Mark the socket as non-blocking. */
-	if (fcntl(s, F_SETFL, O_NONBLOCK) == -1) {
+	if ((flags = fcntl(s, F_GETFL, 0)) == -1) {
+		warnp("Cannot read fcntl flags");
+		goto err1;
+	}
+	if (fcntl(s, F_SETFL, flags | O_NONBLOCK) == -1) {
 		warnp("Cannot make connection non-blocking");
 		goto err1;
 	}
@@ -521,6 +531,7 @@ sock_connect_bind_nb(const struct sock_addr * sa,
 {
 	int s;
 	int val = 1;
+	int flags;
 
 	/* Create a socket. */
 	if ((s = socket(sa->ai_family, sa->ai_socktype, 0)) == -1) {
@@ -548,7 +559,11 @@ sock_connect_bind_nb(const struct sock_addr * sa,
 	}
 
 	/* Mark the socket as non-blocking. */
-	if (fcntl(s, F_SETFL, O_NONBLOCK) == -1) {
+	if ((flags = fcntl(s, F_GETFL, 0)) == -1) {
+		warnp("Cannot read fcntl flags");
+		goto err1;
+	}
+	if (fcntl(s, F_SETFL, flags | O_NONBLOCK) == -1) {
 		warnp("Cannot make socket non-blocking");
 		goto err1;
 	}
