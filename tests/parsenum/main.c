@@ -293,7 +293,7 @@ main(int argc, char * argv[])
 	TEST2_SUCCESS("0XffffFFFF", uint32_t, UINT32_MAX);
 	TEST2_FAILURE("ffffFFFF", uint32_t, EINVAL);
 	TEST2_FAILURE("0XfffffFFFF", uint32_t, ERANGE);
-	TEST2_FAILURE("-1", uint32_t, ERANGE);
+	TEST2_SUCCESS("-1", uint32_t, UINT32_MAX);
 
 	TEST4_SUCCESS("123", uintmax_t, 0, UINTMAX_MAX, 123);
 	TEST4_SUCCESS("123", uintmax_t, -200, 200, 123);

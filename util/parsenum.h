@@ -2,6 +2,7 @@
 #define PARSENUM_H_
 
 #include <assert.h>
+#include <ctype.h>
 #include <errno.h>
 #include <inttypes.h>
 #include <math.h>
@@ -181,12 +182,23 @@ parsenum_unsigned(const char * s, uintmax_t min, uintmax_t max,
     uintmax_t typemax, int base, int trailing)
 {
 	char * eptr;
+	const char * p;
 	uintmax_t val;
 
 	/* Sanity check. */
 	assert(s != NULL);
 
 	val = strtoumax(s, &eptr, base);
+
+	/* If the value is negative, re-interpret relative to the type. */
+	for (p = s; isspace((unsigned char)(*p)); p++)
+		continue;
+	if (*p == '-') {
+		if ((uintmax_t)(-val) > typemax)
+			errno = ERANGE;
+		val &= typemax;
+	}
+
 	if (eptr == s || (!trailing && (*eptr != '\0')))
 		errno = EINVAL;
 	else if ((val < min) || (val > max) || (val > typemax))
