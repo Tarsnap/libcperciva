@@ -290,14 +290,28 @@ main(int argc, char * argv[])
 	TEST2_SUCCESS("2345", size_t, 2345);
 	TEST2_FAILURE("abcd", size_t, EINVAL);
 
+	TEST2_SUCCESS("-1", uint8_t, 255);
+	TEST2_SUCCESS("-0", uint8_t, 0);
+	TEST2_SUCCESS("-255", uint8_t, 1);
+	TEST2_SUCCESS(" -1", uint8_t, 255);
+	TEST2_FAILURE(" -1 ", uint8_t, EINVAL);
+	TEST2_FAILURE("-256", uint8_t, ERANGE);
+	TEST2_FAILURE("-1x", uint8_t, EINVAL);
+	TEST2_FAILURE("-256x", uint8_t, EINVAL);
+	TEST4_SUCCESS("-1", uint8_t, 200, 255, 255);
+	TEST4_FAILURE("-1", uint8_t, 0, 100, ERANGE);
+
 	TEST2_SUCCESS("0XffffFFFF", uint32_t, UINT32_MAX);
 	TEST2_FAILURE("ffffFFFF", uint32_t, EINVAL);
 	TEST2_FAILURE("0XfffffFFFF", uint32_t, ERANGE);
-	TEST2_FAILURE("-1", uint32_t, ERANGE);
+	TEST2_SUCCESS("-1", uint32_t, UINT32_MAX);
+	TEST2_SUCCESS("-4294967295", uint32_t, 1);
+	TEST2_FAILURE("-4294967296", uint32_t, ERANGE);
 
 	TEST4_SUCCESS("123", uintmax_t, 0, UINTMAX_MAX, 123);
 	TEST4_SUCCESS("123", uintmax_t, -200, 200, 123);
 	TEST4_FAILURE("-123", uintmax_t, -200, -100, ERANGE);
+	TEST2_SUCCESS("-1", uintmax_t, UINTMAX_MAX);
 
 	TEST4_SUCCESS("123", intmax_t, 0, INTMAX_MAX, 123);
 	TEST4_SUCCESS("-123", intmax_t, -200, -100, -123);
