@@ -53,6 +53,12 @@ _Pragma("clang diagnostic pop")
  * For floating-point and unsigned integer variables ${x}, this can also be
  * invoked as PARSENUM(x, s), in which case the minimum and maximum values are
  * set to +/- infinity or the limits of the unsigned integer type.
+ *
+ * For an unsigned integer variable ${x}, a string representing a negative
+ * number N is interpreted as N modulo 2^k, where k is the number of value bits
+ * in the variable type.  If N is less than or equal to -2^k, or if the
+ * resulting value is outside of the ${min} and ${max} bounds, return nonzero
+ * and set errno to ERANGE.
  */
 #define PARSENUM2(x, s)							\
 	PARSENUM_EX4((x), (s), 0, 0, "PARSENUM")
@@ -79,7 +85,11 @@ _Pragma("clang diagnostic pop")
  *
  * For an unsigned integer variable ${x}, this can also be invoked as
  * PARSENUM_EX(x, s, base), in which case the minimum and maximum values are
- * set to the limits of the unsigned integer type.
+ * set to the limits of the unsigned integer type.  Additionally, a string
+ * representing a negative number N is interpreted as N modulo 2^k, where k is
+ * the number of value bits in the variable type.  If N is less than or equal
+ * to -2^k, or if the resulting value is outside of the ${min} and ${max}
+ * bounds, return nonzero and set errno to ERANGE.
  *
  * For a floating-point variable ${x}, the ${base} must be 0.
  */
@@ -194,11 +204,18 @@ parsenum_unsigned(const char * s, uintmax_t min, uintmax_t max,
 	for (p = s; isspace((unsigned char)(*p)); p++)
 		continue;
 	if (*p == '-') {
-		if ((uintmax_t)(-val) > typemax)
+		/*
+		 * Check if it's outside of the range.  If there's trailing
+		 * garbage in the string, the later EINVAL will override this.
+		 */
+		if (((uintmax_t)0 - val) > typemax)
 			errno = ERANGE;
+
+		/* Reduce modulo typemax + 1; assume that typemax is 2^k - 1. */
 		val &= typemax;
 	}
 
+	/* Check string validity and bounds. */
 	if (eptr == s || (!trailing && (*eptr != '\0')))
 		errno = EINVAL;
 	else if ((val < min) || (val > max) || (val > typemax))
